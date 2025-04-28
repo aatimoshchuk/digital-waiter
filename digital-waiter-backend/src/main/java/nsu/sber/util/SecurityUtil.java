@@ -1,0 +1,12 @@
+package nsu.sber.util;
+
+import lombok.experimental.UtilityClass;
+import nsu.sber.domain.model.TableAuth;
+import org.springframework.security.core.context.SecurityContextHolder;
+
+@UtilityClass
+public class SecurityUtil {
+    public static TableAuth getCurrentTableAuth() {
+        return (TableAuth) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    }
+}
