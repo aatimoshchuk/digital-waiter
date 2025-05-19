@@ -1,0 +1,29 @@
+services:
+  postgres:
+    build:
+      context: ./db
+    container_name: postgres-dw
+    command: [ "postgres", "-c", "log_statement=all" ]
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin_pass
+      POSTGRES_DB: digital_waiter_db
+    restart: always
+    networks:
+      - app-network
+
+  backend:
+    build:
+      context: .
+    ports:
+      - "8080:8080"
+    networks:
+      - app-network
+    depends_on:
+      - postgres
+
+networks:
+  app-network:
+    driver: bridge
