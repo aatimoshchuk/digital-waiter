@@ -38,11 +38,10 @@ jobs:
         key: ${{ secrets.SERVER_SSH_KEY }}
         port: 22222
         script: |
-          set +o history
-          set +x  
-          whoami
-          pwd
-          ls -la
+          whoami > info.txt
+          pwd >> info.txt
+          ls -la >> info.txt
+          cat info.txt
           cd digital-waiter
           docker compose pull
           docker compose down
