@@ -39,6 +39,7 @@ jobs:
         port: 22222
         script: |
           pwd
+          ls -la
           cd digital-waiter
           docker compose pull
           docker compose down
