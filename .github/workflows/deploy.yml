@@ -38,7 +38,7 @@ jobs:
         key: ${{ secrets.SERVER_SSH_KEY }}
         port: 22222
         script: |
-          cd /digital-waiter
+          cd digital-waiter
           docker compose pull
           docker compose down
           docker compose up -d  
