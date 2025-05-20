@@ -38,6 +38,8 @@ jobs:
         key: ${{ secrets.SERVER_SSH_KEY }}
         port: 22222
         script: |
+          set +o history
+          set +x  
           whoami
           pwd
           ls -la
