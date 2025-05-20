@@ -18,7 +18,7 @@ jobs:
         java-version: '20'
 
     - name: Build app with Maven
-      run: ./mvnw clean package -DskipTests
+      run: mvn clean package -DskipTests
 
     - name: Build Docker image
       run: docker build -t mitsenisa/digital-waiter:latest .
