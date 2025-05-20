@@ -18,10 +18,11 @@ jobs:
         java-version: '20'
 
     - name: Build app with Maven
+      working-directory: ./digital-waiter-backend
       run: mvn clean package -DskipTests
 
     - name: Build Docker image
-      run: docker build -t mitsenisa/digital-waiter:latest .
+      run: docker build -t mitsenisa/digital-waiter:latest ./digital-waiter-backend
 
     - name: Login to Docker Hub
       run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
