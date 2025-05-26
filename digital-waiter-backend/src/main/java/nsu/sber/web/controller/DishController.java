@@ -1,9 +1,15 @@
 package nsu.sber.web.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import nsu.sber.domain.service.DishService;
+import nsu.sber.web.dto.DishInfoResponseDto;
+import nsu.sber.web.dto.MenuResponseDto;
+import nsu.sber.web.mapper.DishDtoMapper;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin(origins = "http://localhost:8081")
@@ -12,8 +18,24 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api")
 public class DishController {
 
-    @GetMapping("/menu")
-    public void getMenu() {
+    private final DishService dishService;
+    private final DishDtoMapper dishDtoMapper;
 
+    @GetMapping("/menu")
+    @Operation(
+            summary = "Получение меню",
+            description = "Получение внешнего меню, подключенного к ApiLogin"
+    )
+    public MenuResponseDto getMenu() {
+        return dishDtoMapper.menuResponseToDto(dishService.getMenu());
+    }
+
+    @GetMapping("/dish")
+    @Operation(
+            summary = "Получение информации о блюде",
+            description = "Получение полной информации о блюде по его id"
+    )
+    public DishInfoResponseDto getDishInfo(@RequestParam(name = "id") String dishId) {
+        return dishDtoMapper.dishInfoResponseToDto(dishService.getDishInfo(dishId));
     }
 }

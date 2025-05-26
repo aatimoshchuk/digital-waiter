@@ -20,6 +20,9 @@ public class TerminalGroupEntity {
     @Column(name = "id")
     private Integer id;
 
+    @Column(name = "pos_external_menu_id")
+    private String posExternalMenuId;
+
     @Column(name = "pos_terminal_group_id")
     private String posTerminalGroupId;
 

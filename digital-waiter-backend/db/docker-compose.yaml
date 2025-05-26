@@ -18,7 +18,9 @@ services:
     build:
       context: .
     ports:
-      - "8080:8080"
+      - "80:80"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
     networks:
       - app-network
     depends_on:

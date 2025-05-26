@@ -2,6 +2,11 @@ package nsu.sber.exception;
 
 public enum ErrorType {
 
-    TABLE_AUTH_NOT_FOUND
+    TABLE_AUTH_NOT_FOUND,
+    RESTAURANT_TABLE_NOT_FOUND,
+    TERMINAL_GROUP_NOT_FOUND,
+    ORGANIZATION_NOT_FOUND,
+    DISH_NOT_FOUND,
+    EXTERNAL_MENU_NOT_FOUND
 
 }
