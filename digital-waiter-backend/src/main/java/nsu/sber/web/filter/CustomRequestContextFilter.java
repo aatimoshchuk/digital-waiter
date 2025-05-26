@@ -5,10 +5,10 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import nsu.sber.domain.model.Organization;
 import nsu.sber.domain.model.RestaurantTable;
+import nsu.sber.domain.model.TableAuth;
 import nsu.sber.domain.model.TerminalGroup;
 import nsu.sber.domain.service.OrganizationService;
 import nsu.sber.domain.service.RestaurantTableService;
@@ -31,7 +31,9 @@ public class CustomRequestContextFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
-        if (((HttpServletRequest) request).getRequestURI().contains("/api/login")) {
+        TableAuth tableAuth = SecurityUtil.getCurrentTableAuth();
+
+        if (tableAuth == null) {
             chain.doFilter(request, response);
             return;
         }
@@ -39,9 +41,7 @@ public class CustomRequestContextFilter implements Filter {
         ServletRequestAttributes attrs =
                 (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
 
-        int tableAuthId = SecurityUtil.getCurrentTableAuth().getId();
-
-        RestaurantTable restaurantTable = restaurantTableService.getRestaurantTableById(tableAuthId);
+        RestaurantTable restaurantTable = restaurantTableService.getRestaurantTableById(tableAuth.getId());
         TerminalGroup terminalGroup = terminalGroupService.getTerminalGroupById(restaurantTable.getTerminalGroupId());
         Organization organization = organizationService.getOrganizationById(terminalGroup.getOrganizationId());
 
