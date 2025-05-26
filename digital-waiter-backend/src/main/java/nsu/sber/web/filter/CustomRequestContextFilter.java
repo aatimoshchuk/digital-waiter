@@ -31,7 +31,7 @@ public class CustomRequestContextFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
-        if (((HttpServletRequest) request).getRequestURI().contains("/login")) {
+        if (((HttpServletRequest) request).getRequestURI().contains("/api/login")) {
             chain.doFilter(request, response);
             return;
         }
