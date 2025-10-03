@@ -32,6 +32,7 @@ public class MenuResponseDtoMapper {
                                                 .findFirst()
                                                 .map(price -> MenuResponse.ItemSize
                                                         .builder()
+                                                        .sizeId(size.getSizeId())
                                                         .sizeName(size.getSizeName())
                                                         .measureUnitType(size.getMeasureUnitType())
                                                         .price(price.getPrice())
@@ -85,6 +86,7 @@ public class MenuResponseDtoMapper {
                                     .findFirst()
                                     .map(price -> DishInfoResponse.ItemSize
                                             .builder()
+                                            .sizeId(itemSize.getSizeId())
                                             .sizeName(itemSize.getSizeName())
                                             .portionWeightGrams(itemSize.getPortionWeightGrams())
                                             .measureUnitType(itemSize.getMeasureUnitType())

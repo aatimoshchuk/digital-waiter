@@ -39,6 +39,7 @@ public class MenuResponseDto {
     @Data
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class ItemSize {
+        private String sizeId;
         private String sizeName;
         private double portionWeightGrams;
         private List<Price> prices;

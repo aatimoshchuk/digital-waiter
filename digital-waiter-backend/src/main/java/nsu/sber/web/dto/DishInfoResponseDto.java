@@ -22,6 +22,7 @@ public class DishInfoResponseDto {
     @Data
     @Builder
     public static class ItemSize {
+        private String sizeId;
         private String sizeName;
         private double portionWeightGrams;
         private String measureUnitType;

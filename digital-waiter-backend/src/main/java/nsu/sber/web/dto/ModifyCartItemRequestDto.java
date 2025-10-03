@@ -4,10 +4,10 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
-public class AddDishToCartRequestDto {
+public class ModifyCartItemRequestDto {
 
     @NotBlank
-    private String dishId;
+    private String itemId;
 
     private String sizeId;
 }
