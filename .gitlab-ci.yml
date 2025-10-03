@@ -1,0 +1,40 @@
+stages:
+  - build
+  - deploy
+
+variables:
+  DOCKER_DRIVER: overlay2
+
+build:
+  stage: build
+  image: maven:3.9.3-openjdk-20
+  script:
+    - cd digital-waiter-backend
+    - mvn clean package -DskipTests
+  artifacts:
+    paths:
+      - digital-waiter-backend/target/*.jar
+
+docker_build_and_push:
+  stage: deploy
+  image: docker:24.0
+  services:
+    - docker:dind
+  before_script:
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  script:
+    - docker build -t mitsenisa/digital-waiter:latest ./digital-waiter-backend
+    - docker push mitsenisa/digital-waiter:latest
+
+ssh_deploy:
+  stage: deploy
+  image: alpine:latest
+  before_script:
+    - apk add --no-cache openssh-client
+  script:
+    - mkdir -p ~/.ssh
+    - echo "$SSH_KEY" > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - ssh -o StrictHostKeyChecking=no -p 22222 "$SERVER_USER@$JUMP_HOST" "ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no $SERVER_USER@$TARGET_HOST 'cd digital-waiter && docker compose pull && docker compose down && docker compose up -d'"
+  only:
+    - main
