@@ -35,6 +35,7 @@ services:
       - app-network
     depends_on:
       - postgres
+      - redis
 
 networks:
   app-network:
