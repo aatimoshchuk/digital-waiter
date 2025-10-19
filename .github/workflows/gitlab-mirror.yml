@@ -3,14 +3,21 @@ on:
   push:
     branches:
       - main
-      - '**'
 
 jobs:
   mirror:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Remove shallow restriction
+        run: |
+          git fetch --unshallow || true
+          git reflog expire --expire=now --all
+          git gc --prune=now
       - name: Push to GitLab
         run: |
+          BRANCH=$(git rev-parse --abbrev-ref HEAD)
           git remote add gitlab https://oauth2:${{ secrets.GITLAB_TOKEN }}@gitlab.sberlab.nsu.ru/a.timoshchuk/digital-waiter.git
-          git push --mirror gitlab
+          git push gitlab $BRANCH:$BRANCH --force
