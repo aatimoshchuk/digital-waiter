@@ -12,5 +12,6 @@ import org.springframework.web.multipart.MultipartFile;
 @AllArgsConstructor
 public class ProcessingRequest {
     private MultipartFile audioFile;
+    private String text;
     private String context;
 }
