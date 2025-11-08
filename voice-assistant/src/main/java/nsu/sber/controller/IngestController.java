@@ -19,7 +19,7 @@ public class IngestController {
     @PostMapping(value = "/process-audio", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ProcessingResponse> processAudio(
             @RequestParam("audio") MultipartFile audioFile,
-            @RequestParam(value = "context", required = false) String context) {
+            @RequestParam("context") String context) {
         ProcessingRequest request = ProcessingRequest.builder()
                 .audioFile(audioFile)
                 .context(context)
@@ -27,5 +27,14 @@ public class IngestController {
         return ResponseEntity.ok(processingService.processAudio(request));
     }
 
-    // POST /process-text
+    @PostMapping(value = "/process-text")
+    public ResponseEntity<ProcessingResponse> processText(
+            @RequestParam("text") String text,
+            @RequestParam("context") String context) {
+        ProcessingRequest request = ProcessingRequest.builder()
+                .text(text)
+                .context(context)
+                .build();
+        return ResponseEntity.ok(processingService.processText(request));
+    }
 }
