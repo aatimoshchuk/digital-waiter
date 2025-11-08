@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ProcessingService {
 
-    public ProcessingResponse process(ProcessingRequest request) {
+    public ProcessingResponse processAudio(ProcessingRequest request) {
         // 1. Speech to text
         // 2. NLU
         // 3. Parse command
@@ -17,4 +17,5 @@ public class ProcessingService {
         // 5. Create response
         return new ProcessingResponse();
     }
+
 }
