@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AddItemCommand implements AppCommand<Void> {
-    //private ModifyCartItemRequestDto item;
+    private Object item;
 }

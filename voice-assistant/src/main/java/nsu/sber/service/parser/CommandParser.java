@@ -5,13 +5,14 @@ import nsu.sber.model.CommandIntent;
 import nsu.sber.model.IntentType;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
+import java.util.List;
+
 
 @Service
 @RequiredArgsConstructor
 public class CommandParser {
 
-    public CommandIntent parse(String nluResult) {
+    public List<CommandIntent> parse(String nluResult) {
         // Пример чет такое: {"intent": "add_item", "parameters": {"item": {...}}}
         //  распарсить джейсон и заполнить поля
         //IntentType type = IntentType.ADD_ITEM; //TODO: Реализовать логику распознавания
