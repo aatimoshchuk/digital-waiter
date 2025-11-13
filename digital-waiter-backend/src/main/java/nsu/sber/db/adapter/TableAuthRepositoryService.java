@@ -1,12 +1,13 @@
 package nsu.sber.db.adapter;
 
 import lombok.RequiredArgsConstructor;
-import nsu.sber.db.entity.TableAuthEntity;
 import nsu.sber.db.mapper.TableAuthEntityMapper;
-import nsu.sber.db.repository.TableAuthRepository;
-import nsu.sber.domain.model.TableAuth;
-import nsu.sber.domain.port.TableAuthRepositoryPort;
+import nsu.sber.db.repository.jpa.TableAuthRepository;
+import nsu.sber.domain.model.entity.TableAuth;
+import nsu.sber.domain.port.repository.jpa.TableAuthRepositoryPort;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -16,14 +17,14 @@ public class TableAuthRepositoryService implements TableAuthRepositoryPort {
     private final TableAuthEntityMapper tableAuthEntityMapper;
 
     @Override
-    public TableAuth findByLogin(String login) {
-        TableAuthEntity tableAuthEntity = tableAuthRepository.findByLogin(login);
-        return tableAuthEntityMapper.entityToTableAuth(tableAuthEntity);
+    public Optional<TableAuth> findByLogin(String login) {
+        return tableAuthRepository.findByLogin(login)
+                .map(tableAuthEntityMapper::entityToTableAuth);
     }
 
     @Override
-    public TableAuth findById(int id) {
-        TableAuthEntity tableAuthEntity = tableAuthRepository.findById(id);
-        return tableAuthEntityMapper.entityToTableAuth(tableAuthEntity);
+    public Optional<TableAuth> findById(int id) {
+        return tableAuthRepository.findById(id)
+                .map(tableAuthEntityMapper::entityToTableAuth);
     }
 }

@@ -7,6 +7,7 @@ import nsu.sber.domain.service.CartService;
 import nsu.sber.web.dto.CartResponseDto;
 import nsu.sber.web.dto.ModifyCartItemRequestDto;
 import nsu.sber.web.mapper.CartDtoMapper;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,45 +16,47 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api")
-@Tag(name = "Корзина", description = "API для управления корзиной")
+@RequestMapping("/api/cart")
+@Tag(name = "Cart Controller")
 public class CartController {
+
     private final CartService cartService;
     private final CartDtoMapper cartDtoMapper;
 
-    @PostMapping("/add-item-to-cart")
+    @PostMapping("/items/add")
     @Operation(
-            summary = "Добавление блюда в корзину",
-            description = "Добавление блюда в корзину, привязанную к сессии пользователя"
+            summary = "Add an item to the cart",
+            description = "Adds one portion of the dish to the user's session-bound cart"
     )
     public void addItemToCart(@RequestBody ModifyCartItemRequestDto modifyCartItemRequestDto) {
         cartService.addItem(cartDtoMapper.dtoToModifyCartItemRequest(modifyCartItemRequestDto));
     }
 
-    @PostMapping("/remove-item-from-cart")
+    @PostMapping("/items/remove")
     @Operation(
-            summary = "Удаление блюда из корзины",
-            description = "Удаление блюда из корзины, привязанную к сессии пользователя"
+            summary = "Remove an item from the cart",
+            description = "Removes one portion of the dish from the user's session-bound cart"
     )
     public void removeItemFromCart(@RequestBody ModifyCartItemRequestDto modifyCartItemRequestDto) {
         cartService.removeItem(cartDtoMapper.dtoToModifyCartItemRequest(modifyCartItemRequestDto));
     }
 
-    @GetMapping("/cart")
+    @GetMapping
     @Operation(
-            summary = "Получение корзины",
-            description = "Получение списка блюд, находящихся в корзине"
+            summary = "Get the cart",
+            description = "Returns the list of dishes currently in the cart"
     )
     public CartResponseDto getCart() {
-        return cartDtoMapper.cartResponseToDto(cartService.getCart());
+        return cartDtoMapper.cartResponseToDto(cartService.getCartResponse());
     }
 
-    @PostMapping("/clear-cart")
+    @DeleteMapping
     @Operation(
-            summary = "Очистка корзины",
-            description = "Удаление всех позиций из корзины"
+            summary = "Clear the cart",
+            description = "Removes all items from the user's cart"
     )
     public void clearCart() {
         cartService.clearCart();
     }
+
 }

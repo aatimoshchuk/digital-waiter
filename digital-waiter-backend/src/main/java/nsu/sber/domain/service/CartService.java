@@ -1,38 +1,37 @@
 package nsu.sber.domain.service;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import nsu.sber.config.RequestContextProvider;
-import nsu.sber.domain.model.DishInfoResponse;
 import nsu.sber.domain.model.cart.Cart;
 import nsu.sber.domain.model.cart.CartItem;
 import nsu.sber.domain.model.cart.CartResponse;
 import nsu.sber.domain.model.cart.ModifyCartItemRequest;
-import nsu.sber.domain.port.CartRepositoryPort;
+import nsu.sber.domain.model.menu.MenuItem;
+import nsu.sber.domain.model.menu.MenuResponse;
+import nsu.sber.domain.port.repository.redis.CartRepositoryPort;
+import nsu.sber.exception.DigitalWaiterException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CartService {
 
     private final CartRepositoryPort cartRepository;
     private final RequestContextProvider requestContextProvider;
-    private final DishService dishService;
+    private final MenuService menuService;
 
     public void addItem(ModifyCartItemRequest modifyCartItemRequest) {
-        Cart cart = getCartByTableId();
+        Cart cart = getCart();
         cart.addItem(modifyCartItemRequest);
 
         cartRepository.save(requestContextProvider.getTableId(), cart);
     }
 
     public void removeItem(ModifyCartItemRequest modifyCartItemRequest) {
-        Cart cart = getCartByTableId();
+        Cart cart = getCart();
         cart.removeItem(modifyCartItemRequest);
 
         cartRepository.save(requestContextProvider.getTableId(), cart);
@@ -41,72 +40,73 @@ public class CartService {
     public void clearCart() {
         cartRepository.delete(requestContextProvider.getTableId());
     }
+
+    public void clearCartByTableId(String tableId) {
+        cartRepository.delete(tableId);
+    }
+
+    public boolean isCartEmpty() {
+        return cartRepository.findByTableId(requestContextProvider.getTableId())
+                .map(Cart::getItems)
+                .map(List::isEmpty)
+                .orElse(true);
+    }
     
-    public CartResponse getCart() {
-        Cart cart = cartRepository.findByTableId(requestContextProvider.getTableId());
-
-        if (cart == null) {
-            return CartResponse.builder().build();
-        }
-
-        List<CartItem> cartItems = cart.getItems();
-        List<CartResponse.CartItemResponse> cartItemResponseList = new ArrayList<>();
-
-        for (CartItem cartItem : cartItems) {
-            CartResponse.CartItemResponse cartItemResponse = cartItemToCartItemResponse(cartItem);
-
-            if (cartItemResponse == null) {
-                continue;
-            }
-
-            cartItemResponseList.add(cartItemResponse);
-        }
-
-        return CartResponse.builder().cartItemResponseList(cartItemResponseList).build();
+    public CartResponse getCartResponse() {
+        return cartRepository.findByTableId(requestContextProvider.getTableId())
+                .map(this::mapCartToCartResponse)
+                .orElse(CartResponse.builder().cartItemResponseList(List.of()).build());
     }
 
-    private Cart getCartByTableId() {
-        Cart cart = cartRepository.findByTableId(requestContextProvider.getTableId());
+    private CartResponse mapCartToCartResponse(Cart cart) {
+        MenuResponse menu = menuService.getMenu();
 
-        if (cart == null) {
-            cart = new Cart();
-        }
+        List<CartResponse.CartItemResponse> items = cart.getItems().stream()
+                .map(cartItem -> cartItemToCartItemResponse(cartItem, menu))
+                .filter(Objects::nonNull)
+                .toList();
 
-        return cart;
+        return CartResponse.builder()
+                .cartItemResponseList(items)
+                .build();
     }
 
-    private CartResponse.CartItemResponse cartItemToCartItemResponse(CartItem cartItem) {
-        DishInfoResponse dishInfoResponse = dishService.getDishInfo(cartItem.getDishId());
-        DishInfoResponse.ItemSize itemSize;
+    private Cart getCart() {
+        return cartRepository.findByTableId(requestContextProvider.getTableId())
+                .orElse(new Cart());
+    }
 
-        if (cartItem.getSizeId() == null) {
-            if (dishInfoResponse.getItemSizes().size() == 1 && dishInfoResponse.getItemSizes().get(0).getSizeId() == null) {
-                itemSize = dishInfoResponse.getItemSizes().get(0);
-            } else {
-                return null;
-            }
-        } else {
-            Optional<DishInfoResponse.ItemSize> itemSizeOpt = dishInfoResponse.getItemSizes().stream()
-                    .filter(size -> size.getSizeId().equals(cartItem.getSizeId()))
-                    .findFirst();
+    private CartResponse.CartItemResponse cartItemToCartItemResponse(CartItem cartItem, MenuResponse menu) {
+        MenuItem menuItem = menuService.findItemById(menu, cartItem.getDishId())
+                .orElseThrow(() -> new DigitalWaiterException.DishNotFoundException(cartItem.getDishId()));
 
-            if (itemSizeOpt.isEmpty()) {
-                return null;
-            }
-
-            itemSize = itemSizeOpt.get();
-        }
+        MenuItem.ItemSize itemSize = getItemSize(cartItem, menuItem);
 
         return CartResponse.CartItemResponse
                 .builder()
                 .itemId(cartItem.getDishId())
-                .name(dishInfoResponse.getName())
+                .name(menuItem.getName())
                 .quantity(cartItem.getQuantity())
                 .sizeId(cartItem.getSizeId())
-                .price(itemSize.getPrice())
+                .price(itemSize.getPrices().get(0).getPrice())
                 .portionWeightGrams(itemSize.getPortionWeightGrams())
                 .measureUnitType(itemSize.getMeasureUnitType())
                 .buttonImageUrl(itemSize.getButtonImageUrl())
                 .build();
+    }
+
+    private MenuItem.ItemSize getItemSize(CartItem cartItem, MenuItem menuItem) {
+        if (cartItem.getSizeId() != null) {
+            return menuItem.getItemSizes().stream()
+                    .filter(size -> size.getSizeId().equals(cartItem.getSizeId()))
+                    .findFirst()
+                    .orElse(null);
+        }
+
+        if (menuItem.getItemSizes().size() == 1 && menuItem.getItemSizes().get(0).getSizeId() == null) {
+            return menuItem.getItemSizes().get(0);
+        } else {
+            return null;
+        }
     }
 }

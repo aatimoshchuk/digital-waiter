@@ -1,18 +1,14 @@
 package nsu.sber.domain.service;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import nsu.sber.domain.model.LoginRequest;
-import nsu.sber.domain.model.TableAuth;
-import nsu.sber.domain.port.TableAuthRepositoryPort;
-import nsu.sber.exception.AuthException;
-import nsu.sber.exception.ErrorType;
-import nsu.sber.exception.ServiceException;
+import nsu.sber.domain.model.auth.SignInRequest;
+import nsu.sber.domain.model.entity.TableAuth;
+import nsu.sber.domain.port.repository.jpa.TableAuthRepositoryPort;
+import nsu.sber.exception.DigitalWaiterException;
 import nsu.sber.util.JwtUtil;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TableAuthService {
@@ -20,41 +16,27 @@ public class TableAuthService {
     private final TableAuthRepositoryPort tableAuthRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public String loginTable(LoginRequest loginRequest) {
-        TableAuth tableAuth = getTableAuthByLogin(loginRequest.getLogin());
+    public String loginTable(SignInRequest signInRequest) {
+        TableAuth tableAuth = getTableAuthByLogin(signInRequest.getLogin());
 
         boolean doesPasswordMatch = bCryptPasswordEncoder.matches(
-                loginRequest.getPassword(),
+                signInRequest.getPassword(),
                 tableAuth.getPassword());
 
         if (!doesPasswordMatch) {
-            throw new AuthException("Неверный пароль");
+            throw new DigitalWaiterException.IncorrectPasswordException();
         }
 
         return JwtUtil.generateToken(String.valueOf(tableAuth.getId()));
     }
 
     public TableAuth getTableAuthById(int id) {
-        TableAuth tableAuth = tableAuthRepository.findById(id);
-
-        if (tableAuth == null) {
-            String errorMessage = "Авторизация для стола с id %s не найдена".formatted(id);
-            log.error(errorMessage);
-            throw new ServiceException(errorMessage, ErrorType.TABLE_AUTH_NOT_FOUND);
-        }
-
-        return tableAuth;
+        return tableAuthRepository.findById(id)
+                .orElseThrow(() -> new DigitalWaiterException.TableAuthWithThisIdNotFoundException(id));
     }
 
     private TableAuth getTableAuthByLogin(String login) {
-        TableAuth tableAuth = tableAuthRepository.findByLogin(login);
-
-        if (tableAuth == null) {
-            String errorMessage = "Авторизация для стола по логину %s не найдена".formatted(login);
-            log.error(errorMessage);
-            throw new ServiceException(errorMessage, ErrorType.TABLE_AUTH_NOT_FOUND);
-        }
-
-        return tableAuth;
+        return tableAuthRepository.findByLogin(login)
+                .orElseThrow(() -> new DigitalWaiterException.TableAuthWithThisLoginNotFoundException(login));
     }
 }

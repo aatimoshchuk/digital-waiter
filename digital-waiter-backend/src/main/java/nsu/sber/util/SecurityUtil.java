@@ -1,7 +1,7 @@
 package nsu.sber.util;
 
 import lombok.experimental.UtilityClass;
-import nsu.sber.domain.model.TableAuth;
+import nsu.sber.domain.model.entity.TableAuth;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 @UtilityClass
