@@ -17,7 +17,7 @@ public class RedisMenuRepository implements MenuRepositoryPort {
 
     private final RedisTemplate<String, Menu> menuRedisTemplate;
 
-    @Value("${menu.redis.ttl-hours:2}")
+    @Value("${redis.menu.ttl-hours:2}")
     private int ttlHours;
 
     @Override

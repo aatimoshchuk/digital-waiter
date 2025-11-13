@@ -8,9 +8,9 @@ services:
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: admin_pass
-      POSTGRES_DB: digital_waiter_db
+      POSTGRES_USER: ${POSTGRES_USER:admin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:admin_pass}
+      POSTGRES_DB: ${POSTGRES_DB:digital_waiter_db}
     restart: always
 
   redis:

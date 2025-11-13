@@ -1,0 +1,37 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${POSTGRES_DB:digital_waiter_db}
+    username: ${POSTGRES_USER:admin}
+    password: ${POSTGRES_PASSWORD:admin_pass}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    open-in-view: false
+
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+redis:
+  cart:
+    ttl-hours: ${REDIS_CART_TTL:2}
+  menu:
+    ttl-hours: ${REDIS_MENU_TTL:1}
+
+iiko:
+  url: https://api-ru.iiko.services
+  operation:
+    status-check:
+      max-attempts: ${IIKO_STATUS_CHECK_MAX_ATTEMPTS:5}
+      delay-ms: ${IIKO_STATUS_CHECK_DELAY_MS:500}
+
+digital-waiter:
+  url: https://digital-waiter.sberlab.nsu.ru
+
+local:
+  url: http://localhost:8081

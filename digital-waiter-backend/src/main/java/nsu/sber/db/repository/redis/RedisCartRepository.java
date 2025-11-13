@@ -17,7 +17,7 @@ public class RedisCartRepository implements CartRepositoryPort {
 
     private final RedisTemplate<String, Cart> cartRedisTemplate;
 
-    @Value("${cart.redis.ttl-hours:2}")
+    @Value("${redis.cart.ttl-hours:2}")
     private int ttlHours;
 
     @Override
