@@ -13,25 +13,30 @@ import java.util.concurrent.TimeUnit;
 @Repository
 @RequiredArgsConstructor
 public class RedisCartRepository implements CartRepositoryPort {
+    private static final String KEY_PREFIX = "cart";
 
-    private final RedisTemplate<String, Cart> redisTemplate;
+    private final RedisTemplate<String, Cart> cartRedisTemplate;
 
     @Value("${cart.redis.ttl-hours:2}")
     private int ttlHours;
 
     @Override
     public void save(String tableId, Cart cart) {
-        redisTemplate.opsForValue().set(tableId, cart, ttlHours, TimeUnit.HOURS);
+        cartRedisTemplate.opsForValue().set(getKey(tableId), cart, ttlHours, TimeUnit.HOURS);
     }
 
     @Override
     public Optional<Cart> findByTableId(String tableId) {
-        return Optional.ofNullable(redisTemplate.opsForValue().get(tableId));
+        return Optional.ofNullable(cartRedisTemplate.opsForValue().get(getKey(tableId)));
     }
 
     @Override
     public void delete(String tableId) {
-        redisTemplate.delete(tableId);
+        cartRedisTemplate.delete(getKey(tableId));
+    }
+
+    private String getKey(String tableId) {
+        return "%s:%s".formatted(KEY_PREFIX, tableId);
     }
 
 }

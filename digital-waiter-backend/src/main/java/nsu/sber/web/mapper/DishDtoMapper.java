@@ -1,7 +1,7 @@
 package nsu.sber.web.mapper;
 
+import nsu.sber.domain.model.menu.Menu;
 import nsu.sber.domain.model.menu.MenuItem;
-import nsu.sber.domain.model.menu.MenuResponse;
 import nsu.sber.web.dto.MenuItemResponseDto;
 import nsu.sber.web.dto.MenuResponseDto;
 import org.mapstruct.Mapper;
@@ -14,7 +14,7 @@ import java.util.List;
         unmappedTargetPolicy = ReportingPolicy.ERROR)
 public interface DishDtoMapper {
 
-    MenuResponseDto menuResponseToDto(MenuResponse menuResponse);
+    MenuResponseDto menuResponseToDto(Menu menu);
 
     MenuItemResponseDto menuItemToDishInfoResponseDto(MenuItem menuItem);
 

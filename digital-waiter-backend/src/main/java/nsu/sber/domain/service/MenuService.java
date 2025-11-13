@@ -2,11 +2,12 @@ package nsu.sber.domain.service;
 
 import lombok.RequiredArgsConstructor;
 import nsu.sber.config.RequestContextProvider;
+import nsu.sber.domain.model.menu.Menu;
+import nsu.sber.domain.model.menu.Menu.ItemCategory;
 import nsu.sber.domain.model.menu.MenuItem;
 import nsu.sber.domain.model.menu.MenuRequest;
-import nsu.sber.domain.model.menu.MenuResponse;
-import nsu.sber.domain.model.menu.MenuResponse.ItemCategory;
 import nsu.sber.domain.port.pos.PosMenuPort;
+import nsu.sber.domain.port.repository.redis.MenuRepositoryPort;
 import nsu.sber.exception.DigitalWaiterException;
 import org.springframework.stereotype.Service;
 
@@ -19,19 +20,16 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MenuService {
 
+    private final RestaurantTableService restaurantTableService;
     private final PosMenuPort posMenuPort;
+    private final MenuRepositoryPort menuRepositoryPort;
     private final RequestContextProvider requestContextProvider;
 
-    public MenuResponse getMenu() {
-        MenuResponse menuResponse = posMenuPort.getMenu(buildMenuRequest())
-                .orElseThrow(() -> new DigitalWaiterException.ExternalMenuNotFoundException(
-                        requestContextProvider.getExternalMenuId()
-                ));
+    public Menu getMenu() {
+        int terminalGroupId = restaurantTableService.getCurrentRestaurantTable().getTerminalGroupId();
 
-        return new MenuResponse(
-                filterCategoriesByVisibility(menuResponse.getItemCategories(),
-                requestContextProvider.getOrganizationId())
-        );
+        return menuRepositoryPort.findByTerminalGroupId(terminalGroupId)
+                .orElse(loadMenu(terminalGroupId));
     }
 
     public MenuItem getDishInfo(String dishId) {
@@ -39,12 +37,28 @@ public class MenuService {
                 .orElseThrow(() -> new DigitalWaiterException.DishNotFoundException(dishId));
     }
 
-    public Optional<MenuItem> findItemById(MenuResponse menuResponse, String id) {
-        return menuResponse.getItemCategories().stream()
+    public Optional<MenuItem> findItemById(Menu menu, String id) {
+        return menu.getItemCategories().stream()
                 .filter(Objects::nonNull)
                 .flatMap(c -> c.getItems().stream())
                 .filter(i -> id.equals(i.getItemId()))
                 .findFirst();
+    }
+
+    private Menu loadMenu(int terminalGroupId) {
+        Menu menu = posMenuPort.getMenu(buildMenuRequest())
+                .orElseThrow(() -> new DigitalWaiterException.ExternalMenuNotFoundException(
+                        requestContextProvider.getExternalMenuId()
+                ));
+
+        Menu filteredMenu =  new Menu(
+                filterCategoriesByVisibility(menu.getItemCategories(),
+                        requestContextProvider.getOrganizationId())
+        );
+
+        menuRepositoryPort.save(terminalGroupId, filteredMenu);
+
+        return filteredMenu;
     }
 
     private MenuRequest buildMenuRequest() {
@@ -58,7 +72,7 @@ public class MenuService {
     private List<ItemCategory> filterCategoriesByVisibility(List<ItemCategory> categories, String organizationId) {
         return categories.stream()
                 .filter(c -> !c.isHidden())
-                .map(c -> MenuResponse.ItemCategory.builder()
+                .map(c -> Menu.ItemCategory.builder()
                         .id(c.getId())
                         .name(c.getName())
                         .items(filterItemsByVisibility(c.getItems(), organizationId))

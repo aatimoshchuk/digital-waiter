@@ -1,8 +1,8 @@
 package nsu.sber.messaging.pos.iiko.adapter;
 
 import lombok.RequiredArgsConstructor;
+import nsu.sber.domain.model.menu.Menu;
 import nsu.sber.domain.model.menu.MenuRequest;
-import nsu.sber.domain.model.menu.MenuResponse;
 import nsu.sber.domain.port.pos.PosMenuPort;
 import nsu.sber.messaging.pos.iiko.client.IikoClient;
 import nsu.sber.messaging.pos.iiko.dto.MenuResponseDto;
@@ -19,13 +19,13 @@ public class PosMenuAdapter implements PosMenuPort {
     private final MenuMapper menuMapper;
 
     @Override
-    public Optional<MenuResponse> getMenu(MenuRequest menuRequest) {
+    public Optional<Menu> getMenu(MenuRequest menuRequest) {
         MenuResponseDto menuResponseDto = iikoClient.getMenu(
                 null,
                 menuMapper.menuRequestToDto(menuRequest)
         );
 
-        return Optional.ofNullable(menuMapper.dtoToMenuResponse(menuResponseDto));
+        return Optional.ofNullable(menuMapper.menuResponseDtoToMenu(menuResponseDto));
     }
 
 }

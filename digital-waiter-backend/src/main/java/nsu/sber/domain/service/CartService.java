@@ -6,8 +6,8 @@ import nsu.sber.domain.model.cart.Cart;
 import nsu.sber.domain.model.cart.CartItem;
 import nsu.sber.domain.model.cart.CartResponse;
 import nsu.sber.domain.model.cart.ModifyCartItemRequest;
+import nsu.sber.domain.model.menu.Menu;
 import nsu.sber.domain.model.menu.MenuItem;
-import nsu.sber.domain.model.menu.MenuResponse;
 import nsu.sber.domain.port.repository.redis.CartRepositoryPort;
 import nsu.sber.exception.DigitalWaiterException;
 import org.springframework.stereotype.Service;
@@ -59,7 +59,7 @@ public class CartService {
     }
 
     private CartResponse mapCartToCartResponse(Cart cart) {
-        MenuResponse menu = menuService.getMenu();
+        Menu menu = menuService.getMenu();
 
         List<CartResponse.CartItemResponse> items = cart.getItems().stream()
                 .map(cartItem -> cartItemToCartItemResponse(cartItem, menu))
@@ -76,7 +76,7 @@ public class CartService {
                 .orElse(new Cart());
     }
 
-    private CartResponse.CartItemResponse cartItemToCartItemResponse(CartItem cartItem, MenuResponse menu) {
+    private CartResponse.CartItemResponse cartItemToCartItemResponse(CartItem cartItem, Menu menu) {
         MenuItem menuItem = menuService.findItemById(menu, cartItem.getDishId())
                 .orElseThrow(() -> new DigitalWaiterException.DishNotFoundException(cartItem.getDishId()));
 
