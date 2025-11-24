@@ -1,0 +1,41 @@
+services:
+  vosk:
+    build:
+      context: ./vosk-server
+    container_name: vosk-server
+    ports:
+      - "2700:2700"  # WebSocket
+      - "2701:2701"  # HTTP
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:2701/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+    restart: unless-stopped
+    networks:
+      - voice-network
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+
+  backend:
+    build:
+      context: .
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - VOSK_SERVER_URL=ws://vosk:2700
+      - VOSK_SERVER_HTTP=http://vosk:2701
+    networks:
+      - voice-network
+    depends_on:
+      vosk:
+        condition: service_healthy
+    restart: unless-stopped
+
+networks:
+  voice-network:
+    driver: bridge
