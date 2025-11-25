@@ -28,12 +28,11 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=docker
       - VOSK_SERVER_URL=ws://vosk:2700
-      - VOSK_SERVER_HTTP=http://vosk:2701
+      - VOSK_SERVER_HTTP_URL=http://vosk:2701
     networks:
       - voice-network
     depends_on:
-      vosk:
-        condition: service_healthy
+      - vosk
     restart: unless-stopped
 
 networks:
