@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import nsu.sber.dto.ProcessingRequest;
 import nsu.sber.dto.ProcessingResponse;
 import nsu.sber.model.CommandIntent;
+import nsu.sber.model.NluResult;
 import nsu.sber.service.integration.BackendClient;
 import nsu.sber.service.nlu.NluService;
 import nsu.sber.service.parser.CommandParser;
@@ -21,15 +22,15 @@ public class ProcessingService {
 
     public ProcessingResponse processAudio(ProcessingRequest request) {
         String text = sttService.recognizeFile(request.getAudioFile());
-        String nluResult = nluService.parse(text, request.getContext());
-        CommandIntent command = commandParser.parse(nluResult);
+        NluResult nluResult = nluService.parse(text, request.getContext());
+        CommandIntent command = commandParser.parse(nluResult.getResponse());
         ProcessingResponse response = backendClient.execute(command, "sessionId");
         return response;
     }
 
     public ProcessingResponse processText(ProcessingRequest request) {
-        String nluResult = nluService.parse(request.getText(), request.getContext());
-        CommandIntent command = commandParser.parse(nluResult);
+        NluResult nluResult = nluService.parse(request.getText(), request.getContext());
+        CommandIntent command = commandParser.parse(nluResult.getResponse());
         ProcessingResponse response = backendClient.execute(command, "sessionId");
         return response;
     }
