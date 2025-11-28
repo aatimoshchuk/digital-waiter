@@ -21,11 +21,11 @@ public class ProcessingService {
     private final BackendClient backendClient;
 
     public ProcessingResponse processAudio(ProcessingRequest request) {
-        String text = sttService.recognizeFile(request.getAudioFile());
-        NluResult nluResult = nluService.parse(text, request.getContext());
-        CommandIntent command = commandParser.parse(nluResult.getResponse());
-        ProcessingResponse response = backendClient.execute(command, "sessionId");
-        return response;
+        //String text = sttService.recognizeFile(request.getAudioFile());
+        NluResult nluResult = nluService.parse("заказать 2 пиццы и колу", request.getContext());
+        // CommandIntent command = commandParser.parse(nluResult.getResponse());
+        // ProcessingResponse response = backendClient.execute(command, "sessionId");
+        return new ProcessingResponse(true, nluResult.getResponse());
     }
 
     public ProcessingResponse processText(ProcessingRequest request) {

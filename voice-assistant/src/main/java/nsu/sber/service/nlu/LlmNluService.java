@@ -5,12 +5,14 @@ import lombok.RequiredArgsConstructor;
 import nsu.sber.dto.LlmRequest;
 import nsu.sber.dto.LlmResponse;
 import nsu.sber.model.NluResult;
+import nsu.sber.service.nlu.provider.AbstractLlmProvider;
+import nsu.sber.service.nlu.provider.GigaChatProvider;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class LlmNluService implements NluService {
-    private final AbstractLlmProvider llmProvider;
+    private final GigaChatProvider llmProvider;
     private final ObjectMapper objectMapper;
 
     @Override
@@ -58,7 +60,37 @@ public class LlmNluService implements NluService {
     }
 
     private String buildPrompt() {
-        return "Beautiful prompt"; // TODO: make prompt
+        return """
+            Ты - интеллектуальный ассистент ресторана, который анализирует запросы гостей и определяет их намерения.
+            
+            ТВОЯ ЗАДАЧА:
+            Проанализировать текст пользователя и вернуть структурированный JSON с намерением и сущностями.
+            
+            ДОСТУПНЫЕ НАМЕРЕНИЯ (intents):
+            - add_item: добавить блюдо в заказ
+            - remove_item: удалить блюдо из заказа
+            - change_quantity: изменить количество блюда
+            - show_menu: показать меню
+            - show_cart: показать текущий заказ
+            - checkout: оформить заказ
+            - call_waiter: позвать официанта
+            - request_bill: попросить счет
+            - unknown: неизвестное намерение
+            
+            ФОРМАТ ОТВЕТА (строго JSON):
+            {
+              "intent": "название_намерения",
+              "confidence": 0.95,
+              "entities": {
+                "dish_name": "название блюда",
+                "quantity": 2
+              },
+              "response_text": "Ответ пользователю"
+            }
+            
+            ВАЖНО: Возвращай ТОЛЬКО валидный JSON, без дополнительного текста.
+            
+            """; // TODO: make prompt
     }
 
 }

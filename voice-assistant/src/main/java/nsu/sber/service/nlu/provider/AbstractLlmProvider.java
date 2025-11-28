@@ -1,4 +1,4 @@
-package nsu.sber.service.nlu;
+package nsu.sber.service.nlu.provider;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nsu.sber.dto.LlmRequest;
