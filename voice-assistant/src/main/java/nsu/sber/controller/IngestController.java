@@ -17,12 +17,9 @@ public class IngestController {
     private final ProcessingService processingService;
 
     @PostMapping(value = "/process-audio", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ProcessingResponse> processAudio(
-            @RequestParam("audio") MultipartFile audioFile,
-            @RequestParam("context") String context) {
+    public ResponseEntity<ProcessingResponse> processAudio(@RequestParam("audio") MultipartFile audioFile) {
         ProcessingRequest request = ProcessingRequest.builder()
                 .audioFile(audioFile)
-                .context(context)
                 .build();
         return ResponseEntity.ok(processingService.processAudio(request));
     }
