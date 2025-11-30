@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import nsu.sber.dto.ProcessingRequest;
 import nsu.sber.dto.ProcessingResponse;
 import nsu.sber.model.CommandIntent;
+import nsu.sber.model.NluResult;
 import nsu.sber.service.integration.BackendClient;
 import nsu.sber.service.nlu.NluService;
 import nsu.sber.service.parser.CommandParser;
@@ -25,16 +26,16 @@ public class ProcessingService {
         log.info("Starting STT processing");
         String text = sttService.recognizeFile(request.getAudioFile());
         log.info("Transcribed text: {}", text == null ? "null" : text);
-        return new ProcessingResponse(true, text);
-//        String nluResult = nluService.parse(text, request.getContext());
+        NluResult nluResult = nluService.parse("заказать 2 пиццы и колу", request.getContext());
+        return new ProcessingResponse(true, nluResult.getResponse());
 //        CommandIntent command = commandParser.parse(nluResult);
 //        ProcessingResponse response = backendClient.execute(command, "sessionId");
 //        return response;
     }
 
     public ProcessingResponse processText(ProcessingRequest request) {
-        String nluResult = nluService.parse(request.getText(), request.getContext());
-        CommandIntent command = commandParser.parse(nluResult);
+        NluResult nluResult = nluService.parse(request.getText(), request.getContext());
+        CommandIntent command = commandParser.parse(nluResult.getResponse());
         ProcessingResponse response = backendClient.execute(command, "sessionId");
         return response;
     }

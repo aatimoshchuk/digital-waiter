@@ -1,8 +1,10 @@
 package nsu.sber.service.nlu;
 
+import nsu.sber.model.NluResult;
+
 public interface NluService {
 
     // TODO: подумать над возвращаемым типом
-    String parse(String text, String context);
+    NluResult parse(String text, String context);
 
 }
