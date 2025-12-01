@@ -1,7 +1,8 @@
 package nsu.sber.domain.service;
 
 import lombok.RequiredArgsConstructor;
-import nsu.sber.config.RequestContextProvider;
+import nsu.sber.domain.model.entity.RestaurantTable;
+import nsu.sber.domain.model.entity.RoleType;
 import nsu.sber.domain.model.order.CreateOrderRequest;
 import nsu.sber.domain.model.order.CreateOrderResponse;
 import nsu.sber.domain.port.pos.PosOrderPort;
@@ -14,11 +15,17 @@ import java.util.Collections;
 @RequiredArgsConstructor
 public class OrderService {
     private final PosOrderPort posOrderPort;
+
     private final CartService cartService;
+    private final UserService userService;
+    private final RestaurantTableService restaurantTableService;
     private final OperationService operationService;
-    private final RequestContextProvider requestContextProvider;
 
     public String createOrderAsync() {
+        if (userService.getCurrentUser().getRole() != RoleType.GUEST) {
+            throw new DigitalWaiterException.InvalidUserRoleException();
+        }
+
         if (cartService.isCartEmpty()) {
             throw new DigitalWaiterException.EmptyCartException();
         }
@@ -28,22 +35,22 @@ public class OrderService {
 
         operationService.trackOrderStatusAsync(correlationId);
 
-//        cartService.clearCart();
-
         return correlationId;
     }
 
     private CreateOrderRequest buildCreateOrderRequest() {
+        RestaurantTable restaurantTable = restaurantTableService.getCurrentRestaurantTable();
+
         CreateOrderRequest.Order order = CreateOrderRequest.Order
                 .builder()
-                .tableIds(Collections.singletonList(requestContextProvider.getTableId()))
+                .tableIds(Collections.singletonList(restaurantTable.getPosTableId()))
                 .cart(cartService.getCartResponse())
                 .build();
 
         return CreateOrderRequest
                 .builder()
-                .terminalGroupId(requestContextProvider.getTerminalGroupId())
-                .organizationId(requestContextProvider.getOrganizationId())
+                .terminalGroupId(restaurantTable.getTerminalGroup().getPosTerminalGroupId())
+                .organizationId(restaurantTable.getTerminalGroup().getOrganization().getPosOrganizationId())
                 .order(order)
                 .build();
     }

@@ -9,10 +9,12 @@ public class TerminalGroup {
 
     private Integer id;
 
+    private String name;
+
     private String posExternalMenuId;
 
     private String posTerminalGroupId;
 
-    private Integer organizationId;
+    private Organization organization;
 
 }

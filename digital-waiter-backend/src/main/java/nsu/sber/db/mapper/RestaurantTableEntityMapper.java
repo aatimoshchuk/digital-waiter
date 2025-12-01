@@ -1,7 +1,6 @@
 package nsu.sber.db.mapper;
 
 import nsu.sber.db.entity.RestaurantTableEntity;
-import nsu.sber.domain.model.entity.RestaurantTable;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
@@ -10,8 +9,8 @@ import org.mapstruct.ReportingPolicy;
         unmappedTargetPolicy = ReportingPolicy.ERROR)
 public interface RestaurantTableEntityMapper {
 
-    RestaurantTable entityToRestaurantTable(RestaurantTableEntity restaurantTable);
+    nsu.sber.domain.model.entity.RestaurantTable entityToRestaurantTable(RestaurantTableEntity restaurantTableEntity);
 
-    RestaurantTableEntity restaurantTableToEntity(RestaurantTable restaurantTable);
+    RestaurantTableEntity restaurantTableToEntity(nsu.sber.domain.model.entity.RestaurantTable restaurantTable);
 
 }

@@ -11,9 +11,18 @@ import org.springframework.stereotype.Service;
 public class OrganizationService {
 
     private final OrganizationRepositoryPort organizationRepository;
+    private final TerminalGroupService terminalGroupService;
 
     public Organization getOrganizationById(int id) {
         return organizationRepository.findById(id)
                 .orElseThrow(() -> new DigitalWaiterException.OrganizationNotFoundException(id));
+    }
+
+    public Organization getCurrentOrganization() {
+        return terminalGroupService.getCurrentTerminalGroup().getOrganization();
+    }
+
+    public String getCurrentOrganizationApiKeyEncrypted() {
+        return getCurrentOrganization().getApiKeyEncrypted();
     }
 }

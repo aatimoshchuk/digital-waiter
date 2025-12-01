@@ -38,3 +38,14 @@ digital-waiter:
 
 local:
   url: http://localhost:8081
+
+token:
+  signing:
+    key: ${TOKEN_AUTH_KEY:mZ2V3aXJ0aGZ4c2xqZG5mbXlza2Zqd2Vya2FzbGpoZWQ0MTI=}
+  duration:
+    access: ${TOKEN_DURATION_ACCESS:60}
+    update: ${TOKEN_DURATION_UPDATE:1440}
+
+crypto:
+  api-key:
+    secret: ${API_KEY_CRYPTO_SECRET:Cu7xiXD0bUK/j3NvEEo5/ZbxhwxTFeUEvTewAKv6LCo=}

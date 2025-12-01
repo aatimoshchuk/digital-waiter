@@ -1,4 +1,4 @@
-package nsu.sber.infrastructure;
+package nsu.sber.infrastructure.websocket;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;

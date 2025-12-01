@@ -11,17 +11,24 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "organization")
+@Table(name = "organizations")
 public class OrganizationEntity {
 
     @Id
-    @SequenceGenerator(name = "organization_id_generator", sequenceName = "organization_id_seq", allocationSize = 1)
-    @GeneratedValue(generator = "organization_id_generator", strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(
+            name = "organizations_id_generator",
+            sequenceName = "organizations_id_seq",
+            allocationSize = 1
+    )
+    @GeneratedValue(generator = "organizations_id_generator", strategy = GenerationType.SEQUENCE)
     @Column(name = "id")
     private Integer id;
 
-    @Column(name = "api_key")
-    private String apiKey;
+    @Column(name = "name")
+    private String name;
+
+    @Column(name = "api_key_encrypted")
+    private String apiKeyEncrypted;
 
     @Column(name = "pos_org_id")
     private String posOrganizationId;

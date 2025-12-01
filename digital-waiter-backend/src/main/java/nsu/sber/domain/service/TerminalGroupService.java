@@ -11,10 +11,15 @@ import org.springframework.stereotype.Service;
 public class TerminalGroupService {
 
     private final TerminalGroupRepositoryPort terminalGroupRepository;
+    private final RestaurantTableService restaurantTableService;
 
     public TerminalGroup getTerminalGroupById(int id) {
         return terminalGroupRepository.findById(id)
                 .orElseThrow(() -> new DigitalWaiterException.TerminalGroupNotFoundException(id));
+    }
+
+    public TerminalGroup getCurrentTerminalGroup() {
+        return restaurantTableService.getCurrentRestaurantTable().getTerminalGroup();
     }
 
 }

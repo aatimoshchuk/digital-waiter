@@ -1,7 +1,6 @@
 package nsu.sber.db.mapper;
 
 import nsu.sber.db.entity.OrganizationEntity;
-import nsu.sber.domain.model.entity.Organization;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
@@ -10,8 +9,8 @@ import org.mapstruct.ReportingPolicy;
         unmappedTargetPolicy = ReportingPolicy.ERROR)
 public interface OrganizationEntityMapper {
 
-    Organization entityToOrganization(OrganizationEntity organization);
+    nsu.sber.domain.model.entity.Organization entityToOrganization(OrganizationEntity organizationEntity);
 
-    OrganizationEntity organizationToEntity(Organization organization);
+    OrganizationEntity organizationToEntity(nsu.sber.domain.model.entity.Organization organization);
 
 }

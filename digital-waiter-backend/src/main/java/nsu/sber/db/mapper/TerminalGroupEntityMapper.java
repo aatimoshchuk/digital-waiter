@@ -1,7 +1,6 @@
 package nsu.sber.db.mapper;
 
 import nsu.sber.db.entity.TerminalGroupEntity;
-import nsu.sber.domain.model.entity.TerminalGroup;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
@@ -10,8 +9,8 @@ import org.mapstruct.ReportingPolicy;
         unmappedTargetPolicy = ReportingPolicy.ERROR)
 public interface TerminalGroupEntityMapper {
 
-    TerminalGroup entityToTerminalGroup(TerminalGroupEntity terminalGroup);
+    nsu.sber.domain.model.entity.TerminalGroup entityToTerminalGroup(TerminalGroupEntity terminalGroupEntity);
 
-    TerminalGroupEntity terminalGroupToEntity(TerminalGroup terminalGroup);
+    TerminalGroupEntity terminalGroupToEntity(nsu.sber.domain.model.entity.TerminalGroup terminalGroup);
 
 }

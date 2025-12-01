@@ -107,4 +107,37 @@ public sealed class DigitalWaiterException extends RuntimeException {
         }
     }
 
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public static final class UserWithThisLoginNotFoundException extends DigitalWaiterException {
+        public UserWithThisLoginNotFoundException() {
+            super("User with this login was not found");
+        }
+    }
+
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public static final class ApiKeyEncryptionException extends DigitalWaiterException {
+        public ApiKeyEncryptionException() {
+            super("Failed to encrypt API key");
+        }
+    }
+
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public static final class ApiKeyDecryptionException extends DigitalWaiterException {
+        public ApiKeyDecryptionException() {
+            super("Failed to decrypt API key");
+        }
+    }
+
+    public static final class UserHasNoRestaurantTableException extends DigitalWaiterException {
+        public UserHasNoRestaurantTableException() {
+            super("User has no restaurant table assigned");
+        }
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public static final class InvalidUserRoleException extends DigitalWaiterException {
+        public InvalidUserRoleException() {
+            super("User role is not allowed to perform this action");
+        }
+    }
 }

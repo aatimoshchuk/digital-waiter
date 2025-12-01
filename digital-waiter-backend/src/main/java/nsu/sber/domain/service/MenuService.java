@@ -1,7 +1,8 @@
 package nsu.sber.domain.service;
 
 import lombok.RequiredArgsConstructor;
-import nsu.sber.config.RequestContextProvider;
+import nsu.sber.domain.model.entity.RoleType;
+import nsu.sber.domain.model.entity.TerminalGroup;
 import nsu.sber.domain.model.menu.Menu;
 import nsu.sber.domain.model.menu.Menu.ItemCategory;
 import nsu.sber.domain.model.menu.MenuItem;
@@ -19,21 +20,29 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class MenuService {
+    private final TerminalGroupService terminalGroupService;
+    private final UserService userService;
 
-    private final RestaurantTableService restaurantTableService;
     private final PosMenuPort posMenuPort;
     private final MenuRepositoryPort menuRepositoryPort;
-    private final RequestContextProvider requestContextProvider;
 
     public Menu getMenu() {
-        int terminalGroupId = restaurantTableService.getCurrentRestaurantTable().getTerminalGroupId();
+        if (userService.getCurrentUser().getRole() != RoleType.GUEST) {
+            throw new DigitalWaiterException.InvalidUserRoleException();
+        }
 
-        return menuRepositoryPort.findByTerminalGroupId(terminalGroupId)
-                .orElse(loadMenu(terminalGroupId));
+        TerminalGroup terminalGroup = terminalGroupService.getCurrentTerminalGroup();
+
+        return menuRepositoryPort.findByTerminalGroupId(terminalGroup.getId())
+                .orElse(loadMenu(terminalGroup));
     }
 
     public MenuItem getDishInfo(String dishId) {
-       return findItemById(getMenu(), dishId)
+        if (userService.getCurrentUser().getRole() != RoleType.GUEST) {
+            throw new DigitalWaiterException.InvalidUserRoleException();
+        }
+
+        return findItemById(getMenu(), dishId)
                 .orElseThrow(() -> new DigitalWaiterException.DishNotFoundException(dishId));
     }
 
@@ -45,27 +54,29 @@ public class MenuService {
                 .findFirst();
     }
 
-    private Menu loadMenu(int terminalGroupId) {
-        Menu menu = posMenuPort.getMenu(buildMenuRequest())
+    private Menu loadMenu(TerminalGroup terminalGroup) {
+        String posOrganizationId = terminalGroup.getOrganization().getPosOrganizationId();
+        String posExternalMenuId = terminalGroup.getPosExternalMenuId();
+
+        Menu menu = posMenuPort.getMenu(buildMenuRequest(posOrganizationId, posExternalMenuId))
                 .orElseThrow(() -> new DigitalWaiterException.ExternalMenuNotFoundException(
-                        requestContextProvider.getExternalMenuId()
+                        posExternalMenuId
                 ));
 
         Menu filteredMenu =  new Menu(
-                filterCategoriesByVisibility(menu.getItemCategories(),
-                        requestContextProvider.getOrganizationId())
+                filterCategoriesByVisibility(menu.getItemCategories(), posOrganizationId)
         );
 
-        menuRepositoryPort.save(terminalGroupId, filteredMenu);
+        menuRepositoryPort.save(terminalGroup.getId(), filteredMenu);
 
         return filteredMenu;
     }
 
-    private MenuRequest buildMenuRequest() {
+    private MenuRequest buildMenuRequest(String organizationId, String externalMenuId) {
         return MenuRequest
                 .builder()
-                .organizationIds(Collections.singletonList(requestContextProvider.getOrganizationId()))
-                .externalMenuId(requestContextProvider.getExternalMenuId())
+                .organizationIds(Collections.singletonList(organizationId))
+                .externalMenuId(externalMenuId)
                 .build();
     }
 

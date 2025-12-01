@@ -4,14 +4,13 @@ import lombok.RequiredArgsConstructor;
 import nsu.sber.domain.model.entity.RestaurantTable;
 import nsu.sber.domain.port.repository.jpa.RestaurantTableRepositoryPort;
 import nsu.sber.exception.DigitalWaiterException;
-import nsu.sber.util.SecurityUtil;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class RestaurantTableService {
-
     private final RestaurantTableRepositoryPort restaurantTableRepository;
+    private final UserService userService;
 
     public RestaurantTable getRestaurantTableById(int id) {
         return restaurantTableRepository.findById(id)
@@ -19,6 +18,11 @@ public class RestaurantTableService {
     }
 
     public RestaurantTable getCurrentRestaurantTable() {
-        return getRestaurantTableById(SecurityUtil.getCurrentTableAuth().getId());
+        RestaurantTable restaurantTable = userService.getCurrentUser().getRestaurantTable();
+
+        if (restaurantTable == null) {
+            throw new DigitalWaiterException.UserHasNoRestaurantTableException();
+        }
+        return restaurantTable;
     }
 }
