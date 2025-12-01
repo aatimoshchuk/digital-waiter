@@ -1,7 +1,7 @@
 package nsu.sber.web.mapper;
 
-import nsu.sber.domain.model.LoginRequest;
-import nsu.sber.web.dto.LoginRequestDto;
+import nsu.sber.domain.model.auth.SignInRequest;
+import nsu.sber.web.dto.SignInRequestDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
@@ -10,6 +10,6 @@ import org.mapstruct.ReportingPolicy;
         unmappedTargetPolicy = ReportingPolicy.ERROR)
 public interface AuthDtoMapper {
 
-    LoginRequest dtoToLoginRequest(LoginRequestDto loginRequestDto);
+    SignInRequest dtoToSignInRequest(SignInRequestDto signInRequestDto);
 
 }

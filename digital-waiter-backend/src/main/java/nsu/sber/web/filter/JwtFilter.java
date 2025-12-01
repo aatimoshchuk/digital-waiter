@@ -9,9 +9,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nsu.sber.domain.model.TableAuth;
+import nsu.sber.domain.model.entity.TableAuth;
 import nsu.sber.domain.service.TableAuthService;
-import nsu.sber.exception.AuthException;
+import nsu.sber.exception.DigitalWaiterException;
 import nsu.sber.util.JwtUtil;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -55,9 +55,7 @@ public class JwtFilter extends OncePerRequestFilter {
             SecurityContextHolder.getContext().setAuthentication(auth);
 
         } catch (ExpiredJwtException | MalformedJwtException | SignatureException e) {
-            String errorMessage = "Неверный или истекший токен";
-            log.error(errorMessage);
-            throw new AuthException(errorMessage, e);
+            throw new DigitalWaiterException.InvalidTokenException();
         }
 
         filterChain.doFilter(request, response);

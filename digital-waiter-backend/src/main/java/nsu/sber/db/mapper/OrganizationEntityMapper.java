@@ -1,7 +1,7 @@
 package nsu.sber.db.mapper;
 
 import nsu.sber.db.entity.OrganizationEntity;
-import nsu.sber.domain.model.Organization;
+import nsu.sber.domain.model.entity.Organization;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 

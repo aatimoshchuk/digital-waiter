@@ -1,7 +1,7 @@
 package nsu.sber.db.mapper;
 
 import nsu.sber.db.entity.TerminalGroupEntity;
-import nsu.sber.domain.model.TerminalGroup;
+import nsu.sber.domain.model.entity.TerminalGroup;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 

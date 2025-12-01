@@ -1,7 +1,7 @@
 package nsu.sber.db.mapper;
 
 import nsu.sber.db.entity.TableAuthEntity;
-import nsu.sber.domain.model.TableAuth;
+import nsu.sber.domain.model.entity.TableAuth;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
