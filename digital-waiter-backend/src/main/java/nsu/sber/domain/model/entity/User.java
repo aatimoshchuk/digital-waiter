@@ -13,6 +13,6 @@ public class User {
 
     private RoleType role;
 
-    private RestaurantTable restaurantTable;
+    private Integer restaurantTableId;
 
 }

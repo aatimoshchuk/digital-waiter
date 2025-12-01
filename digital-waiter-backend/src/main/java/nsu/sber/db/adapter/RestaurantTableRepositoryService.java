@@ -21,4 +21,5 @@ public class RestaurantTableRepositoryService implements RestaurantTableReposito
         return restaurantTableRepository.findById(id)
                 .map(restaurantTableEntityMapper::entityToRestaurantTable);
     }
+
 }

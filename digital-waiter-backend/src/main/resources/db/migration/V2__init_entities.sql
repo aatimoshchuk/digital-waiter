@@ -8,7 +8,7 @@ CREATE TYPE ROLE_TYPE AS ENUM (
 CREATE TABLE organizations (
     id SERIAL PRIMARY KEY,
     name VARCHAR NOT NULL,
-    api_key_hash VARCHAR NOT NULL,
+    api_key_encrypted VARCHAR NOT NULL,
     pos_org_id VARCHAR NOT NULL
 );
 
@@ -29,7 +29,7 @@ CREATE TABLE restaurant_tables (
 
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
-    login VARCHAR NOT NULL,
+    login VARCHAR NOT NULL UNIQUE,
     password_hash VARCHAR NOT NULL,
     role ROLE_TYPE NOT NULL,
     restaurant_table_id INT REFERENCES restaurant_tables(id) ON UPDATE CASCADE ON DELETE CASCADE

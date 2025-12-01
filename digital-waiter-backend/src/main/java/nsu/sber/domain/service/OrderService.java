@@ -1,8 +1,9 @@
 package nsu.sber.domain.service;
 
 import lombok.RequiredArgsConstructor;
+import nsu.sber.domain.model.entity.Organization;
 import nsu.sber.domain.model.entity.RestaurantTable;
-import nsu.sber.domain.model.entity.RoleType;
+import nsu.sber.domain.model.entity.TerminalGroup;
 import nsu.sber.domain.model.order.CreateOrderRequest;
 import nsu.sber.domain.model.order.CreateOrderResponse;
 import nsu.sber.domain.port.pos.PosOrderPort;
@@ -19,13 +20,11 @@ public class OrderService {
     private final CartService cartService;
     private final UserService userService;
     private final RestaurantTableService restaurantTableService;
+    private final TerminalGroupService terminalGroupService;
+    private final OrganizationService organizationService;
     private final OperationService operationService;
 
     public String createOrderAsync() {
-        if (userService.getCurrentUser().getRole() != RoleType.GUEST) {
-            throw new DigitalWaiterException.InvalidUserRoleException();
-        }
-
         if (cartService.isCartEmpty()) {
             throw new DigitalWaiterException.EmptyCartException();
         }
@@ -40,6 +39,8 @@ public class OrderService {
 
     private CreateOrderRequest buildCreateOrderRequest() {
         RestaurantTable restaurantTable = restaurantTableService.getCurrentRestaurantTable();
+        TerminalGroup terminalGroup = terminalGroupService.getTerminalGroupById(restaurantTable.getTerminalGroupId());
+        Organization organization = organizationService.getOrganizationById(terminalGroup.getOrganizationId());
 
         CreateOrderRequest.Order order = CreateOrderRequest.Order
                 .builder()
@@ -49,8 +50,8 @@ public class OrderService {
 
         return CreateOrderRequest
                 .builder()
-                .terminalGroupId(restaurantTable.getTerminalGroup().getPosTerminalGroupId())
-                .organizationId(restaurantTable.getTerminalGroup().getOrganization().getPosOrganizationId())
+                .terminalGroupId(terminalGroup.getPosTerminalGroupId())
+                .organizationId(organization.getPosOrganizationId())
                 .order(order)
                 .build();
     }

@@ -13,6 +13,6 @@ public class RestaurantTable {
 
     private String posTableId;
 
-    private TerminalGroup terminalGroup;
+    private Integer terminalGroupId;
 
 }

@@ -6,7 +6,6 @@ import nsu.sber.domain.model.cart.CartItem;
 import nsu.sber.domain.model.cart.CartResponse;
 import nsu.sber.domain.model.cart.ModifyCartItemRequest;
 import nsu.sber.domain.model.entity.RestaurantTable;
-import nsu.sber.domain.model.entity.RoleType;
 import nsu.sber.domain.model.menu.Menu;
 import nsu.sber.domain.model.menu.MenuItem;
 import nsu.sber.domain.port.repository.redis.CartRepositoryPort;
@@ -27,10 +26,6 @@ public class CartService {
     private final RestaurantTableService restaurantTableService;
 
     public void addItem(ModifyCartItemRequest modifyCartItemRequest) {
-        if (userService.getCurrentUser().getRole() != RoleType.GUEST) {
-            throw new DigitalWaiterException.InvalidUserRoleException();
-        }
-
         RestaurantTable restaurantTable = restaurantTableService.getCurrentRestaurantTable();
 
         Cart cart = getCart(restaurantTable.getPosTableId());
@@ -40,10 +35,6 @@ public class CartService {
     }
 
     public void removeItem(ModifyCartItemRequest modifyCartItemRequest) {
-        if (userService.getCurrentUser().getRole() != RoleType.GUEST) {
-            throw new DigitalWaiterException.InvalidUserRoleException();
-        }
-
         RestaurantTable restaurantTable = restaurantTableService.getCurrentRestaurantTable();
 
         Cart cart = getCart(restaurantTable.getPosTableId());
@@ -53,10 +44,6 @@ public class CartService {
     }
 
     public void clearCart() {
-        if (userService.getCurrentUser().getRole() != RoleType.GUEST) {
-            throw new DigitalWaiterException.InvalidUserRoleException();
-        }
-
         RestaurantTable restaurantTable = restaurantTableService.getCurrentRestaurantTable();
 
         cartRepository.delete(restaurantTable.getPosTableId());

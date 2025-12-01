@@ -15,6 +15,6 @@ public class TerminalGroup {
 
     private String posTerminalGroupId;
 
-    private Organization organization;
+    private Integer organizationId;
 
 }

@@ -1,12 +1,12 @@
 package nsu.sber.domain.service;
 
 import lombok.RequiredArgsConstructor;
-import nsu.sber.domain.model.entity.RoleType;
 import nsu.sber.domain.model.entity.TerminalGroup;
 import nsu.sber.domain.model.menu.Menu;
 import nsu.sber.domain.model.menu.Menu.ItemCategory;
 import nsu.sber.domain.model.menu.MenuItem;
 import nsu.sber.domain.model.menu.MenuRequest;
+import nsu.sber.domain.port.crypto.ApiKeyCryptoPort;
 import nsu.sber.domain.port.pos.PosMenuPort;
 import nsu.sber.domain.port.repository.redis.MenuRepositoryPort;
 import nsu.sber.exception.DigitalWaiterException;
@@ -21,16 +21,13 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MenuService {
     private final TerminalGroupService terminalGroupService;
-    private final UserService userService;
+    private final OrganizationService organizationService;
+    private final ApiKeyCryptoPort apiKeyCryptoPort;
 
     private final PosMenuPort posMenuPort;
     private final MenuRepositoryPort menuRepositoryPort;
 
     public Menu getMenu() {
-        if (userService.getCurrentUser().getRole() != RoleType.GUEST) {
-            throw new DigitalWaiterException.InvalidUserRoleException();
-        }
-
         TerminalGroup terminalGroup = terminalGroupService.getCurrentTerminalGroup();
 
         return menuRepositoryPort.findByTerminalGroupId(terminalGroup.getId())
@@ -38,10 +35,6 @@ public class MenuService {
     }
 
     public MenuItem getDishInfo(String dishId) {
-        if (userService.getCurrentUser().getRole() != RoleType.GUEST) {
-            throw new DigitalWaiterException.InvalidUserRoleException();
-        }
-
         return findItemById(getMenu(), dishId)
                 .orElseThrow(() -> new DigitalWaiterException.DishNotFoundException(dishId));
     }
@@ -55,7 +48,9 @@ public class MenuService {
     }
 
     private Menu loadMenu(TerminalGroup terminalGroup) {
-        String posOrganizationId = terminalGroup.getOrganization().getPosOrganizationId();
+        String posOrganizationId = organizationService
+                .getOrganizationById(terminalGroup.getOrganizationId())
+                .getPosOrganizationId();
         String posExternalMenuId = terminalGroup.getPosExternalMenuId();
 
         Menu menu = posMenuPort.getMenu(buildMenuRequest(posOrganizationId, posExternalMenuId))

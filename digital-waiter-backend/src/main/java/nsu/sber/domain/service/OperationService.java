@@ -1,6 +1,7 @@
 package nsu.sber.domain.service;
 
 import lombok.RequiredArgsConstructor;
+import nsu.sber.domain.model.entity.Organization;
 import nsu.sber.domain.model.entity.RestaurantTable;
 import nsu.sber.domain.model.operation.OperationState;
 import nsu.sber.domain.model.operation.OperationStatusRequest;
@@ -19,6 +20,7 @@ import java.time.Instant;
 public class OperationService {
     private final CartService cartService;
     private final RestaurantTableService restaurantTableService;
+    private final OrganizationService organizationService;
 
     private final PosOperationPort posOperationPort;
 
@@ -33,11 +35,12 @@ public class OperationService {
 
     public void trackOrderStatusAsync(String correlationId) {
         RestaurantTable restaurantTable = restaurantTableService.getCurrentRestaurantTable();
+        Organization organization = organizationService.getCurrentOrganization();
 
         scheduleStatusCheck(
                 correlationId,
                 restaurantTable.getPosTableId(),
-                restaurantTable.getTerminalGroup().getOrganization().getPosOrganizationId(),
+                organization.getPosOrganizationId(),
                 0
         );
     }

@@ -14,15 +14,10 @@ public class RestaurantTableService {
 
     public RestaurantTable getRestaurantTableById(int id) {
         return restaurantTableRepository.findById(id)
-                .orElseThrow(() -> new DigitalWaiterException.RestaurantTableNotFoundException(id));
+                .orElseThrow(() -> new DigitalWaiterException.RestaurantTableWithThisIdNotFoundException(id));
     }
 
     public RestaurantTable getCurrentRestaurantTable() {
-        RestaurantTable restaurantTable = userService.getCurrentUser().getRestaurantTable();
-
-        if (restaurantTable == null) {
-            throw new DigitalWaiterException.UserHasNoRestaurantTableException();
-        }
-        return restaurantTable;
+        return getRestaurantTableById(userService.getCurrentUser().getRestaurantTableId());
     }
 }

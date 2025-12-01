@@ -5,12 +5,12 @@ import nsu.sber.domain.model.auth.JwtAuthentication;
 import nsu.sber.domain.model.auth.SignInRequest;
 import nsu.sber.domain.model.auth.SignInResponse;
 import nsu.sber.domain.model.entity.User;
-import nsu.sber.domain.port.CurrentUserProvider;
 import nsu.sber.exception.DigitalWaiterException;
 import nsu.sber.infrastructure.jwt.JwtProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AuthenticationService {
     private final JwtProvider jwtProvider;
-    private final CurrentUserProvider currentUserProvider;
     private final AuthenticationManager authenticationManager;
     private final CustomUserDetailsService customUserDetailsService;
 
@@ -30,19 +29,23 @@ public class AuthenticationService {
     private int updateTokenDurationInMinutes;
 
     public SignInResponse signIn(SignInRequest signInRequest) {
+        Authentication authentication;
         try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+            authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                     signInRequest.getLogin(),
                     signInRequest.getPassword()
             ));
         } catch (AuthenticationException e) {
+            e.printStackTrace();
             throw new DigitalWaiterException.IncorrectPasswordException();
         }
 
         UserDetails userDetails = customUserDetailsService.loadUserByUsername(signInRequest.getLogin());
 
         JwtAuthentication jwtAuthentication = createJwtAuthentication(userDetails);
-        User currUser = currentUserProvider.getCurrentUser();
+
+        CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
+        User currUser = customUserDetails.getUser();
 
         return SignInResponse.builder()
                 .jwtAuthentication(jwtAuthentication)

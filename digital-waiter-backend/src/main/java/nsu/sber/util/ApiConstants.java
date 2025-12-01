@@ -44,4 +44,13 @@ public final class ApiConstants {
     public static final String QUANTITY_EXAMPLE = "1";
     public static final String SIZE_NAME_EXAMPLE = "Standard";
 
+    public static final String ADMIN_ACCESS_RESTRICTION =
+            "Only authenticated administrative users are allowed to perform this operation";
+
+    public static final String API_KEY_DESCRIPTION = "API key used to access iiko API for this organization";
+    public static final String ORGANIZATION_ID_DESCRIPTION = "Internal organization ID";
+    public static final String POS_ORGANIZATION_ID_DESCRIPTION = "POS Organization ID from iiko API";
+    public static final String ORGANIZATION_ID_EXAMPLE = "2";
+    public static final String ORGANIZATION_NAME_DESCRIPTION = "Human-readable organization name";
+    public static final String ORGANIZATION_NAME_EXAMPLE = "Sparks";
 }

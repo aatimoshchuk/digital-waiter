@@ -11,13 +11,13 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "organizations")
+@Table(name = "organizations", schema = "dw")
 public class OrganizationEntity {
 
     @Id
     @SequenceGenerator(
             name = "organizations_id_generator",
-            sequenceName = "organizations_id_seq",
+            sequenceName = "dw.organizations_id_seq",
             allocationSize = 1
     )
     @GeneratedValue(generator = "organizations_id_generator", strategy = GenerationType.SEQUENCE)
@@ -32,4 +32,5 @@ public class OrganizationEntity {
 
     @Column(name = "pos_org_id")
     private String posOrganizationId;
+
 }
