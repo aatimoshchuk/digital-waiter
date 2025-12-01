@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api")
 @Tag(name = "Меню", description = "API для взаимодействия с меню")
 public class DishController {
-
+// api/dish/info
     private final DishService dishService;
     private final DishDtoMapper dishDtoMapper;
 
