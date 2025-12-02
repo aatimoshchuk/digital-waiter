@@ -1,10 +1,29 @@
-version: '3.3'
-
-networks:
-  app-network:
-    driver: bridge
+version: '3.8'
 
 services:
+  # Vosk STT сервер
+  vosk:
+    build:
+      context: ./vosk-server
+    container_name: vosk-server
+    ports:
+      - "2700:2700"  # WebSocket
+      - "2701:2701"  # HTTP
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:2701/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+    restart: unless-stopped
+    networks:
+      - app-network
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+
+  # PostgreSQL
   postgres:
     build:
       context: ./db
@@ -18,6 +37,7 @@ services:
     networks:
       - app-network
 
+  # Redis
   redis:
     image: redis:7
     container_name: redis-dw
@@ -27,6 +47,7 @@ services:
     networks:
       - app-network
 
+  # Backend приложение
   backend:
     build:
       context: .
@@ -35,13 +56,24 @@ services:
       - "8080:8080"
     environment:
       SPRING_PROFILES_ACTIVE: docker
+      # Database
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-dw:5432/digital_waiter_db
       SPRING_DATASOURCE_USERNAME: admin
       SPRING_DATASOURCE_PASSWORD: admin_pass
+      # Redis
       SPRING_REDIS_HOST: redis-dw
       SPRING_REDIS_PORT: 6379
+      # Vosk
+      VOSK_SERVER_URL: ws://vosk:2700
+      VOSK_SERVER_HTTP_URL: http://vosk:2701
     networks:
       - app-network
     depends_on:
       - postgres
       - redis
+      - vosk
+    restart: unless-stopped
+
+networks:
+  app-network:
+    driver: bridge
