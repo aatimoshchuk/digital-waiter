@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.Map;
 
 @Data
@@ -15,7 +16,7 @@ public class NluResult {
     private String text;
     private IntentType intent;
     private double confidence;
-    private Map<String, String> entities;
+    private List<Map<String, String>> entities;
     private String response;
 
     public static NluResult error(String text) {

@@ -2,7 +2,7 @@ package nsu.sber.voiceassistant.service.parser;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import nsu.sber.voiceassistant.application.ResponseParser;
+import nsu.sber.voiceassistant.pipelinr.ResponseParser;
 import nsu.sber.voiceassistant.model.CommandIntent;
 import org.springframework.stereotype.Service;
 

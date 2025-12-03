@@ -2,7 +2,7 @@ package nsu.sber.voiceassistant.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nsu.sber.voiceassistant.application.CommandIntentProcessor;
+import nsu.sber.voiceassistant.pipelinr.CommandIntentProcessor;
 import nsu.sber.voiceassistant.dto.ProcessingRequest;
 import nsu.sber.voiceassistant.dto.ProcessingResponse;
 import nsu.sber.voiceassistant.model.NluResult;

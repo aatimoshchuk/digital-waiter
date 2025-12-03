@@ -1,19 +1,19 @@
 server:
   port: 8080
-  address: 0.0.0.0
 
 spring:
   datasource:
-    url: jdbc:postgresql://${SPRING_DATASOURCE_HOST:db}:${SPRING_DATASOURCE_PORT:5432}/aiwaiter
-    username: ${SPRING_DATASOURCE_USERNAME:waiter_user}
-    password: ${SPRING_DATASOURCE_PASSWORD:123}
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/digital_waiter_db}
+    username: ${SPRING_DATASOURCE_USERNAME:admin}
+    password: ${SPRING_DATASOURCE_PASSWORD:admin_pass}
+    driver-class-name: org.postgresql.Driver
 
   jpa:
     open-in-view: false
 
   data:
     redis:
-      host: ${SPRING_REDIS_HOST:redis}
+      host: ${SPRING_REDIS_HOST:localhost}
       port: ${SPRING_REDIS_PORT:6379}
 
   flyway:

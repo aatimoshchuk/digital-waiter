@@ -10,6 +10,9 @@ public enum IntentType {
     CONFIRM("confirm"),
     CANCEL("cancel"),
     HELP("help"),
+    GET_MENU("get_menu"),
+    GET_INFO_DISH("get_info_dish"),
+    GET_ADVICE("get_advice"),
     UNKNOWN("unknown");
 
     private final String value;

@@ -3,7 +3,7 @@ package nsu.sber.voiceassistant.service.nlu;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nsu.sber.voiceassistant.application.nlp.prompt.PromptFactory;
+import nsu.sber.voiceassistant.service.prompt.PromptFactory;
 import nsu.sber.voiceassistant.dto.LlmRequest;
 import nsu.sber.voiceassistant.dto.LlmResponse;
 import nsu.sber.voiceassistant.model.NluResult;
