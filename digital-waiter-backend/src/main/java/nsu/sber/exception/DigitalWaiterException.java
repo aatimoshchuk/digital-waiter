@@ -149,9 +149,24 @@ public sealed class DigitalWaiterException extends RuntimeException {
     }
 
     @ResponseStatus(HttpStatus.CONFLICT)
+    public static final class TerminalGroupAlreadyExistException extends DigitalWaiterException {
+        public TerminalGroupAlreadyExistException() {
+            super("Terminal group with the given posTerminalGroupId associated with the given organization already " +
+                    "exist");
+        }
+    }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
     public static final class OrganizationHasDependenciesException extends DigitalWaiterException {
         public OrganizationHasDependenciesException() {
             super("Cannot delete organization due to existing dependencies");
+        }
+    }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public static final class TerminalGroupHasDependenciesException extends DigitalWaiterException {
+        public TerminalGroupHasDependenciesException() {
+            super("Cannot delete terminal group due to existing dependencies");
         }
     }
 }

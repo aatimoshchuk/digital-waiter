@@ -49,7 +49,7 @@ public class MenuService {
 
     private Menu loadMenu(TerminalGroup terminalGroup) {
         String posOrganizationId = organizationService
-                .getOrganizationById(terminalGroup.getOrganizationId())
+                .getOrganization(terminalGroup.getOrganizationId())
                 .getPosOrganizationId();
         String posExternalMenuId = terminalGroup.getPosExternalMenuId();
 

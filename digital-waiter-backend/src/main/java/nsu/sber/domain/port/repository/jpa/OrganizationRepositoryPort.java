@@ -7,7 +7,9 @@ import java.util.Optional;
 
 public interface OrganizationRepositoryPort {
 
-    Optional<Organization> findById(int id);
+    Optional<Organization> findById(Integer id);
+
+    boolean existsById(Integer id);
 
     boolean existsByPosOrganizationId(String posOrganizationId);
 
@@ -15,7 +17,7 @@ public interface OrganizationRepositoryPort {
 
     List<Organization> findAll();
 
-    void deleteById(int id);
+    void delete(Organization organization);
 
     Optional<Organization> findByRestaurantTableId(Integer restaurantTableId);
 

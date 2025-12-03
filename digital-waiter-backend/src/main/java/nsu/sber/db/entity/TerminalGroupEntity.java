@@ -17,7 +17,7 @@ public class TerminalGroupEntity {
     @Id
     @SequenceGenerator(
             name = "terminal_groups_id_generator",
-            sequenceName = "terminal_groups_id_seq",
+            sequenceName = "dw.terminal_groups_id_seq",
             allocationSize = 1
     )
     @GeneratedValue(generator = "terminal_groups_id_generator", strategy = GenerationType.SEQUENCE)

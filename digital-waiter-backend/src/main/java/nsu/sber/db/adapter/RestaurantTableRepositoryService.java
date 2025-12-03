@@ -7,6 +7,7 @@ import nsu.sber.domain.model.entity.RestaurantTable;
 import nsu.sber.domain.port.repository.jpa.RestaurantTableRepositoryPort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -20,6 +21,18 @@ public class RestaurantTableRepositoryService implements RestaurantTableReposito
     public Optional<RestaurantTable> findById(int id) {
         return restaurantTableRepository.findById(id)
                 .map(restaurantTableEntityMapper::entityToRestaurantTable);
+    }
+
+    @Override
+    public List<RestaurantTable> findByTerminalGroupId(Integer terminalGroupId) {
+        return restaurantTableEntityMapper.entitiesToRestaurantTables(
+                restaurantTableRepository.findByTerminalGroupId(terminalGroupId)
+        );
+    }
+
+    @Override
+    public boolean existsByTerminalGroupId(Integer terminalGroupId) {
+        return restaurantTableRepository.existsByTerminalGroupId(terminalGroupId);
     }
 
 }

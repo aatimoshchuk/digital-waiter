@@ -39,8 +39,8 @@ public class OrderService {
 
     private CreateOrderRequest buildCreateOrderRequest() {
         RestaurantTable restaurantTable = restaurantTableService.getCurrentRestaurantTable();
-        TerminalGroup terminalGroup = terminalGroupService.getTerminalGroupById(restaurantTable.getTerminalGroupId());
-        Organization organization = organizationService.getOrganizationById(terminalGroup.getOrganizationId());
+        TerminalGroup terminalGroup = terminalGroupService.getTerminalGroup(restaurantTable.getTerminalGroupId());
+        Organization organization = organizationService.getOrganization(terminalGroup.getOrganizationId());
 
         CreateOrderRequest.Order order = CreateOrderRequest.Order
                 .builder()

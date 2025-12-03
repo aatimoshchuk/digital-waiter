@@ -6,6 +6,8 @@ import nsu.sber.domain.port.repository.jpa.RestaurantTableRepositoryPort;
 import nsu.sber.exception.DigitalWaiterException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class RestaurantTableService {
@@ -19,5 +21,13 @@ public class RestaurantTableService {
 
     public RestaurantTable getCurrentRestaurantTable() {
         return getRestaurantTableById(userService.getCurrentUser().getRestaurantTableId());
+    }
+
+    public List<RestaurantTable> findByTerminalGroupId(Integer terminalGroupId) {
+        return restaurantTableRepository.findByTerminalGroupId(terminalGroupId);
+    }
+
+    public boolean existsByTerminalGroupId(Integer terminalGroupId) {
+        return restaurantTableRepository.existsByTerminalGroupId(terminalGroupId);
     }
 }

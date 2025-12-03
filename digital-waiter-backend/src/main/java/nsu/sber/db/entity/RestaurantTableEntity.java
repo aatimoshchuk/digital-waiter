@@ -17,7 +17,7 @@ public class RestaurantTableEntity {
     @Id
     @SequenceGenerator(
             name = "restaurant_tables_id_generator",
-            sequenceName = "restaurant_table_id_seq",
+            sequenceName = "dw.restaurant_table_id_seq",
             allocationSize = 1
     )
     @GeneratedValue(generator = "restaurant_tables_id_generator", strategy = GenerationType.SEQUENCE)

@@ -2,13 +2,14 @@ package nsu.sber.web.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import nsu.sber.util.ApiConstants;
 
 @Data
 public class OrganizationResponseDto {
 
-    @NotBlank
+    @NotNull
     @Schema(
             description = ApiConstants.ORGANIZATION_ID_DESCRIPTION,
             example = ApiConstants.ORGANIZATION_ID_EXAMPLE

@@ -22,4 +22,8 @@ public interface TerminalGroupRepository extends JpaRepository<TerminalGroupEnti
 
     List<TerminalGroupEntity> findByOrganizationId(Integer organizationId);
 
+    boolean existsByOrganizationId(Integer organizationId);
+
+    boolean existsByPosTerminalGroupIdAndOrganizationId(String postTerminalGroupId, Integer organizationId);
+
 }

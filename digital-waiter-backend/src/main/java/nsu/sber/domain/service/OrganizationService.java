@@ -1,6 +1,7 @@
 package nsu.sber.domain.service;
 
 import lombok.RequiredArgsConstructor;
+import nsu.sber.db.repository.jpa.TerminalGroupRepository;
 import nsu.sber.domain.model.entity.Organization;
 import nsu.sber.domain.model.organization.CreateOrganizationRequest;
 import nsu.sber.domain.model.organization.UpdateOrganizationRequest;
@@ -11,19 +12,25 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
 public class OrganizationService {
     private final OrganizationRepositoryPort organizationRepository;
+    private final TerminalGroupRepository terminalGroupRepository;
+
     private final ApiKeyCryptoPort apiKeyCryptoPort;
 
     private final UserService userService;
-    private final TerminalGroupService terminalGroupService;
 
-    public Organization getOrganizationById(int id) {
+    public Organization getOrganization(int id) {
         return organizationRepository.findById(id)
                 .orElseThrow(() -> new DigitalWaiterException.OrganizationWithThisIdNotFoundException(id));
+    }
+
+    public boolean isOrganizationExists(int id) {
+        return organizationRepository.existsById(id);
     }
 
     public Organization getCurrentOrganization() {
@@ -51,29 +58,29 @@ public class OrganizationService {
     }
 
     @Transactional(transactionManager = "transactionManager")
-    public void deleteOrganizationById(int id) {
-        Organization organization = getOrganizationById(id);
+    public void deleteOrganization(int id) {
+        Organization organization = getOrganization(id);
 
-        if (!terminalGroupService.findByOrganizationId(organization.getId()).isEmpty()) {
+        if (terminalGroupRepository.existsByOrganizationId(id)) {
             throw new DigitalWaiterException.OrganizationHasDependenciesException();
         }
 
-        organizationRepository.deleteById(id);
+        organizationRepository.delete(organization);
 
     }
 
     @Transactional(transactionManager = "transactionManager")
-    public Organization updateOrganizationById(int id, UpdateOrganizationRequest updateOrganizationRequest) {
-        Organization organization = getOrganizationById(id);
+    public Organization updateOrganization(int id, UpdateOrganizationRequest request) {
+        Organization organization = getOrganization(id);
 
-        if (updateOrganizationRequest.getName() != null) {
-            organization.setName(updateOrganizationRequest.getName());
+        if (request.getName() != null) {
+            organization.setName(request.getName());
         }
 
-        if (updateOrganizationRequest.getPosOrganizationId() != null) {
-            String posOrganizationId = updateOrganizationRequest.getPosOrganizationId();
+        if (request.getPosOrganizationId() != null) {
+            String posOrganizationId = request.getPosOrganizationId();
 
-            if (!organization.getPosOrganizationId().equals(posOrganizationId) &&
+            if (!Objects.equals(organization.getPosOrganizationId(), posOrganizationId) &&
                     organizationRepository.existsByPosOrganizationId(posOrganizationId)) {
                 throw new DigitalWaiterException.OrganizationAlreadyExistException();
             }
@@ -81,8 +88,8 @@ public class OrganizationService {
             organization.setPosOrganizationId(posOrganizationId);
         }
 
-        if (updateOrganizationRequest.getApiKey() != null) {
-            organization.setApiKeyEncrypted(apiKeyCryptoPort.encrypt(updateOrganizationRequest.getApiKey()));
+        if (request.getApiKey() != null) {
+            organization.setApiKeyEncrypted(apiKeyCryptoPort.encrypt(request.getApiKey()));
         }
 
         return organizationRepository.save(organization);

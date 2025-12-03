@@ -61,7 +61,7 @@ public class OrganizationController {
                     ApiConstants.ADMIN_ACCESS_RESTRICTION
     )
     public OrganizationResponseDto getOrganizationById(@PathVariable @Min(1) Integer id) {
-        return organizationDtoMapper.organizationToDto(organizationService.getOrganizationById(id));
+        return organizationDtoMapper.organizationToDto(organizationService.getOrganization(id));
     }
 
     @DeleteMapping("/{id}")
@@ -72,7 +72,7 @@ public class OrganizationController {
                     ApiConstants.ADMIN_ACCESS_RESTRICTION
     )
     public void deleteOrganizationById(@PathVariable @Min(1) Integer id) {
-        organizationService.deleteOrganizationById(id);
+        organizationService.deleteOrganization(id);
     }
 
     @PutMapping("/{id}")
@@ -84,7 +84,7 @@ public class OrganizationController {
             @PathVariable @Min(1) Integer id,
             @RequestBody @Valid UpdateOrganizationRequestDto updateOrganizationRequestDto
     ) {
-        Organization organization = organizationService.updateOrganizationById(
+        Organization organization = organizationService.updateOrganization(
                 id,
                 organizationDtoMapper.dtoToUpdateOrganizationRequest(updateOrganizationRequestDto)
         );

@@ -19,9 +19,14 @@ public class OrganizationRepositoryService implements OrganizationRepositoryPort
     private final OrganizationEntityMapper organizationEntityMapper;
 
     @Override
-    public Optional<Organization> findById(int id) {
+    public Optional<Organization> findById(Integer id) {
         return organizationRepository.findById(id)
                 .map(organizationEntityMapper::entityToOrganization);
+    }
+
+    @Override
+    public boolean existsById(Integer id) {
+        return organizationRepository.existsById(id);
     }
 
     @Override
@@ -41,8 +46,8 @@ public class OrganizationRepositoryService implements OrganizationRepositoryPort
     }
 
     @Override
-    public void deleteById(int id) {
-        organizationRepository.deleteById(id);
+    public void delete(Organization organization) {
+        organizationRepository.delete(organizationEntityMapper.organizationToEntity(organization));
     }
 
     @Override

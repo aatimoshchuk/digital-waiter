@@ -49,8 +49,16 @@ public final class ApiConstants {
 
     public static final String API_KEY_DESCRIPTION = "API key used to access iiko API for this organization";
     public static final String ORGANIZATION_ID_DESCRIPTION = "Internal organization ID";
-    public static final String POS_ORGANIZATION_ID_DESCRIPTION = "POS Organization ID from iiko API";
+    public static final String POS_ORGANIZATION_ID_DESCRIPTION = "POS organization ID from iiko API";
     public static final String ORGANIZATION_ID_EXAMPLE = "2";
     public static final String ORGANIZATION_NAME_DESCRIPTION = "Human-readable organization name";
     public static final String ORGANIZATION_NAME_EXAMPLE = "Sparks";
+
+    public static final String TERMINAL_GROUP_ID_DESCRIPTION = "Internal terminal group ID";
+    public static final String TERMINAL_GROUP_ID_EXAMPLE = "1";
+    public static final String TERMINAL_GROUP_NAME_DESCRIPTION = "Human-readable terminal group name";
+    public static final String TERMINAL_GROUP_NAME_EXAMPLE = "Sparks";
+    public static final String POS_TERMINAL_GROUP_ID_DESCRIPTION = "POS terminal group ID from iiko API";
+    public static final String POS_EXTERNAL_MENU_ID_DESCRIPTION = "POS external menu ID from iiko API";
+
 }
