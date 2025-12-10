@@ -19,7 +19,7 @@ import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 public class UserEntity {
 
     @Id
-    @SequenceGenerator(name = "users_id_generator", sequenceName = "users_id_seq", allocationSize = 1)
+    @SequenceGenerator(name = "users_id_generator", sequenceName = "dw.users_id_seq", allocationSize = 1)
     @GeneratedValue(generator = "users_id_generator", strategy = GenerationType.SEQUENCE)
     @Column(name = "id")
     private Integer id;

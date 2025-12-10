@@ -8,4 +8,10 @@ public interface UserRepositoryPort {
 
     Optional<User> findByLogin(String login);
 
+    Optional<User> findByRestaurantTableId(Integer restaurantTableId);
+
+    boolean existsByLogin(String login);
+
+    User save(User user);
+
 }

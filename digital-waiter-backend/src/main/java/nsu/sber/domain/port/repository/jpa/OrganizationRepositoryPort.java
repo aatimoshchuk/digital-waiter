@@ -21,4 +21,6 @@ public interface OrganizationRepositoryPort {
 
     Optional<Organization> findByRestaurantTableId(Integer restaurantTableId);
 
+    Optional<Organization> findByTerminalGroupId(Integer terminalGroupId);
+
 }

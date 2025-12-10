@@ -50,3 +50,6 @@ token:
 crypto:
   api-key:
     secret: ${API_KEY_CRYPTO_SECRET:Cu7xiXD0bUK/j3NvEEo5/ZbxhwxTFeUEvTewAKv6LCo=}
+
+password:
+  length: ${PASSWORD_LENGTH:8}

@@ -61,4 +61,16 @@ public final class ApiConstants {
     public static final String POS_TERMINAL_GROUP_ID_DESCRIPTION = "POS terminal group ID from iiko API";
     public static final String POS_EXTERNAL_MENU_ID_DESCRIPTION = "POS external menu ID from iiko API";
 
+    public static final String TABLE_TERMINAL_GROUP_ID_DESCRIPTION = "Internal terminal group ID this table belongs to";
+    public static final String POS_TABLE_ID_DESCRIPTION = "POS table ID from iiko API";
+    public static final String TABLE_NAME_DESCRIPTION = "Table name from iiko restaurant hall layout";
+    public static final String TABLE_NAME_EXAMPLE = "Стол 1";
+    public static final String TABLE_ID_DESCRIPTION = "Internal table ID";
+    public static final String TABLE_ID_EXAMPLE = "1";
+    public static final String GUEST_LOGIN_DESCRIPTION = "Login for authorization in the guest interface";
+    public static final String LOGIN_EXAMPLE = "SparksGuest6";
+
+    public static final String PASSWORD_DESCRIPTION = "Password associated with the login";
+    public static final String PASSWORD_EXAMPLE = "Qwerty123";
+
 }

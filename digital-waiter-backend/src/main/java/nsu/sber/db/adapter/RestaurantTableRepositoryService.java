@@ -1,6 +1,7 @@
 package nsu.sber.db.adapter;
 
 import lombok.RequiredArgsConstructor;
+import nsu.sber.db.entity.RestaurantTableEntity;
 import nsu.sber.db.mapper.RestaurantTableEntityMapper;
 import nsu.sber.db.repository.jpa.RestaurantTableRepository;
 import nsu.sber.domain.model.entity.RestaurantTable;
@@ -24,6 +25,11 @@ public class RestaurantTableRepositoryService implements RestaurantTableReposito
     }
 
     @Override
+    public List<RestaurantTable> findAll() {
+        return restaurantTableEntityMapper.entitiesToRestaurantTables(restaurantTableRepository.findAll());
+    }
+
+    @Override
     public List<RestaurantTable> findByTerminalGroupId(Integer terminalGroupId) {
         return restaurantTableEntityMapper.entitiesToRestaurantTables(
                 restaurantTableRepository.findByTerminalGroupId(terminalGroupId)
@@ -33,6 +39,27 @@ public class RestaurantTableRepositoryService implements RestaurantTableReposito
     @Override
     public boolean existsByTerminalGroupId(Integer terminalGroupId) {
         return restaurantTableRepository.existsByTerminalGroupId(terminalGroupId);
+    }
+
+    @Override
+    public boolean existsByPosTableIdAndTerminalGroupId(String posTableId, Integer terminalGroupId) {
+        return restaurantTableRepository.existsByPosTableIdAndTerminalGroupId(posTableId, terminalGroupId);
+    }
+
+    @Override
+    public RestaurantTable save(RestaurantTable restaurantTable) {
+        RestaurantTableEntity tableToSave = restaurantTableEntityMapper.restaurantTableToEntity(restaurantTable);
+        return restaurantTableEntityMapper.entityToRestaurantTable(restaurantTableRepository.save(tableToSave));
+    }
+
+    @Override
+    public void delete(RestaurantTable restaurantTable) {
+        restaurantTableRepository.delete(restaurantTableEntityMapper.restaurantTableToEntity(restaurantTable));
+    }
+
+    @Override
+    public void deleteByTerminalGroupId(Integer terminalGroupId) {
+        restaurantTableRepository.deleteAllByTerminalGroupId(terminalGroupId);
     }
 
 }

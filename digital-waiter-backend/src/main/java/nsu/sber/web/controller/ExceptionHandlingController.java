@@ -4,6 +4,7 @@ import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import nsu.sber.exception.DigitalWaiterException;
 import nsu.sber.web.dto.ErrorResponseDto;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -38,13 +39,19 @@ public class ExceptionHandlingController {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponseDto> handleValidationException(MethodArgumentNotValidException e) {
-        String messages = e.getBindingResult()
+        String message = e.getBindingResult()
                 .getFieldErrors()
                 .stream()
-                .map(error -> formatPatternMessage(error.getField(), error.getDefaultMessage()))
-                .collect(Collectors.joining("; "));
+                .findFirst()
+                .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                .orElse("Incorrect value for one of the fields");
+//        String messages = e.getBindingResult()
+//                .getFieldErrors()
+//                .stream()
+//                .map(error -> formatPatternMessage(error.getField(), error.getDefaultMessage()))
+//                .collect(Collectors.joining("; "));
 
-        return buildErrorResponse(HttpStatus.BAD_REQUEST, messages, e);
+        return buildErrorResponse(HttpStatus.BAD_REQUEST, message, e);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)

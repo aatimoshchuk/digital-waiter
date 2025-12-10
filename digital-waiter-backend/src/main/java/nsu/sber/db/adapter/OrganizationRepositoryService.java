@@ -55,4 +55,10 @@ public class OrganizationRepositoryService implements OrganizationRepositoryPort
         return organizationRepository.findByRestaurantTableId(restaurantTableId)
                 .map(organizationEntityMapper::entityToOrganization);
     }
+
+    @Override
+    public Optional<Organization> findByTerminalGroupId(Integer terminalGroupId) {
+        return organizationRepository.findByTerminalGroupId(terminalGroupId)
+                .map(organizationEntityMapper::entityToOrganization);
+    }
 }

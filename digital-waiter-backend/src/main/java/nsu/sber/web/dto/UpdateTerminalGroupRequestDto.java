@@ -9,7 +9,7 @@ import nsu.sber.util.ApiConstants;
 @Data
 public class UpdateTerminalGroupRequestDto {
 
-    @Size(min = 5, max = 100, message = "Name must be between 4 and 50 characters")
+    @Size(min = 5, max = 100, message = "Name must be 5-100 characters long")
     @Schema(
             description = ApiConstants.TERMINAL_GROUP_NAME_DESCRIPTION,
             example = ApiConstants.TERMINAL_GROUP_NAME_EXAMPLE

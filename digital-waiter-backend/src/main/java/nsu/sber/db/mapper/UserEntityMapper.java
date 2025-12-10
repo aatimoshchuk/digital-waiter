@@ -10,6 +10,8 @@ import org.mapstruct.ReportingPolicy;
         unmappedTargetPolicy = ReportingPolicy.ERROR)
 public interface UserEntityMapper {
 
-    public abstract User entityToUser(UserEntity userEntity);
+    User entityToUser(UserEntity userEntity);
+
+    UserEntity userToEntity(User user);
 
 }

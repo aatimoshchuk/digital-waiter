@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import nsu.sber.domain.model.entity.TerminalGroup;
 import nsu.sber.domain.model.terminal_group.CreateTerminalGroupRequest;
 import nsu.sber.domain.model.terminal_group.UpdateTerminalGroupRequest;
+import nsu.sber.domain.port.repository.jpa.RestaurantTableRepositoryPort;
 import nsu.sber.domain.port.repository.jpa.TerminalGroupRepositoryPort;
 import nsu.sber.exception.DigitalWaiterException;
 import org.springframework.stereotype.Service;
@@ -16,17 +17,17 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class TerminalGroupService {
     private final TerminalGroupRepositoryPort terminalGroupRepository;
+    private final RestaurantTableRepositoryPort restaurantTableRepository;
 
     private final UserService userService;
     private final OrganizationService organizationService;
-    private final RestaurantTableService restaurantTableService;
 
     public TerminalGroup getTerminalGroup(Integer id) {
         return terminalGroupRepository.findById(id)
                 .orElseThrow(() -> new DigitalWaiterException.TerminalGroupWithThisIdNotFoundException(id));
     }
 
-    public List<TerminalGroup> getTerminalGroupByOrganizationId(Integer organizationId) {
+    public List<TerminalGroup> getTerminalGroupsByOrganizationId(Integer organizationId) {
         if (!organizationService.isOrganizationExists(organizationId)) {
             throw new DigitalWaiterException.OrganizationWithThisIdNotFoundException(organizationId);
         }
@@ -34,8 +35,8 @@ public class TerminalGroupService {
         return terminalGroupRepository.findByOrganizationId(organizationId);
     }
 
-    public boolean isTerminalGroupExistsByOrganizationId(Integer organizationId) {
-        return terminalGroupRepository.existsByOrganizationId(organizationId);
+    public boolean isTerminalGroupExists(Integer id) {
+        return terminalGroupRepository.existsById(id);
     }
 
     public TerminalGroup getCurrentTerminalGroup() {
@@ -70,7 +71,7 @@ public class TerminalGroupService {
 
     public List<TerminalGroup> getTerminalGroups(Integer organizationId) {
         if (organizationId != null) {
-            return getTerminalGroupByOrganizationId(organizationId);
+            return getTerminalGroupsByOrganizationId(organizationId);
         }
 
         return terminalGroupRepository.findAll();
@@ -80,7 +81,7 @@ public class TerminalGroupService {
     public void deleteTerminalGroup(Integer id) {
         TerminalGroup terminalGroup = getTerminalGroup(id);
 
-        if (restaurantTableService.existsByTerminalGroupId(id)) {
+        if (restaurantTableRepository.existsByTerminalGroupId(id)) {
             throw new DigitalWaiterException.TerminalGroupHasDependenciesException();
         }
 

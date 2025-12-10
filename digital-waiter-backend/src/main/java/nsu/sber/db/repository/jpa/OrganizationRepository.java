@@ -22,4 +22,11 @@ public interface OrganizationRepository extends JpaRepository<OrganizationEntity
             """)
     Optional<OrganizationEntity> findByRestaurantTableId(Integer restaurantTableId);
 
+    @Query("""
+            SELECT o FROM OrganizationEntity o
+                JOIN TerminalGroupEntity tg ON tg.organizationId = o.id
+            WHERE tg.id = :terminalGroupId
+            """)
+    Optional<OrganizationEntity> findByTerminalGroupId(Integer terminalGroupId);
+
 }

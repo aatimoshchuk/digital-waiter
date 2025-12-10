@@ -31,6 +31,13 @@ public sealed class DigitalWaiterException extends RuntimeException {
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
+    public static final class NoOrganizationForTerminalGroupException extends DigitalWaiterException {
+        public NoOrganizationForTerminalGroupException() {
+            super("Organization associated with provided terminal group was not found");
+        }
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     public static final class TerminalGroupWithThisIdNotFoundException extends DigitalWaiterException {
         public TerminalGroupWithThisIdNotFoundException(int id) {
             super("Terminal group with id %s was not found".formatted(id));
@@ -114,6 +121,20 @@ public sealed class DigitalWaiterException extends RuntimeException {
         }
     }
 
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public static final class UserWithThisLoginAlreadyExistException extends DigitalWaiterException {
+        public UserWithThisLoginAlreadyExistException() {
+            super("User with this login already exist");
+        }
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public static final class UserWithThisRestaurantTableIdNotFoundException extends DigitalWaiterException {
+        public UserWithThisRestaurantTableIdNotFoundException() {
+            super("User with this restaurant table ID was not found");
+        }
+    }
+
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public static final class ApiKeyEncryptionException extends DigitalWaiterException {
         public ApiKeyEncryptionException() {
@@ -153,6 +174,13 @@ public sealed class DigitalWaiterException extends RuntimeException {
         public TerminalGroupAlreadyExistException() {
             super("Terminal group with the given posTerminalGroupId associated with the given organization already " +
                     "exist");
+        }
+    }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public static final class RestaurantTableAlreadyExistException extends DigitalWaiterException {
+        public RestaurantTableAlreadyExistException() {
+            super("Restaurant table with the given posTableId associated with the given terminal group already exist");
         }
     }
 

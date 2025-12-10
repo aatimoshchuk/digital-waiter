@@ -16,4 +16,8 @@ public interface RestaurantTableRepository extends JpaRepository<RestaurantTable
 
     boolean existsByTerminalGroupId(Integer terminalGroupId);
 
+    boolean existsByPosTableIdAndTerminalGroupId(String posTableId, Integer terminalGroupId);
+
+    void deleteAllByTerminalGroupId(Integer terminalGroupId);
+
 }
