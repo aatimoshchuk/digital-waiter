@@ -14,6 +14,9 @@ public class IikoFeignConfig {
     @Bean
     public RequestInterceptor requestInterceptor() {
         return requestTemplate -> {
+            boolean alreadySet = requestTemplate.headers().containsKey("Authorization");
+            if (alreadySet) return;
+
             String token = iikoAuthTokenProvider.getToken();
             requestTemplate.header("Authorization", "Bearer " + token);
         };

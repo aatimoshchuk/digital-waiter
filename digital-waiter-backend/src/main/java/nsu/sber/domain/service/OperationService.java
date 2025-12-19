@@ -38,35 +38,29 @@ public class OperationService {
         Organization organization = organizationService.getCurrentOrganization();
 
         scheduleStatusCheck(
-                correlationId,
+                buildOperationStatusRequest(correlationId, organization),
                 restaurantTable.getPosTableId(),
-                organization.getPosOrganizationId(),
                 0
         );
     }
 
-    private void scheduleStatusCheck(String correlationId, String posTableId, String posOrganizationId, int attempt) {
-        taskScheduler.schedule(() -> checkStatus(correlationId, posTableId, posOrganizationId, attempt),
+    private void scheduleStatusCheck(OperationStatusRequest request, String posTableId, int attempt) {
+        taskScheduler.schedule(() -> checkStatus(request, posTableId, attempt),
                 Instant.now().plusMillis(statusCheckDelayMs));
     }
 
-    private void checkStatus(String correlationId, String posTableId, String posOrganizationId, int attempt) {
+    private void checkStatus(OperationStatusRequest request, String posTableId, int attempt) {
         try {
-            OperationStatusRequest request = buildOperationStatusRequest(
-                    correlationId,
-                    posOrganizationId
-            );
-
             OperationStatusResponse status = posOperationPort.getOperationStatus(request);
 
             if (status.getState() == OperationState.IN_PROGRESS && attempt < statusCheckMaxAttempts) {
-                scheduleStatusCheck(correlationId, posTableId, posOrganizationId, attempt + 1);
+                scheduleStatusCheck(request, posTableId, attempt + 1);
             } else {
-                handleFinalStatus(correlationId, posTableId, status);
+                handleFinalStatus(request.getCorrelationId(), posTableId, status);
             }
         } catch (Exception e) {
             operationStatusNotifier.notifyStatus(
-                    correlationId,
+                    request.getCorrelationId(),
                     OperationState.ERROR.getExternalValue(),
                     e.getMessage()
             );
@@ -86,11 +80,13 @@ public class OperationService {
         }
     }
 
-    private OperationStatusRequest buildOperationStatusRequest(String correlationId, String posOrganizationId) {
+    private OperationStatusRequest buildOperationStatusRequest(String correlationId, Organization organization) {
         return OperationStatusRequest
                 .builder()
                 .correlationId(correlationId)
-                .organizationId(posOrganizationId)
+                .organizationId(organization.getId())
+                .posOrganizationId(organization.getPosOrganizationId())
+                .apiKeyEncrypted(organization.getApiKeyEncrypted())
                 .build();
     }
 }

@@ -46,5 +46,24 @@ public class IikoAuthTokenProvider {
         return entry.token;
     }
 
+    public String getTokenByOrganizationIdAndApiKey(Integer organizationId, String apiKeyEncrypted) {
+        TokenEntry entry = tokens.compute(organizationId, (id, old) -> {
+            if (old == null || Instant.now().isAfter(old.expiresAt())) {
+                String apiKey = apiKeyCryptoService.decrypt(apiKeyEncrypted);
+                String newToken = iikoAuthClient
+                        .getToken(new AuthRequestDto(apiKey))
+                        .getToken();
+
+                return new TokenEntry(
+                        newToken,
+                        Instant.now().plus(Duration.ofMinutes(TOKEN_LIFESPAN_MINUTES - 1))
+                );
+            }
+            return old;
+        });
+
+        return entry.token;
+    }
+
     private record TokenEntry(String token, Instant expiresAt) {}
 }
