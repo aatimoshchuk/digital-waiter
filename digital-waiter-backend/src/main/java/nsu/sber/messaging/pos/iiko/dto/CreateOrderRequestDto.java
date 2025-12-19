@@ -13,16 +13,6 @@ public class CreateOrderRequestDto {
     @Data
     public static class Order {
         private List<String> tableIds;
-        private List<Item> items;
+        private List<OrderItemDto> items;
     }
-
-    @Data
-    public static class Item {
-        private String productId;
-        private double price;
-        private String type;
-        private double amount;
-        private String productSizeId;
-    }
-
 }

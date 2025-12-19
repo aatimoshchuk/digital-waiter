@@ -1,6 +1,8 @@
 package nsu.sber.messaging.pos.iiko.client;
 
 import nsu.sber.messaging.pos.iiko.config.IikoFeignConfig;
+import nsu.sber.messaging.pos.iiko.dto.AddOrderItemsRequestDto;
+import nsu.sber.messaging.pos.iiko.dto.AddOrderItemsResponseDto;
 import nsu.sber.messaging.pos.iiko.dto.CreateOrderRequestDto;
 import nsu.sber.messaging.pos.iiko.dto.CreateOrderResponseDto;
 import nsu.sber.messaging.pos.iiko.dto.MenuRequestDto;
@@ -36,6 +38,12 @@ public interface IikoClient {
     OperationStatusResponseDto getOperationStatus(
             @RequestHeader("Authorization") String token,
             @RequestBody OperationStatusRequestDto operationStatusRequestDto
-            );
+    );
+
+    @PostMapping("/api/1/order/add_items")
+    AddOrderItemsResponseDto addOrderItems(
+            @RequestHeader("Authorization") String token,
+            @RequestBody AddOrderItemsRequestDto addOrderItemsRequestDto
+    );
 
 }

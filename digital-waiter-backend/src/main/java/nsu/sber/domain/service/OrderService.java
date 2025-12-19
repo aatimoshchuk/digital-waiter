@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import nsu.sber.domain.model.entity.Organization;
 import nsu.sber.domain.model.entity.RestaurantTable;
 import nsu.sber.domain.model.entity.TerminalGroup;
+import nsu.sber.domain.model.order.AddOrderItemsRequest;
+import nsu.sber.domain.model.order.AddOrderItemsResponse;
 import nsu.sber.domain.model.order.CreateOrderRequest;
 import nsu.sber.domain.model.order.CreateOrderResponse;
 import nsu.sber.domain.port.pos.PosOrderPort;
@@ -18,23 +20,31 @@ public class OrderService {
     private final PosOrderPort posOrderPort;
 
     private final CartService cartService;
-    private final UserService userService;
     private final RestaurantTableService restaurantTableService;
     private final TerminalGroupService terminalGroupService;
     private final OrganizationService organizationService;
     private final OperationService operationService;
 
-    public String createOrderAsync() {
+    public CreateOrderResponse createOrderAsync() {
         if (cartService.isCartEmpty()) {
             throw new DigitalWaiterException.EmptyCartException();
         }
 
         CreateOrderResponse createOrderResponse = posOrderPort.createOrder(buildCreateOrderRequest());
-        String correlationId = createOrderResponse.getCorrelationId();
+        operationService.trackOrderStatusAsync(createOrderResponse.getCorrelationId());
 
-        operationService.trackOrderStatusAsync(correlationId);
+        return createOrderResponse;
+    }
 
-        return correlationId;
+    public AddOrderItemsResponse addOrderItemsAsync(String orderId) {
+        if (cartService.isCartEmpty()) {
+            throw new DigitalWaiterException.EmptyCartException();
+        }
+
+        AddOrderItemsResponse addOrderItemsResponse = posOrderPort.addOrderItems(buildAddOrderItemsRequest(orderId));
+        operationService.trackOrderStatusAsync(addOrderItemsResponse.getCorrelationId());
+
+        return addOrderItemsResponse;
     }
 
     private CreateOrderRequest buildCreateOrderRequest() {
@@ -53,6 +63,17 @@ public class OrderService {
                 .terminalGroupId(terminalGroup.getPosTerminalGroupId())
                 .organizationId(organization.getPosOrganizationId())
                 .order(order)
+                .build();
+    }
+
+    private AddOrderItemsRequest buildAddOrderItemsRequest(String orderId) {
+        Organization organization = organizationService.getCurrentOrganization();
+
+        return AddOrderItemsRequest
+                .builder()
+                .orderId(orderId)
+                .organizationId(organization.getPosOrganizationId())
+                .cart(cartService.getCartResponse())
                 .build();
     }
 

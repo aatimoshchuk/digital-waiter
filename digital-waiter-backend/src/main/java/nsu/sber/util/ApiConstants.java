@@ -77,4 +77,6 @@ public final class ApiConstants {
     public static final String ACCESS_TOKEN_DESCRIPTION= "JWT access token used for authenticated requests";
     public static final String REFRESH_TOKEN_DESCRIPTION = "JWT refresh token used to obtain a new access token";
 
+    public static final String ORDER_ID_DESCRIPTION = "Unique identifier of the order";
+
 }
