@@ -22,10 +22,21 @@ public class CartService {
     private final CartRepositoryPort cartRepository;
 
     private final MenuService menuService;
-    private final UserService userService;
     private final RestaurantTableService restaurantTableService;
 
     public void addItem(ModifyCartItemRequest modifyCartItemRequest) {
+        if (!menuService.existsItemById(modifyCartItemRequest.getItemId())) {
+            throw new DigitalWaiterException.DishNotFoundException(modifyCartItemRequest.getItemId());
+        }
+
+        if (modifyCartItemRequest.getSizeId() != null &&
+                !menuService.existsItemSizeById(modifyCartItemRequest.getItemId(), modifyCartItemRequest.getSizeId())) {
+            throw new DigitalWaiterException.SizeNotFoundException(
+                    modifyCartItemRequest.getSizeId(),
+                    modifyCartItemRequest.getItemId()
+            );
+        }
+
         RestaurantTable restaurantTable = restaurantTableService.getCurrentRestaurantTable();
 
         Cart cart = getCart(restaurantTable.getPosTableId());

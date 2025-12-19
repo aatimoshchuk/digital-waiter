@@ -6,7 +6,6 @@ import nsu.sber.domain.model.menu.Menu;
 import nsu.sber.domain.model.menu.Menu.ItemCategory;
 import nsu.sber.domain.model.menu.MenuItem;
 import nsu.sber.domain.model.menu.MenuRequest;
-import nsu.sber.domain.port.crypto.ApiKeyCryptoPort;
 import nsu.sber.domain.port.pos.PosMenuPort;
 import nsu.sber.domain.port.repository.redis.MenuRepositoryPort;
 import nsu.sber.exception.DigitalWaiterException;
@@ -16,13 +15,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
 public class MenuService {
     private final TerminalGroupService terminalGroupService;
     private final OrganizationService organizationService;
-    private final ApiKeyCryptoPort apiKeyCryptoPort;
 
     private final PosMenuPort posMenuPort;
     private final MenuRepositoryPort menuRepositoryPort;
@@ -45,6 +44,27 @@ public class MenuService {
                 .flatMap(c -> c.getItems().stream())
                 .filter(i -> id.equals(i.getItemId()))
                 .findFirst();
+    }
+
+    public boolean existsItemById(String id) {
+        return getMenu().getItemCategories().stream()
+                .filter(Objects::nonNull)
+                .flatMap(c -> c.getItems().stream())
+                .filter(Objects::nonNull)
+                .anyMatch(i -> id.equals(i.getItemId()));
+    }
+
+    public boolean existsItemSizeById(String itemId, String sizeId) {
+        return getMenu().getItemCategories().stream()
+                .filter(Objects::nonNull)
+                .flatMap(c -> c.getItems().stream())
+                .filter(Objects::nonNull)
+                .filter(i -> itemId.equals(i.getItemId()))
+                .flatMap(i -> {
+                    List<MenuItem.ItemSize> sizes = i.getItemSizes();
+                    return sizes == null ? Stream.empty() : sizes.stream();
+                })
+                .anyMatch(s -> sizeId.equals(s.getSizeId()));
     }
 
     private Menu loadMenu(TerminalGroup terminalGroup) {

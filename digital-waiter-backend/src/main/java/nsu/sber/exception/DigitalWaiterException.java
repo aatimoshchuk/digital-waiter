@@ -79,10 +79,24 @@ public sealed class DigitalWaiterException extends RuntimeException {
         }
     }
 
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public static final class SizeNotFoundException extends DigitalWaiterException {
+        public SizeNotFoundException(String sizeId, String dishId) {
+            super("Size with id %s was not found for dish with id %s".formatted(sizeId, dishId));
+        }
+    }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public static final class OrderCreationException extends DigitalWaiterException {
         public OrderCreationException(String message) {
             super("Order creation failed: %s".formatted(message));
+        }
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public static final class OrderItemsAddingException extends DigitalWaiterException {
+        public OrderItemsAddingException(String message) {
+            super("Order items adding failed: %s".formatted(message));
         }
     }
 
