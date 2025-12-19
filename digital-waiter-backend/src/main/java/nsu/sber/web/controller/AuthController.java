@@ -6,6 +6,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import nsu.sber.domain.model.auth.SignInResponse;
+import nsu.sber.web.dto.ExtendTokenRequestDto;
+import nsu.sber.web.dto.GuestLogoutRequestDto;
+import nsu.sber.web.dto.JwtAuthenticationDto;
 import nsu.sber.web.dto.SignInRequestDto;
 import nsu.sber.web.dto.SignInResponseDto;
 import nsu.sber.web.mapper.AuthDtoMapper;
@@ -34,6 +37,27 @@ public class AuthController {
                .signIn(authDtoMapper.dtoToSignInRequest(signInRequestDto));
 
        return authDtoMapper.signInResponseToDto(signInResponse);
+    }
+
+    @PostMapping("/extend-token")
+    @Operation(summary = "Extend access token by refresh token")
+    @SecurityRequirements({})
+    public JwtAuthenticationDto extendToken(@RequestBody @Valid ExtendTokenRequestDto extendTokenRequestDto) {
+        return authDtoMapper.jwtAuthenticationToDto(
+                authenticationService.extendToken(authDtoMapper.dtoToExtendTokenRequest(extendTokenRequestDto))
+        );
+    }
+
+    @PostMapping("/guest/logout")
+    @Operation(
+            summary = "Logout from guest interface",
+            description = """
+                    Logs out the guest session associated with the current table.
+                    Password confirmation is required to prevent accidental or unauthorized logout
+                    """
+    )
+    public void logout(@RequestBody @Valid GuestLogoutRequestDto guestLogoutRequestDto) {
+        authenticationService.guestLogout(authDtoMapper.dtoToGuestLogoutRequest(guestLogoutRequestDto));
     }
 
 }

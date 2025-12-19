@@ -1,9 +1,12 @@
 package nsu.sber.web.security;
 
 import lombok.RequiredArgsConstructor;
+import nsu.sber.domain.model.auth.ExtendTokenRequest;
+import nsu.sber.domain.model.auth.GuestLogoutRequest;
 import nsu.sber.domain.model.auth.JwtAuthentication;
 import nsu.sber.domain.model.auth.SignInRequest;
 import nsu.sber.domain.model.auth.SignInResponse;
+import nsu.sber.domain.model.entity.RoleType;
 import nsu.sber.domain.model.entity.User;
 import nsu.sber.exception.DigitalWaiterException;
 import nsu.sber.infrastructure.jwt.JwtProvider;
@@ -21,6 +24,7 @@ public class AuthenticationService {
     private final JwtProvider jwtProvider;
     private final AuthenticationManager authenticationManager;
     private final CustomUserDetailsService customUserDetailsService;
+    private final SpringSecurityCurrentUserProvider springSecurityCurrentUserProvider;
 
     @Value("${token.duration.access}")
     private int accessTokenDurationInMinutes;
@@ -36,7 +40,6 @@ public class AuthenticationService {
                     signInRequest.getPassword()
             ));
         } catch (AuthenticationException e) {
-            e.printStackTrace();
             throw new DigitalWaiterException.IncorrectPasswordException();
         }
 
@@ -51,6 +54,35 @@ public class AuthenticationService {
                 .jwtAuthentication(jwtAuthentication)
                 .role(currUser.getRole())
                 .build();
+    }
+
+    public void guestLogout(GuestLogoutRequest guestLogoutRequest) {
+        User user = springSecurityCurrentUserProvider.getCurrentUser();
+
+        if (user.getRole() != RoleType.GUEST) {
+            throw new DigitalWaiterException.InvalidUserRoleException();
+        }
+
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                    user.getLogin(),
+                    guestLogoutRequest.getPassword()
+            ));
+        } catch (AuthenticationException e) {
+            throw new DigitalWaiterException.IncorrectPasswordException();
+        }
+    }
+
+    public JwtAuthentication extendToken(ExtendTokenRequest extendTokenRequest) {
+        String refreshToken = extendTokenRequest.getRefreshToken();
+        CustomUserDetails customUserDetails = (CustomUserDetails)
+                customUserDetailsService.loadUserByUsername(jwtProvider.extractLogin(refreshToken));
+
+        if (jwtProvider.isTokenValid(refreshToken, customUserDetails)) {
+            return createJwtAuthentication(customUserDetails);
+        } else {
+            throw new DigitalWaiterException.InvalidTokenException();
+        }
     }
 
     private JwtAuthentication createJwtAuthentication(UserDetails userDetails) {

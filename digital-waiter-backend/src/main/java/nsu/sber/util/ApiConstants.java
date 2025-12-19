@@ -73,4 +73,8 @@ public final class ApiConstants {
     public static final String PASSWORD_DESCRIPTION = "Password associated with the login";
     public static final String PASSWORD_EXAMPLE = "Qwerty123";
 
+    public static final String TOKEN_EXAMPLE = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...";
+    public static final String ACCESS_TOKEN_DESCRIPTION= "JWT access token used for authenticated requests";
+    public static final String REFRESH_TOKEN_DESCRIPTION = "JWT refresh token used to obtain a new access token";
+
 }

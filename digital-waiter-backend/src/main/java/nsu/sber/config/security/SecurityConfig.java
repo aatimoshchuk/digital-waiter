@@ -52,13 +52,16 @@ public class SecurityConfig {
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/auth/sign-in").permitAll()
+                        .requestMatchers(HttpMethod.POST, "api/auth/extend-token").permitAll()
                         .requestMatchers("/swagger-ui/**").permitAll()
                         .requestMatchers("/v3/api-docs/**").permitAll()
                         .requestMatchers("/api/cart/**").hasAuthority(GUEST_ROLE)
                         .requestMatchers("/api/menu/**").hasAuthority(GUEST_ROLE)
                         .requestMatchers("/api/order/**").hasAuthority(GUEST_ROLE)
                         .requestMatchers("/api/organizations/**").hasAuthority(ADMIN_ROLE)
+                        .requestMatchers("/api/terminal-groups/**").hasAuthority(ADMIN_ROLE)
+                        .requestMatchers("/api/restaurant-tables/**").hasAuthority(ADMIN_ROLE)
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(exceptions ->

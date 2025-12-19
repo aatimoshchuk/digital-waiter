@@ -79,31 +79,10 @@ public sealed class DigitalWaiterException extends RuntimeException {
         }
     }
 
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public static final class InterruptedOrderCreationException extends DigitalWaiterException {
-        public InterruptedOrderCreationException() {
-            super("Order creation was interrupted");
-        }
-    }
-
-    @ResponseStatus(HttpStatus.GATEWAY_TIMEOUT)
-    public static final class OrderCreationTimedOutException extends DigitalWaiterException {
-        public OrderCreationTimedOutException() {
-            super("Order creation timed out");
-        }
-    }
-
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public static final class OrderCreationException extends DigitalWaiterException {
         public OrderCreationException(String message) {
             super("Order creation failed: %s".formatted(message));
-        }
-    }
-
-    @ResponseStatus(HttpStatus.BAD_GATEWAY)
-    public static final class PosOperationException extends DigitalWaiterException {
-        public PosOperationException(String message) {
-            super("POS operation failed: %s".formatted(message));
         }
     }
 
@@ -146,12 +125,6 @@ public sealed class DigitalWaiterException extends RuntimeException {
     public static final class ApiKeyDecryptionException extends DigitalWaiterException {
         public ApiKeyDecryptionException() {
             super("Failed to decrypt API key");
-        }
-    }
-
-    public static final class UserHasNoRestaurantTableException extends DigitalWaiterException {
-        public UserHasNoRestaurantTableException() {
-            super("User has no restaurant table assigned");
         }
     }
 
