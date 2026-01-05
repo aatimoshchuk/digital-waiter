@@ -38,5 +38,5 @@ https://digital-waiter.sberlab.nsu.ru/swagger-ui/index.html#/
 
 ## Демонстрация работы:
 <p align="center">
-  <a href="https://ibb.co/yn4Xd1LS"><img src="https://i.ibb.co/FbHKmMGV/20260105-134614.gif" alt="20260105-134614" border="0"></a>
+  <a><img src="https://github.com/aatimoshchuk/aatimoshchuk/blob/main/digital_waiter.gif"></a>
 </p>
