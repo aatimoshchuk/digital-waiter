@@ -36,13 +36,7 @@ https://digital-waiter.sberlab.nsu.ru/swagger-ui/index.html#/
 - Деплой при помощи Github Actions
 - Работа с WebSocket (используется для уведомления Frontend о статусах асинхронных операций)
 
-## Скриншоты клиентской части:
+## Демонстрация работы:
 <p align="center">
-  <a href="https://ibb.co/yF3HTfZf"><img src="https://i.ibb.co/Qv5yBbTb/image.png" alt="image" border="0"></a>
-</p>
-<p align="center">
-  <a href="https://ibb.co/TBGVMGbM"><img src="https://i.ibb.co/C5ykKyMK/image.png" alt="image" border="0"></a>
-</p>
-<p align="center">
-  <a href="https://ibb.co/0y524fLZ"><img src="https://i.ibb.co/F4p3ZB1J/image.png" alt="image" border="0"></a>
+  <a href="https://ibb.co/yn4Xd1LS"><img src="https://i.ibb.co/FbHKmMGV/20260105-134614.gif" alt="20260105-134614" border="0"></a>
 </p>
