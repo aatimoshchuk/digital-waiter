@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import nsu.sber.voiceassistant.dto.ProcessingResponse;
-import nsu.sber.voiceassistant.model.IntentType;
 import nsu.sber.voiceassistant.service.prompt.PromptDesc;
 import nsu.sber.web.dto.ModifyCartItemRequestDto;
 
@@ -14,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 @PromptDesc(
-        intent = IntentType.ADD_ITEM,
+        intent = "add_item",
         description = "Добавить блюдо(а) в заказ",
         entitiesHint = """
       entities: [{ "dish_name": "...", "quantity": 1 }]

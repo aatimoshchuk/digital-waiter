@@ -13,6 +13,8 @@ import nsu.sber.voiceassistant.service.prompt.PromptFactory;
 import nsu.sber.web.dto.ModifyCartItemRequestDto;
 import org.springframework.stereotype.Component;
 
+import java.util.stream.Collectors;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -28,6 +30,7 @@ public class RemoveItemMiddleware implements Command.Middleware {
                 .build();
     }
 
+
     @Override
     public <R, C extends Command<R>> R invoke(C command, Next<R> next) {
 
@@ -35,8 +38,20 @@ public class RemoveItemMiddleware implements Command.Middleware {
             return next.invoke();
         }
 
-        log.info("RemoveItem user text: {}", removeItemCommand.getUserText());
-        LlmRequest request = buildRequest(removeItemCommand.getUserText());
+        String userData;
+        if (removeItemCommand.getEntities() != null && !removeItemCommand.getEntities().isEmpty()) {
+            userData = removeItemCommand.getEntities().stream()
+                    .map(map -> map.entrySet().stream()
+                            .map(e -> e.getKey() + ": " + e.getValue())
+                            .collect(Collectors.joining(", ")))
+                    .collect(Collectors.joining("; "));
+        } else {
+            userData = removeItemCommand.getText();
+        }
+
+        log.info("RemoveItem input: {}", userData);
+
+        LlmRequest request = buildRequest(userData);
         LlmResponse response = llmProvider.complete(request);
 
         log.info("LLM RemoveItem result: {}", response.getContent());
@@ -57,9 +72,7 @@ public class RemoveItemMiddleware implements Command.Middleware {
                     .build();
         }
 
-
         removeItemCommand.setModifyRequest(dto);
-
         return next.invoke();
     }
 }

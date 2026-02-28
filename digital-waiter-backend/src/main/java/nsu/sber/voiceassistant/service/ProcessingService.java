@@ -38,7 +38,7 @@ public class ProcessingService {
     public ProcessingResponse processText(ProcessingRequest request) {
         NluResult nluResult = nluService.parse(request.getText(), request.getContext());
 
-        return commandIntentProcessor.process(nluResult, "sessionId");
+        return commandIntentProcessor.process(nluResult);
     }
 
 }

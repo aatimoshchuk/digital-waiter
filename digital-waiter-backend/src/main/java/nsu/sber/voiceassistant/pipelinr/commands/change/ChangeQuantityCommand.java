@@ -1,10 +1,11 @@
 package nsu.sber.voiceassistant.pipelinr.commands.change;
 
-import nsu.sber.voiceassistant.model.IntentType;
+import an.awesome.pipelinr.Command;
+import nsu.sber.voiceassistant.dto.ProcessingResponse;
 import nsu.sber.voiceassistant.service.prompt.PromptDesc;
 
 @PromptDesc(
-        intent = IntentType.CHANGE_QUANTITY,
+        intent = "change_quantity",
         description = "Изменить количество блюда в заказе",
         entitiesHint = """
       entities: [
@@ -12,5 +13,5 @@ import nsu.sber.voiceassistant.service.prompt.PromptDesc;
       ]
     """
 )
-public class ChangeQuantityCommand {
+public class ChangeQuantityCommand implements Command<ProcessingResponse> {
 }

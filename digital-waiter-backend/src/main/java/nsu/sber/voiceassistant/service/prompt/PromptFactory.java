@@ -1,8 +1,5 @@
 package nsu.sber.voiceassistant.service.prompt;
 
-import nsu.sber.voiceassistant.model.IntentType;
-
-import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -104,13 +101,13 @@ public class PromptFactory {
     }
 
     private static String buildIntentsBlockFromAnnotations() {
-        Map<IntentType, String> lines = new LinkedHashMap<>();
+        Map<String, String> lines = new LinkedHashMap<>();
 
         for (Class<?> cmdClass : PromptCommandRegistry.COMMANDS) {
             PromptDesc meta = cmdClass.getAnnotation(PromptDesc.class);
             if (meta == null) continue;
 
-            String line = "- " + meta.intent().name() + ": " + meta.description();
+            String line = "- " + meta.intent() + ": " + meta.description();
 
             if (!meta.entitiesHint().isBlank()) {
                 line += "\n  " + meta.entitiesHint().strip().replace("\n", "\n  ");
@@ -119,13 +116,10 @@ public class PromptFactory {
             lines.put(meta.intent(), line);
         }
 
-        return lines.entrySet().stream()
-                .sorted(Comparator.comparingInt(e -> e.getKey().ordinal()))
-                .map(Map.Entry::getValue)
+        return lines.values().stream()
                 .reduce((a, b) -> a + "\n" + b)
-                .orElse("- UNKNOWN: Неизвестное намерение");
+                .orElse("- unknown: Неизвестное намерение");
     }
-
 
 
     public static String buildPromptForDishRecognition(String menu, String userText) {

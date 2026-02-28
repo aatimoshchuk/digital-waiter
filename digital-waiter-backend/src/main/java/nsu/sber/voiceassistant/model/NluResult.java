@@ -14,7 +14,7 @@ import java.util.Map;
 @AllArgsConstructor
 public class NluResult {
     private String text;
-    private IntentType intent;
+    private String intent;
     private double confidence;
     private List<Map<String, String>> entities;
     private String response;
