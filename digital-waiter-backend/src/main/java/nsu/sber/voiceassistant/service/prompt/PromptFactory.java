@@ -1,5 +1,11 @@
 package nsu.sber.voiceassistant.service.prompt;
 
+import nsu.sber.voiceassistant.model.IntentType;
+
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 public class PromptFactory {
 
     public static String BuildPromptForInvalidAddItem(String menu) {
@@ -62,6 +68,8 @@ public class PromptFactory {
     }
 
     public static String BuildPromptMappingCommand() {
+        String intentsBlock = buildIntentsBlockFromAnnotations();
+
         return """
             Ты — интеллектуальный ассистент ресторана, который анализирует запросы гостей и определяет их намерения.
 
@@ -69,17 +77,7 @@ public class PromptFactory {
             Проанализировать текст пользователя и вернуть строго валидный JSON с намерением, уверенностью и списком сущностей.
 
             ДОСТУПНЫЕ НАМЕРЕНИЯ (intents):
-            - ADD_ITEM: добавить блюдо в заказ
-            - REMOVE_ITEM: удалить блюдо из заказа
-            - CHANGE_QUANTITY: изменить количество блюда
-            - SHOW_CART: показать текущий заказ
-            - CHECKOUT: оформить заказ
-            - CALL_WAITER: позвать официанта
-            - REQUEST_BILL: попросить счет
-            - UNKNOWN: неизвестное намерение
-            - GET_MENU: показать меню
-            - GET_INFO_DISH: получить информацию о блюде
-            - GET_ADVICE: дать совет пользователю
+            %s
 
             ПРАВИЛА ФОРМИРОВАНИЯ JSON:
             1. Ответ — ТОЛЬКО валидный JSON, без какого-либо текста, комментариев или пояснений.
@@ -99,28 +97,35 @@ public class PromptFactory {
             4. Каждый объект в массиве ОБЯЗАН быть полностью закрыт фигурными скобками {}.
             5. Если количество блюда явно не указано — используй quantity = 1.
             6. Все строки должны быть заключены в двойные кавычки.
-            7. JSON должен быть синтаксически корректным: никаких лишних запятых, пропущенных скобок, незакрытых объектов и т.д.
-
-            ПРИМЕР ВАЛИДНОГО МНОГОБЛЮДНОГО ОТВЕТА:
-            {
-              "intent": "GET_INFO_DISH",
-              "confidence": 0.95,
-              "entities": [
-                {
-                  "dish_name": "Пицца Маргарита",
-                  "quantity": 1
-                },
-                {
-                  "dish_name": "Суп Том Ям",
-                  "quantity": 1
-                }
-              ],
-              "response": "Сейчас расскажу!"
-            }
+            7. JSON должен быть синтаксически корректным.
 
             ВЕРНИ ТОЛЬКО JSON. Никакого пролога, эпилога или описаний.
-            """;
+            """.formatted(intentsBlock);
     }
+
+    private static String buildIntentsBlockFromAnnotations() {
+        Map<IntentType, String> lines = new LinkedHashMap<>();
+
+        for (Class<?> cmdClass : PromptCommandRegistry.COMMANDS) {
+            PromptDesc meta = cmdClass.getAnnotation(PromptDesc.class);
+            if (meta == null) continue;
+
+            String line = "- " + meta.intent().name() + ": " + meta.description();
+
+            if (!meta.entitiesHint().isBlank()) {
+                line += "\n  " + meta.entitiesHint().strip().replace("\n", "\n  ");
+            }
+
+            lines.put(meta.intent(), line);
+        }
+
+        return lines.entrySet().stream()
+                .sorted(Comparator.comparingInt(e -> e.getKey().ordinal()))
+                .map(Map.Entry::getValue)
+                .reduce((a, b) -> a + "\n" + b)
+                .orElse("- UNKNOWN: Неизвестное намерение");
+    }
+
 
 
     public static String buildPromptForDishRecognition(String menu, String userText) {

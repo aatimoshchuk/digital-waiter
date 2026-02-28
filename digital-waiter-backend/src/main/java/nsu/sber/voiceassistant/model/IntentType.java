@@ -13,6 +13,7 @@ public enum IntentType {
     GET_MENU("get_menu"),
     GET_INFO_DISH("get_info_dish"),
     GET_ADVICE("get_advice"),
+    CLEAR_CART("clear_cart"),
     UNKNOWN("unknown");
 
     private final String value;

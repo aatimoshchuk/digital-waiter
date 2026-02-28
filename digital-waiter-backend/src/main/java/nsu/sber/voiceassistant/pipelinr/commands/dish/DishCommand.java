@@ -5,11 +5,22 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nsu.sber.voiceassistant.dto.ProcessingResponse;
+import nsu.sber.voiceassistant.model.IntentType;
+import nsu.sber.voiceassistant.service.prompt.PromptDesc;
 import nsu.sber.web.dto.ModifyCartItemRequestDto;
 
 import java.util.List;
 import java.util.Map;
 
+@PromptDesc(
+        intent = IntentType.GET_INFO_DISH,
+        description = "Получить подробную информацию о блюде",
+        entitiesHint = """
+      entities: [
+        { "dish_name": "Пицца Маргарита" }
+      ]
+    """
+)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

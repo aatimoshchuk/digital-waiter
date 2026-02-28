@@ -1,0 +1,65 @@
+@startuml
+title Архитектура PipelinR: три ключевых объекта
+
+participant "ИИ-модуль" as AI
+participant "PipelinR" as Pipeline
+
+box "1. Command\n(запрос с возвратом)" #FFEEEE
+participant "AddToOrderCommand" as Command
+end box
+
+box "2. Middleware\n(валидатор/посредник)" #EEFFEE
+participant "ValidationMiddleware" as Middleware
+end box
+
+box "3. Handler\n(обработчик)" #EEEEFF
+participant "AddToOrderHandler" as Handler
+end box
+
+participant "GigaChat API" as GigaChat
+participant "Бэкенд" as Backend
+
+AI -> Command : Создать команду
+activate Command
+Command -> Pipeline : send()
+deactivate Command
+
+activate Pipeline
+Pipeline -> Middleware : invoke(command, next)
+activate Middleware
+Middleware -> Middleware : Формирование промта
+Middleware -> GigaChat : Запрос на валидацию через ИИ
+activate GigaChat
+GigaChat --> Middleware : Результат валидации
+deactivate GigaChat
+
+Middleware --> Pipeline : Валидация OK
+deactivate Middleware
+
+Pipeline -> Handler : handle(command)
+activate Handler
+Handler -> Backend : POST /api/order
+activate Backend
+Backend --> Handler : 200 OK
+deactivate Backend
+Handler --> Pipeline : OrderResponse
+deactivate Handler
+
+Pipeline --> AI : Успешный результат
+deactivate Pipeline
+
+note over Command,Handler
+  <b>Три объекта PipelinR:</b>
+  1. <color:#FF0000>Command</color> - DTO запроса
+  2. <color:#00FF00>Middleware</color> - валидация через ИИ
+  3. <color:#0000FF>Handler</color> - бизнес-логика
+end note
+
+note right of GigaChat
+  GigaChat используется для:
+  • Валидации команд
+  • Обогащения промтов
+  • Проверки через онтологию меню
+end note
+
+@enduml
