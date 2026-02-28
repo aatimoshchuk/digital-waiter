@@ -10,8 +10,10 @@ import nsu.sber.voiceassistant.service.prompt.PromptDesc;
 import java.util.List;
 import java.util.Map;
 
+import static nsu.sber.voiceassistant.model.Intents.GET_INFO_DISH;
+
 @PromptDesc(
-        intent = "get_info_dish",
+        intent = GET_INFO_DISH,
         description = "Получить подробную информацию о блюде",
         entitiesHint = """
       entities: [

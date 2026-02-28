@@ -11,11 +11,13 @@ import nsu.sber.web.dto.ModifyCartItemRequestDto;
 import java.util.List;
 import java.util.Map;
 
+import static nsu.sber.voiceassistant.model.Intents.REMOVE_ITEM;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @PromptDesc(
-        intent = "remove_item",
+        intent = REMOVE_ITEM,
         description = "Удалить блюдо из заказа",
         entitiesHint = """
       entities: [

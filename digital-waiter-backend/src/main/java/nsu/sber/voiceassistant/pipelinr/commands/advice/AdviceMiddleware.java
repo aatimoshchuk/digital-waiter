@@ -9,7 +9,7 @@ import nsu.sber.voiceassistant.dto.LlmRequest;
 import nsu.sber.voiceassistant.dto.LlmResponse;
 import nsu.sber.voiceassistant.dto.ProcessingResponse;
 
-import nsu.sber.voiceassistant.pipelinr.MenuStringBuilder;
+import nsu.sber.voiceassistant.service.menu.MenuStringBuilder;
 import nsu.sber.voiceassistant.pipelinr.ResponseParser;
 import nsu.sber.voiceassistant.service.nlu.provider.GigaChatProvider;
 import nsu.sber.voiceassistant.service.prompt.PromptFactory;

@@ -1,4 +1,4 @@
-package nsu.sber.voiceassistant.pipelinr.middlewares;
+package nsu.sber.voiceassistant.pipelinr;
 
 import an.awesome.pipelinr.Command;
 import nsu.sber.voiceassistant.pipelinr.commands.CommandValidator;

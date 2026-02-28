@@ -1,12 +1,11 @@
 package nsu.sber.voiceassistant.pipelinr.commands.add;
 
 import an.awesome.pipelinr.Command;
-import com.fasterxml.jackson.annotation.JsonAlias;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nsu.sber.voiceassistant.pipelinr.ResponseParser;
-import nsu.sber.voiceassistant.pipelinr.MenuStringBuilder;
+import nsu.sber.voiceassistant.service.menu.MenuStringBuilder;
 import nsu.sber.voiceassistant.service.prompt.PromptFactory;
 import nsu.sber.voiceassistant.dto.LlmRequest;
 import nsu.sber.voiceassistant.dto.LlmResponse;

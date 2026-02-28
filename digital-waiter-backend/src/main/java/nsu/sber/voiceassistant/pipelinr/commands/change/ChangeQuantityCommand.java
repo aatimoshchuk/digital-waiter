@@ -4,8 +4,10 @@ import an.awesome.pipelinr.Command;
 import nsu.sber.voiceassistant.dto.ProcessingResponse;
 import nsu.sber.voiceassistant.service.prompt.PromptDesc;
 
+import static nsu.sber.voiceassistant.model.Intents.CHANGE_QUANTITY;
+
 @PromptDesc(
-        intent = "change_quantity",
+        intent = CHANGE_QUANTITY,
         description = "Изменить количество блюда в заказе",
         entitiesHint = """
       entities: [

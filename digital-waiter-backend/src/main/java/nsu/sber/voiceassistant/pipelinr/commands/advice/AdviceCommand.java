@@ -9,8 +9,10 @@ import nsu.sber.voiceassistant.service.prompt.PromptDesc;
 
 import java.util.Map;
 
+import static nsu.sber.voiceassistant.model.Intents.GET_ADVICE;
+
 @PromptDesc(
-        intent = "get_advice",
+        intent = GET_ADVICE,
         description = "Дать пользователю рекомендацию блюда на основе контекста или меню",
         entitiesHint = """
       context: предпочтения пользователя, например:

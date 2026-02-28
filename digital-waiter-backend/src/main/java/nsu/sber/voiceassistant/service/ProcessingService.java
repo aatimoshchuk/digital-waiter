@@ -7,7 +7,6 @@ import nsu.sber.voiceassistant.dto.ProcessingRequest;
 import nsu.sber.voiceassistant.dto.ProcessingResponse;
 import nsu.sber.voiceassistant.model.NluResult;
 import nsu.sber.voiceassistant.service.nlu.NluService;
-import nsu.sber.voiceassistant.service.parser.CommandParser;
 import nsu.sber.voiceassistant.service.stt.SttService;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +18,6 @@ public class ProcessingService {
 
     private final SttService sttService;
     private final NluService nluService;
-    private final CommandParser commandParser;
     private final CommandIntentProcessor commandIntentProcessor;
 
     public ProcessingResponse processAudio(ProcessingRequest request) {

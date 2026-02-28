@@ -12,8 +12,10 @@ import nsu.sber.web.dto.ModifyCartItemRequestDto;
 import java.util.List;
 import java.util.Map;
 
+import static nsu.sber.voiceassistant.model.Intents.ADD_ITEM;
+
 @PromptDesc(
-        intent = "add_item",
+        intent = ADD_ITEM,
         description = "Добавить блюдо(а) в заказ",
         entitiesHint = """
       entities: [{ "dish_name": "...", "quantity": 1 }]

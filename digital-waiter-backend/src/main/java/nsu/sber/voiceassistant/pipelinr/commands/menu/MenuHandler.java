@@ -4,7 +4,7 @@ import an.awesome.pipelinr.Command;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nsu.sber.voiceassistant.dto.ProcessingResponse;
-import nsu.sber.voiceassistant.pipelinr.MenuStringBuilder;
+import nsu.sber.voiceassistant.service.menu.MenuStringBuilder;
 import org.springframework.stereotype.Component;
 
 @Slf4j

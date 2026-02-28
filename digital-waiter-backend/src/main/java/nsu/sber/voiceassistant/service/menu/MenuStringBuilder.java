@@ -1,4 +1,4 @@
-package nsu.sber.voiceassistant.pipelinr;
+package nsu.sber.voiceassistant.service.menu;
 
 import lombok.RequiredArgsConstructor;
 import nsu.sber.domain.service.MenuService;
