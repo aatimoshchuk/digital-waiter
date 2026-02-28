@@ -12,6 +12,6 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CommandIntent {
-    private IntentType type;
+    private String type;
     private Map<String, Object> parameters;
 }

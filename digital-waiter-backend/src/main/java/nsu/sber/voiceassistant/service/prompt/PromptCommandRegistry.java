@@ -11,7 +11,6 @@ import nsu.sber.voiceassistant.pipelinr.commands.remove.RemoveItemCommand;
 import java.util.List;
 
 public final class PromptCommandRegistry {
-    private PromptCommandRegistry() {}
 
     public static final List<Class<?>> COMMANDS = List.of(
             AddItemCommand.class,

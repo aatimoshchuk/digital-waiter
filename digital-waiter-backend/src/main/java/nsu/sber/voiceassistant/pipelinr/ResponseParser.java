@@ -12,7 +12,6 @@ public class ResponseParser {
 
     public static <T> T parse(String aiResult, Class<T> clazz) {
         try {
-
             return objectMapper.readValue(aiResult, clazz);
 
         } catch (Exception e) {
