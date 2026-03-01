@@ -38,3 +38,9 @@ digital-waiter:
 
 local:
   url: http://localhost:8081
+
+gigachat:
+  api-key: ${GIGACHAT_API_KEY:}
+  scope: ${GIGACHAT_SCOPE:GIGACHAT_API_PERS}
+  model: ${GIGACHAT_MODEL:GigaChat}
+  api-url: ${GIGACHAT_API_URL:https://gigachat.devices.sberbank.ru/api/v1}

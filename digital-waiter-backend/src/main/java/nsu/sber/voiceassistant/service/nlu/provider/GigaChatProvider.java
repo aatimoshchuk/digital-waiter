@@ -6,6 +6,7 @@ import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import nsu.sber.voiceassistant.dto.LlmRequest;
 import nsu.sber.voiceassistant.dto.LlmResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
@@ -22,12 +23,17 @@ public class GigaChatProvider extends AbstractLlmProvider {
 
     private static final String AUTH_URL = "https://ngw.devices.sberbank.ru:9443/api/v2/oauth";
 
-    // Жестко вставляем ключ для теста
-    private final String apiKey = "ZmJiODQzODYtNTRiYS00N2Q2LTgyZDEtYzVlYjVkODhkYjAwOmNhNzI5MGUxLWE4NDctNGNkMS1hZWQzLTg0MDZiNDdkNmExNA==";
+    @Value("${gigachat.api-key}")
+    private String apiKey;
 
-    private final String scope = "GIGACHAT_API_PERS";
-    private final String model = "GigaChat";
-    private final String apiUrl = "https://gigachat.devices.sberbank.ru/api/v1";
+    @Value("${gigachat.scope:GIGACHAT_API_PERS}")
+    private String scope;
+
+    @Value("${gigachat.model:GigaChat}")
+    private String model;
+
+    @Value("${gigachat.api-url:https://gigachat.devices.sberbank.ru/api/v1}")
+    private String apiUrl;
 
     private WebClient webClient;
     private String accessToken;
