@@ -1,5 +1,6 @@
 package nsu.sber.voiceassistant.service.nlu.provider;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import jakarta.annotation.PostConstruct;
@@ -38,6 +39,10 @@ public class GigaChatProvider extends AbstractLlmProvider {
     private WebClient webClient;
     private String accessToken;
     private long tokenExpiry;
+
+    public GigaChatProvider(ObjectMapper objectMapper) {
+        super(objectMapper);
+    }
 
     @PostConstruct
     public void init() {

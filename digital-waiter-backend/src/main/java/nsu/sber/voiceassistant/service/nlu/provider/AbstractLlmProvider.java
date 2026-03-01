@@ -8,11 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Slf4j
-@Service
 public abstract class AbstractLlmProvider implements LlmProvider {
 
-    @Autowired
     protected ObjectMapper objectMapper;
+
+    protected AbstractLlmProvider(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
 
     @Override
     public LlmResponse complete(LlmRequest request) {
