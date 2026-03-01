@@ -7,7 +7,7 @@ import lombok.Data;
 @Builder
 public class LlmResponse {
     private String content;
-    boolean success;
+    private boolean success;
     private String error;
     private long responseTimeMs;
 

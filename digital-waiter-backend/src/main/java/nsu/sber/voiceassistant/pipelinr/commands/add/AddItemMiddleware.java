@@ -32,7 +32,7 @@ public class AddItemMiddleware implements Command.Middleware {
 
     private LlmRequest buildRequest(String text) {
         return LlmRequest.builder()
-                .prompt(PromptFactory.BuildPromptForInvalidAddItem(menuBuilder.buildMenuString()))
+                .prompt(PromptFactory.buildPromptForInvalidAddItem(menuBuilder.buildMenuString()))
                 .message(text)
                 .build();
     }
@@ -64,7 +64,7 @@ public class AddItemMiddleware implements Command.Middleware {
             log.warn("[AddItemMiddleware] LLM не вернул корректные данные");
             return (R) ProcessingResponse.builder()
                     .success(false)
-                    .transcribedText("Не удалось распознать ни одного блюда. Уточните ваш запрос.")
+                    .message("Не удалось распознать ни одного блюда. Уточните ваш запрос.")
                     .build();
         }
 
@@ -73,7 +73,7 @@ public class AddItemMiddleware implements Command.Middleware {
                 log.warn("[AddItemMiddleware] Блюдо не найдено в меню: {}", item);
                 return (R) ProcessingResponse.builder()
                         .success(false)
-                        .transcribedText("Некоторые блюда не найдены в меню.")
+                        .message("Некоторые блюда не найдены в меню.")
                         .build();
             }
         }

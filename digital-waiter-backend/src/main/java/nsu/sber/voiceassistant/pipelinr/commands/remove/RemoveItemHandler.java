@@ -23,7 +23,7 @@ public class RemoveItemHandler implements Command.Handler<RemoveItemCommand, Pro
 
         return ProcessingResponse.builder()
                 .success(true)
-                .transcribedText("Item removed successfully")
+                .message("Item removed successfully")
                 .build();
     }
 }

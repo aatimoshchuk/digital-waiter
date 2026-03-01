@@ -18,7 +18,7 @@ public class MenuHandler implements Command.Handler<MenuCommand, ProcessingRespo
         var menu = menuBuilder.buildMenuItemsString();
         return ProcessingResponse.builder()
                 .success(true)
-                .transcribedText("Наше меню " + menu)
+                .message("Наше меню " + menu)
                 .build();
     }
 

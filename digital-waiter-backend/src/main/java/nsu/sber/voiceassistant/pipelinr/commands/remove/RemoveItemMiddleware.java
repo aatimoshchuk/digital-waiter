@@ -25,7 +25,7 @@ public class RemoveItemMiddleware implements Command.Middleware {
 
     private LlmRequest buildRequest(String text) {
         return LlmRequest.builder()
-                .prompt(PromptFactory.BuildPromptForInvalidRemoveItem(menuBuilder.buildMenuString()))
+                .prompt(PromptFactory.buildPromptForInvalidRemoveItem(menuBuilder.buildMenuString()))
                 .message(text)
                 .build();
     }
@@ -61,14 +61,14 @@ public class RemoveItemMiddleware implements Command.Middleware {
         if (dto == null) {
             return (R) ProcessingResponse.builder()
                     .success(false)
-                    .transcribedText("Не могу распознать ваш запрос. Уточните блюдо и размер.")
+                    .message("Не могу распознать ваш запрос. Уточните блюдо и размер.")
                     .build();
         }
 
         if (dto.getItemId() == null) {
             return (R) ProcessingResponse.builder()
                     .success(false)
-                    .transcribedText("Не могу распознать название блюда.")
+                    .message("Не могу распознать название блюда.")
                     .build();
         }
 

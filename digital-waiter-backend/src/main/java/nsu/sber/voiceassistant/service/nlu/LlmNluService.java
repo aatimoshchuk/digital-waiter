@@ -41,7 +41,7 @@ public class LlmNluService implements NluService {
 
     private LlmRequest buildRequest(String text, String context) {
         return LlmRequest.builder()
-                .prompt(PromptFactory.BuildPromptMappingCommand())
+                .prompt(PromptFactory.buildPromptMappingCommand())
                 .message(text)
                 .build();
     }

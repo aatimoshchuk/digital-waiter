@@ -35,7 +35,7 @@ public class AddItemHandler implements Command.Handler<AddItemCommand, Processin
 
         return ProcessingResponse.builder()
                 .success(true)
-                .transcribedText(msg)
+                .message(msg)
                 .build();
     }
 }

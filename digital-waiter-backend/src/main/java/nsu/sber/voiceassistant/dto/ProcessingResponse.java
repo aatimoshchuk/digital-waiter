@@ -11,6 +11,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ProcessingResponse {
     private boolean success;
-    private String transcribedText;
-
+    private String message;
 }

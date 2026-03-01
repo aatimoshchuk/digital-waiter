@@ -66,7 +66,7 @@ public class AdviceMiddleware implements Command.Middleware {
             log.warn("[AdviceMiddleware] LLM вернул пустой или некорректный ответ");
             return (R) ProcessingResponse.builder()
                     .success(false)
-                    .transcribedText("Не могу сформировать совет. Попробуйте переформулировать запрос.")
+                    .message("Не могу сформировать совет. Попробуйте переформулировать запрос.")
                     .build();
         }
 

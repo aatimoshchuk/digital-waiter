@@ -19,7 +19,7 @@ public class AdviceHandler implements Command.Handler<AdviceCommand, ProcessingR
 
         return ProcessingResponse.builder()
                 .success(true)
-                .transcribedText(advice)
+                .message(advice)
                 .build();
     }
 }

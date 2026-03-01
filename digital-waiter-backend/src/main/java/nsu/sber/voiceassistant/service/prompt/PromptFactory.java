@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class PromptFactory {
 
-    public static String BuildPromptForInvalidAddItem(String menu) {
+    public static String buildPromptForInvalidAddItem(String menu) {
         return String.format(
                 "Пользователь хочет добавить несколько блюд в корзину. " +
                         "Проанализируй текст пользователя и вытащи КАЖДОЕ блюдо и его размер.\n\n" +
@@ -38,7 +38,7 @@ public class PromptFactory {
 
 
 
-    public static String BuildPromptForInvalidRemoveItem(String menu) {
+    public static String buildPromptForInvalidRemoveItem(String menu) {
         return String.format(
                 "Пользователь хочет удалить блюдо из корзины. " +
                         "Проанализируй текст пользователя и сопоставь его с блюдами из меню, чтобы определить itemId и sizeId.\n\n" +
@@ -64,7 +64,7 @@ public class PromptFactory {
         );
     }
 
-    public static String BuildPromptMappingCommand() {
+    public static String buildPromptMappingCommand() {
         String intentsBlock = buildIntentsBlockFromAnnotations();
 
         return """

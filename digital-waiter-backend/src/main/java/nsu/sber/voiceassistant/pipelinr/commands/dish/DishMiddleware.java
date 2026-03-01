@@ -69,7 +69,7 @@ public class DishMiddleware implements Command.Middleware {
             log.warn("[DishMiddleware] LLM не смог распознать блюдо");
             return (R) ProcessingResponse.builder()
                     .success(false)
-                    .transcribedText("Не могу распознать ваш запрос. Пожалуйста, уточните название блюда.")
+                    .message("Не могу распознать ваш запрос. Пожалуйста, уточните название блюда.")
                     .build();
         }
 
@@ -78,7 +78,7 @@ public class DishMiddleware implements Command.Middleware {
                 log.warn("[DishMiddleware] Блюдо не найдено в меню: {}", item);
                 return (R) ProcessingResponse.builder()
                         .success(false)
-                        .transcribedText("Некоторые блюда не найдены в меню.")
+                        .message("Некоторые блюда не найдены в меню.")
                         .build();
             }
         }

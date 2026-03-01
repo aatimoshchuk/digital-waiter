@@ -98,12 +98,12 @@ public class GigaChatProvider extends AbstractLlmProvider {
                 long expiresIn = ((Number) response.getOrDefault("expires_at", 1800)).longValue();
                 this.tokenExpiry = expiresIn - 60000;
                 long secondsUntilExpiry = (expiresIn - System.currentTimeMillis()) / 1000;
-                log.info("✓ GigaChat authenticated successfully. Token expires in {} seconds", secondsUntilExpiry);
+                log.info("GigaChat authenticated successfully. Token expires in {} seconds", secondsUntilExpiry);
             } else {
                 log.error("Authentication response missing access_token");
             }
         } catch (Exception e) {
-            log.error("❌ GigaChat authentication failed: {}", e.getMessage());
+            log.error("GigaChat authentication failed: {}", e.getMessage());
             log.debug("Full error:", e);
         }
     }

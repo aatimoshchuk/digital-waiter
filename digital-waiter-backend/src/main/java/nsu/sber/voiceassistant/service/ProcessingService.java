@@ -25,10 +25,7 @@ public class ProcessingService {
         String text = sttService.recognizeFile(request.getAudioFile());
         log.info("Transcribed text: {}", text == null ? "null" : text);
         NluResult nluResult = nluService.parse(text, request.getContext());
-        return new ProcessingResponse(true, nluResult.getResponse());
-//        CommandIntent command = commandParser.parse(nluResult);
-//        ProcessingResponse response = backendClient.execute(command, "sessionId");
-//        return response;
+        return commandIntentProcessor.process(nluResult);
     }
 
     public ProcessingResponse processText(ProcessingRequest request) {

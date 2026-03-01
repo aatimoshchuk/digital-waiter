@@ -73,7 +73,7 @@ public class DishHandler implements Command.Handler<DishCommand, ProcessingRespo
 
         return ProcessingResponse.builder()
                 .success(true)
-                .transcribedText(result.toString().trim())
+                .message(result.toString().trim())
                 .build();
     }
 }

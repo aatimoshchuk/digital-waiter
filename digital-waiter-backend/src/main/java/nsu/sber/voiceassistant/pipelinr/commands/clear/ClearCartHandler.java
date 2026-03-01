@@ -19,7 +19,7 @@ public class ClearCartHandler implements Command.Handler<ClearCartCommand, Proce
 
         return ProcessingResponse.builder()
                 .success(true)
-                .transcribedText("Корзина успешно очищена!")
+                .message("Корзина успешно очищена!")
                 .build();
     }
 }
