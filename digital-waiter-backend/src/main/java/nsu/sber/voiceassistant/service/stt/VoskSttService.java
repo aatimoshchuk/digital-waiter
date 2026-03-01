@@ -1,7 +1,9 @@
 package nsu.sber.voiceassistant.service.stt;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -10,13 +12,18 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.Map;
 
+@Slf4j
 @Service
-@RequiredArgsConstructor
 public class VoskSttService implements SttService {
-    @Value("${vosk.server.http.url:http://localhost:2701}")
     private String voskHttpUrl;
+    private final RestTemplate restTemplate;
 
-    private final RestTemplate restTemplate = new RestTemplate();
+    public VoskSttService(
+            RestTemplate restTemplate,
+            @Value("${vosk.server.http.url:http://localhost:2701}") String voskHttpUrl) {
+        this.restTemplate = restTemplate;
+        this.voskHttpUrl = voskHttpUrl;
+    }
     @Override
     public String recognizeFile(MultipartFile audioFile) {
         try {
@@ -26,13 +33,16 @@ public class VoskSttService implements SttService {
             headers.set("X-Sample-Rate", "16000");
             HttpEntity<byte[]> request = new HttpEntity<>(audioData, headers);
 
-            String url = voskHttpUrl + "/recognize";
-            ResponseEntity<Map> response = restTemplate.postForEntity(url, request, Map.class);
+            ResponseEntity<Map<String, Object>> response = restTemplate.exchange(
+                    voskHttpUrl + "/recognize",
+                    HttpMethod.POST,
+                    request,
+                    new ParameterizedTypeReference<Map<String, Object>>() {}
+            );
 
-            if (response.getStatusCode() == HttpStatus.OK) {
-                Map<String, Object> body = response.getBody();
-                String text = (String) body.get("text");
-                return text;
+            Map<String, Object> body = response.getBody();
+            if (response.getStatusCode() == HttpStatus.OK && body != null) {
+                return (String) body.get("text");
             }
             return "Not Recognized";
 
