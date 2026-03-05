@@ -14,12 +14,14 @@ import nsu.sber.voiceassistant.service.nlu.provider.GigaChatProvider;
 import nsu.sber.web.dto.ModifyCartItemRequestDto;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Data
 class LlmAddItemsResponse {
-    private List<ModifyCartItemRequestDto> items;
+    private List<LlmCartItem> items;
 }
 
 @Slf4j
@@ -47,41 +49,62 @@ public class AddItemMiddleware implements Command.Middleware {
         String userData = addItemCommand.getEntities().stream()
                 .map(map -> map.entrySet().stream()
                         .map(e -> e.getKey() + ": " + e.getValue())
-                        .collect(Collectors.joining(", "))
-                ).collect(Collectors.joining("; "));
+                        .collect(Collectors.joining(", ")))
+                .collect(Collectors.joining("; "));
 
         log.info("[AddItemMiddleware] Входные данные для LLM: {}", userData);
 
         LlmRequest request = buildRequest(userData);
-        log.debug("[AddItemMiddleware] Отправка запроса в LLM: {}", request);
 
         LlmResponse response = llmProvider.complete(request);
+
         log.debug("[AddItemMiddleware] Ответ LLM RAW: {}", response.getContent());
 
         var llmParsed = ResponseParser.parse(response.getContent(), LlmAddItemsResponse.class);
 
         if (llmParsed == null || llmParsed.getItems() == null || llmParsed.getItems().isEmpty()) {
+
             log.warn("[AddItemMiddleware] LLM не вернул корректные данные");
+
             return (R) ProcessingResponse.builder()
                     .success(false)
                     .message("Не удалось распознать ни одного блюда. Уточните ваш запрос.")
                     .build();
         }
 
-        for (ModifyCartItemRequestDto item : llmParsed.getItems()) {
+        List<ModifyCartItemRequestDto> result = new ArrayList<>();
+
+        for (LlmCartItem item : llmParsed.getItems()) {
+
             if (item.getItemId() == null) {
+
                 log.warn("[AddItemMiddleware] Блюдо не найдено в меню: {}", item);
+
                 return (R) ProcessingResponse.builder()
                         .success(false)
                         .message("Некоторые блюда не найдены в меню.")
                         .build();
             }
+
+            int quantity = item.getQuantity() == null || item.getQuantity() <= 0
+                    ? 1
+                    : item.getQuantity();
+
+            for (int i = 0; i < quantity; i++) {
+
+                ModifyCartItemRequestDto dto = new ModifyCartItemRequestDto();
+
+                dto.setItemId(item.getItemId());
+                dto.setSizeId(item.getSizeId());
+
+                result.add(dto);
+            }
         }
 
-        addItemCommand.setModifyRequest(llmParsed.getItems());
-        log.info("[AddItemMiddleware] LLM успешно распознал блюда: {}", llmParsed.getItems());
+        addItemCommand.setModifyRequest(result);
+
+        log.info("[AddItemMiddleware] LLM успешно распознал блюда: {}", result);
 
         return next.invoke();
     }
 }
-
