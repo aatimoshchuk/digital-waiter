@@ -1,11 +1,11 @@
 package nsu.sber.domain.service;
 
 import lombok.RequiredArgsConstructor;
-import nsu.sber.config.RequestContextProvider;
 import nsu.sber.domain.model.cart.Cart;
 import nsu.sber.domain.model.cart.CartItem;
 import nsu.sber.domain.model.cart.CartResponse;
 import nsu.sber.domain.model.cart.ModifyCartItemRequest;
+import nsu.sber.domain.model.entity.RestaurantTable;
 import nsu.sber.domain.model.menu.Menu;
 import nsu.sber.domain.model.menu.MenuItem;
 import nsu.sber.domain.port.repository.redis.CartRepositoryPort;
@@ -20,25 +20,44 @@ import java.util.Objects;
 public class CartService {
 
     private final CartRepositoryPort cartRepository;
-    private final RequestContextProvider requestContextProvider;
+
     private final MenuService menuService;
+    private final RestaurantTableService restaurantTableService;
 
     public void addItem(ModifyCartItemRequest modifyCartItemRequest) {
-        Cart cart = getCart();
+        if (!menuService.existsItemById(modifyCartItemRequest.getItemId())) {
+            throw new DigitalWaiterException.DishNotFoundException(modifyCartItemRequest.getItemId());
+        }
+
+        if (modifyCartItemRequest.getSizeId() != null &&
+                !menuService.existsItemSizeById(modifyCartItemRequest.getItemId(), modifyCartItemRequest.getSizeId())) {
+            throw new DigitalWaiterException.SizeNotFoundException(
+                    modifyCartItemRequest.getSizeId(),
+                    modifyCartItemRequest.getItemId()
+            );
+        }
+
+        RestaurantTable restaurantTable = restaurantTableService.getCurrentRestaurantTable();
+
+        Cart cart = getCart(restaurantTable.getPosTableId());
         cart.addItem(modifyCartItemRequest);
 
-        cartRepository.save(requestContextProvider.getTableId(), cart);
+        cartRepository.save(restaurantTable.getPosTableId(), cart);
     }
 
     public void removeItem(ModifyCartItemRequest modifyCartItemRequest) {
-        Cart cart = getCart();
+        RestaurantTable restaurantTable = restaurantTableService.getCurrentRestaurantTable();
+
+        Cart cart = getCart(restaurantTable.getPosTableId());
         cart.removeItem(modifyCartItemRequest);
 
-        cartRepository.save(requestContextProvider.getTableId(), cart);
+        cartRepository.save(restaurantTable.getPosTableId(), cart);
     }
 
     public void clearCart() {
-        cartRepository.delete(requestContextProvider.getTableId());
+        RestaurantTable restaurantTable = restaurantTableService.getCurrentRestaurantTable();
+
+        cartRepository.delete(restaurantTable.getPosTableId());
     }
 
     public void clearCartByTableId(String tableId) {
@@ -46,14 +65,18 @@ public class CartService {
     }
 
     public boolean isCartEmpty() {
-        return cartRepository.findByTableId(requestContextProvider.getTableId())
+        RestaurantTable restaurantTable = restaurantTableService.getCurrentRestaurantTable();
+
+        return cartRepository.findByTableId(restaurantTable.getPosTableId())
                 .map(Cart::getItems)
                 .map(List::isEmpty)
                 .orElse(true);
     }
     
     public CartResponse getCartResponse() {
-        return cartRepository.findByTableId(requestContextProvider.getTableId())
+        RestaurantTable restaurantTable = restaurantTableService.getCurrentRestaurantTable();
+
+        return cartRepository.findByTableId(restaurantTable.getPosTableId())
                 .map(this::mapCartToCartResponse)
                 .orElse(CartResponse.builder().cartItemResponseList(List.of()).build());
     }
@@ -71,8 +94,8 @@ public class CartService {
                 .build();
     }
 
-    private Cart getCart() {
-        return cartRepository.findByTableId(requestContextProvider.getTableId())
+    private Cart getCart(String posTableId) {
+        return cartRepository.findByTableId(posTableId)
                 .orElse(new Cart());
     }
 

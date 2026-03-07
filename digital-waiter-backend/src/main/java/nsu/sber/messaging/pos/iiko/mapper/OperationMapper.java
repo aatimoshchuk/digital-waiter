@@ -23,6 +23,7 @@ public interface OperationMapper {
     )
     OperationStatusResponse dtoToOperationStatusResponse(OperationStatusResponseDto operationStatusResponseDto);
 
+    @Mapping(target = "organizationId", source = "posOrganizationId")
     OperationStatusRequestDto operationStatusRequestToDto(OperationStatusRequest operationStatusRequest);
 
 }

@@ -6,6 +6,8 @@ import lombok.Data;
 @Data
 @Builder
 public class OperationStatusRequest {
-    private String organizationId;
+    private String posOrganizationId;
     private String correlationId;
+    private Integer organizationId;
+    private String apiKeyEncrypted;
 }

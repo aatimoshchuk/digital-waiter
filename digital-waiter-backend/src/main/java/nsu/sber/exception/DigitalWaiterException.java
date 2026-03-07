@@ -17,36 +17,43 @@ public sealed class DigitalWaiterException extends RuntimeException {
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public static final class TableAuthWithThisIdNotFoundException extends DigitalWaiterException {
-        public TableAuthWithThisIdNotFoundException(int id) {
-            super("Authorization for table with id %s was not found".formatted(id));
-        }
-    }
-
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public static final class TableAuthWithThisLoginNotFoundException extends DigitalWaiterException {
-        public TableAuthWithThisLoginNotFoundException(String login) {
-            super("Authorization for table with login %s was not found".formatted(login));
-        }
-    }
-
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public static final class OrganizationNotFoundException extends DigitalWaiterException {
-        public OrganizationNotFoundException(int id) {
+    public static final class OrganizationWithThisIdNotFoundException extends DigitalWaiterException {
+        public OrganizationWithThisIdNotFoundException(int id) {
             super("Organization with id %s was not found".formatted(id));
         }
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public static final class TerminalGroupNotFoundException extends DigitalWaiterException {
-        public TerminalGroupNotFoundException(int id) {
+    public static final class NoOrganizationForRestaurantTableException extends DigitalWaiterException {
+        public NoOrganizationForRestaurantTableException() {
+            super("Organization associated with provided restaurant table was not found");
+        }
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public static final class NoOrganizationForTerminalGroupException extends DigitalWaiterException {
+        public NoOrganizationForTerminalGroupException() {
+            super("Organization associated with provided terminal group was not found");
+        }
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public static final class TerminalGroupWithThisIdNotFoundException extends DigitalWaiterException {
+        public TerminalGroupWithThisIdNotFoundException(int id) {
             super("Terminal group with id %s was not found".formatted(id));
         }
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public static final class RestaurantTableNotFoundException extends DigitalWaiterException {
-        public RestaurantTableNotFoundException(int id) {
+    public static final class NoTerminalGroupForRestaurantTableException extends DigitalWaiterException {
+        public NoTerminalGroupForRestaurantTableException() {
+            super("Terminal group associated with provided restaurant table was not found");
+        }
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public static final class RestaurantTableWithThisIdNotFoundException extends DigitalWaiterException {
+        public RestaurantTableWithThisIdNotFoundException(int id) {
             super("Restaurant table with id %s was not found".formatted(id));
         }
     }
@@ -72,17 +79,10 @@ public sealed class DigitalWaiterException extends RuntimeException {
         }
     }
 
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public static final class InterruptedOrderCreationException extends DigitalWaiterException {
-        public InterruptedOrderCreationException() {
-            super("Order creation was interrupted");
-        }
-    }
-
-    @ResponseStatus(HttpStatus.GATEWAY_TIMEOUT)
-    public static final class OrderCreationTimedOutException extends DigitalWaiterException {
-        public OrderCreationTimedOutException() {
-            super("Order creation timed out");
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public static final class SizeNotFoundException extends DigitalWaiterException {
+        public SizeNotFoundException(String sizeId, String dishId) {
+            super("Size with id %s was not found for dish with id %s".formatted(sizeId, dishId));
         }
     }
 
@@ -93,10 +93,10 @@ public sealed class DigitalWaiterException extends RuntimeException {
         }
     }
 
-    @ResponseStatus(HttpStatus.BAD_GATEWAY)
-    public static final class PosOperationException extends DigitalWaiterException {
-        public PosOperationException(String message) {
-            super("POS operation failed: %s".formatted(message));
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public static final class OrderItemsAddingException extends DigitalWaiterException {
+        public OrderItemsAddingException(String message) {
+            super("Order items adding failed: %s".formatted(message));
         }
     }
 
@@ -107,4 +107,81 @@ public sealed class DigitalWaiterException extends RuntimeException {
         }
     }
 
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public static final class UserWithThisLoginNotFoundException extends DigitalWaiterException {
+        public UserWithThisLoginNotFoundException() {
+            super("User with this login was not found");
+        }
+    }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public static final class UserWithThisLoginAlreadyExistException extends DigitalWaiterException {
+        public UserWithThisLoginAlreadyExistException() {
+            super("User with this login already exist");
+        }
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public static final class UserWithThisRestaurantTableIdNotFoundException extends DigitalWaiterException {
+        public UserWithThisRestaurantTableIdNotFoundException() {
+            super("User with this restaurant table ID was not found");
+        }
+    }
+
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public static final class ApiKeyEncryptionException extends DigitalWaiterException {
+        public ApiKeyEncryptionException() {
+            super("Failed to encrypt API key");
+        }
+    }
+
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public static final class ApiKeyDecryptionException extends DigitalWaiterException {
+        public ApiKeyDecryptionException() {
+            super("Failed to decrypt API key");
+        }
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public static final class InvalidUserRoleException extends DigitalWaiterException {
+        public InvalidUserRoleException() {
+            super("User role is not allowed to perform this action");
+        }
+    }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public static final class OrganizationAlreadyExistException extends DigitalWaiterException {
+        public OrganizationAlreadyExistException() {
+            super("Organization with the given posOrganizationId already exists");
+        }
+    }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public static final class TerminalGroupAlreadyExistException extends DigitalWaiterException {
+        public TerminalGroupAlreadyExistException() {
+            super("Terminal group with the given posTerminalGroupId associated with the given organization already " +
+                    "exist");
+        }
+    }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public static final class RestaurantTableAlreadyExistException extends DigitalWaiterException {
+        public RestaurantTableAlreadyExistException() {
+            super("Restaurant table with the given posTableId associated with the given terminal group already exist");
+        }
+    }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public static final class OrganizationHasDependenciesException extends DigitalWaiterException {
+        public OrganizationHasDependenciesException() {
+            super("Cannot delete organization due to existing dependencies");
+        }
+    }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public static final class TerminalGroupHasDependenciesException extends DigitalWaiterException {
+        public TerminalGroupHasDependenciesException() {
+            super("Cannot delete terminal group due to existing dependencies");
+        }
+    }
 }

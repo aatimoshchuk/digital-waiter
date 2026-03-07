@@ -9,6 +9,8 @@ public class RestaurantTable {
 
     private Integer id;
 
+    private String name;
+
     private String posTableId;
 
     private Integer terminalGroupId;

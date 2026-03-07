@@ -11,14 +11,21 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "restaurant_table")
+@Table(name = "restaurant_tables", schema = "dw")
 public class RestaurantTableEntity {
 
     @Id
-    @SequenceGenerator(name = "restaurant_table_id_generator", sequenceName = "restaurant_table_id_seq", allocationSize = 1)
-    @GeneratedValue(generator = "restaurant_table_id_generator", strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(
+            name = "restaurant_tables_id_generator",
+            sequenceName = "dw.restaurant_tables_id_seq",
+            allocationSize = 1
+    )
+    @GeneratedValue(generator = "restaurant_tables_id_generator", strategy = GenerationType.SEQUENCE)
     @Column(name = "id")
     private Integer id;
+
+    @Column(name = "name")
+    private String name;
 
     @Column(name = "pos_table_id")
     private String posTableId;

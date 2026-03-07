@@ -11,14 +11,21 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "terminal_group")
+@Table(name = "terminal_groups", schema = "dw")
 public class TerminalGroupEntity {
 
     @Id
-    @SequenceGenerator(name = "terminal_group_id_generator", sequenceName = "terminal_group_id_seq", allocationSize = 1)
-    @GeneratedValue(generator = "terminal_group_id_generator", strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(
+            name = "terminal_groups_id_generator",
+            sequenceName = "dw.terminal_groups_id_seq",
+            allocationSize = 1
+    )
+    @GeneratedValue(generator = "terminal_groups_id_generator", strategy = GenerationType.SEQUENCE)
     @Column(name = "id")
     private Integer id;
+
+    @Column(name = "name")
+    private String name;
 
     @Column(name = "pos_external_menu_id")
     private String posExternalMenuId;

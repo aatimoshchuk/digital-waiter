@@ -1,7 +1,7 @@
 package nsu.sber.domain.service;
 
 import lombok.RequiredArgsConstructor;
-import nsu.sber.config.RequestContextProvider;
+import nsu.sber.domain.model.entity.TerminalGroup;
 import nsu.sber.domain.model.menu.Menu;
 import nsu.sber.domain.model.menu.Menu.ItemCategory;
 import nsu.sber.domain.model.menu.MenuItem;
@@ -15,25 +15,26 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
 public class MenuService {
+    private final TerminalGroupService terminalGroupService;
+    private final OrganizationService organizationService;
 
-    private final RestaurantTableService restaurantTableService;
     private final PosMenuPort posMenuPort;
     private final MenuRepositoryPort menuRepositoryPort;
-    private final RequestContextProvider requestContextProvider;
 
     public Menu getMenu() {
-        int terminalGroupId = restaurantTableService.getCurrentRestaurantTable().getTerminalGroupId();
+        TerminalGroup terminalGroup = terminalGroupService.getCurrentTerminalGroup();
 
-        return menuRepositoryPort.findByTerminalGroupId(terminalGroupId)
-                .orElse(loadMenu(terminalGroupId));
+        return menuRepositoryPort.findByTerminalGroupId(terminalGroup.getId())
+                .orElse(loadMenu(terminalGroup));
     }
 
     public MenuItem getDishInfo(String dishId) {
-       return findItemById(getMenu(), dishId)
+        return findItemById(getMenu(), dishId)
                 .orElseThrow(() -> new DigitalWaiterException.DishNotFoundException(dishId));
     }
 
@@ -45,27 +46,52 @@ public class MenuService {
                 .findFirst();
     }
 
-    private Menu loadMenu(int terminalGroupId) {
-        Menu menu = posMenuPort.getMenu(buildMenuRequest())
+    public boolean existsItemById(String id) {
+        return getMenu().getItemCategories().stream()
+                .filter(Objects::nonNull)
+                .flatMap(c -> c.getItems().stream())
+                .filter(Objects::nonNull)
+                .anyMatch(i -> id.equals(i.getItemId()));
+    }
+
+    public boolean existsItemSizeById(String itemId, String sizeId) {
+        return getMenu().getItemCategories().stream()
+                .filter(Objects::nonNull)
+                .flatMap(c -> c.getItems().stream())
+                .filter(Objects::nonNull)
+                .filter(i -> itemId.equals(i.getItemId()))
+                .flatMap(i -> {
+                    List<MenuItem.ItemSize> sizes = i.getItemSizes();
+                    return sizes == null ? Stream.empty() : sizes.stream();
+                })
+                .anyMatch(s -> sizeId.equals(s.getSizeId()));
+    }
+
+    private Menu loadMenu(TerminalGroup terminalGroup) {
+        String posOrganizationId = organizationService
+                .getOrganization(terminalGroup.getOrganizationId())
+                .getPosOrganizationId();
+        String posExternalMenuId = terminalGroup.getPosExternalMenuId();
+
+        Menu menu = posMenuPort.getMenu(buildMenuRequest(posOrganizationId, posExternalMenuId))
                 .orElseThrow(() -> new DigitalWaiterException.ExternalMenuNotFoundException(
-                        requestContextProvider.getExternalMenuId()
+                        posExternalMenuId
                 ));
 
         Menu filteredMenu =  new Menu(
-                filterCategoriesByVisibility(menu.getItemCategories(),
-                        requestContextProvider.getOrganizationId())
+                filterCategoriesByVisibility(menu.getItemCategories(), posOrganizationId)
         );
 
-        menuRepositoryPort.save(terminalGroupId, filteredMenu);
+        menuRepositoryPort.save(terminalGroup.getId(), filteredMenu);
 
         return filteredMenu;
     }
 
-    private MenuRequest buildMenuRequest() {
+    private MenuRequest buildMenuRequest(String organizationId, String externalMenuId) {
         return MenuRequest
                 .builder()
-                .organizationIds(Collections.singletonList(requestContextProvider.getOrganizationId()))
-                .externalMenuId(requestContextProvider.getExternalMenuId())
+                .organizationIds(Collections.singletonList(organizationId))
+                .externalMenuId(externalMenuId)
                 .build();
     }
 

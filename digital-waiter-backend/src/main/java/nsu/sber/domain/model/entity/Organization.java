@@ -9,7 +9,9 @@ public class Organization {
 
     private Integer id;
 
-    private String apiKey;
+    private String name;
+
+    private String apiKeyEncrypted;
 
     private String posOrganizationId;
 

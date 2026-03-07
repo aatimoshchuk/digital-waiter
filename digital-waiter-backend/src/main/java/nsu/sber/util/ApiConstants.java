@@ -44,4 +44,39 @@ public final class ApiConstants {
     public static final String QUANTITY_EXAMPLE = "1";
     public static final String SIZE_NAME_EXAMPLE = "Standard";
 
+    public static final String ADMIN_ACCESS_RESTRICTION =
+            "Only authenticated administrative users are allowed to perform this operation";
+
+    public static final String API_KEY_DESCRIPTION = "API key used to access iiko API for this organization";
+    public static final String ORGANIZATION_ID_DESCRIPTION = "Internal organization ID";
+    public static final String POS_ORGANIZATION_ID_DESCRIPTION = "POS organization ID from iiko API";
+    public static final String ORGANIZATION_ID_EXAMPLE = "2";
+    public static final String ORGANIZATION_NAME_DESCRIPTION = "Human-readable organization name";
+    public static final String ORGANIZATION_NAME_EXAMPLE = "Sparks";
+
+    public static final String TERMINAL_GROUP_ID_DESCRIPTION = "Internal terminal group ID";
+    public static final String TERMINAL_GROUP_ID_EXAMPLE = "1";
+    public static final String TERMINAL_GROUP_NAME_DESCRIPTION = "Human-readable terminal group name";
+    public static final String TERMINAL_GROUP_NAME_EXAMPLE = "Sparks";
+    public static final String POS_TERMINAL_GROUP_ID_DESCRIPTION = "POS terminal group ID from iiko API";
+    public static final String POS_EXTERNAL_MENU_ID_DESCRIPTION = "POS external menu ID from iiko API";
+
+    public static final String TABLE_TERMINAL_GROUP_ID_DESCRIPTION = "Internal terminal group ID this table belongs to";
+    public static final String POS_TABLE_ID_DESCRIPTION = "POS table ID from iiko API";
+    public static final String TABLE_NAME_DESCRIPTION = "Table name from iiko restaurant hall layout";
+    public static final String TABLE_NAME_EXAMPLE = "Стол 1";
+    public static final String TABLE_ID_DESCRIPTION = "Internal table ID";
+    public static final String TABLE_ID_EXAMPLE = "1";
+    public static final String GUEST_LOGIN_DESCRIPTION = "Login for authorization in the guest interface";
+    public static final String LOGIN_EXAMPLE = "SparksGuest6";
+
+    public static final String PASSWORD_DESCRIPTION = "Password associated with the login";
+    public static final String PASSWORD_EXAMPLE = "Qwerty123";
+
+    public static final String TOKEN_EXAMPLE = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...";
+    public static final String ACCESS_TOKEN_DESCRIPTION= "JWT access token used for authenticated requests";
+    public static final String REFRESH_TOKEN_DESCRIPTION = "JWT refresh token used to obtain a new access token";
+
+    public static final String ORDER_ID_DESCRIPTION = "Unique identifier of the order";
+
 }

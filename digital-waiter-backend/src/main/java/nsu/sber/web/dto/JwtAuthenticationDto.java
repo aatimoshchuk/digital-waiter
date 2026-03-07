@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import nsu.sber.util.ApiConstants;
 
 @Data
 @AllArgsConstructor
@@ -11,9 +12,16 @@ public class JwtAuthenticationDto {
 
     @NotBlank
     @Schema(
-            description = "JWT access token used for authenticated requests",
-            example = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+            description = ApiConstants.ACCESS_TOKEN_DESCRIPTION,
+            example = ApiConstants.TOKEN_EXAMPLE
     )
-    private String token;
+    private String accessToken;
+
+    @NotBlank
+    @Schema(
+            description = ApiConstants.REFRESH_TOKEN_DESCRIPTION,
+            example = ApiConstants.TOKEN_EXAMPLE
+    )
+    private String refreshToken;
 
 }

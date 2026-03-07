@@ -1,11 +1,11 @@
 server:
-  port: 8080
+  port: 80
 
 spring:
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/digital_waiter_db}
-    username: ${SPRING_DATASOURCE_USERNAME:admin}
-    password: ${SPRING_DATASOURCE_PASSWORD:admin_pass}
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${POSTGRES_DB:digital_waiter_db}
+    username: ${POSTGRES_USER:admin}
+    password: ${POSTGRES_PASSWORD:admin_pass}
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -13,12 +13,13 @@ spring:
 
   data:
     redis:
-      host: ${SPRING_REDIS_HOST:localhost}
-      port: ${SPRING_REDIS_PORT:6379}
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
 
   flyway:
     enabled: true
     locations: classpath:db/migration
+    schemas: dw
 
 redis:
   cart:
@@ -44,3 +45,17 @@ gigachat:
   scope: ${GIGACHAT_SCOPE:GIGACHAT_API_PERS}
   model: ${GIGACHAT_MODEL:GigaChat}
   api-url: ${GIGACHAT_API_URL:https://gigachat.devices.sberbank.ru/api/v1}
+
+token:
+  signing:
+    key: ${TOKEN_AUTH_KEY:mZ2V3aXJ0aGZ4c2xqZG5mbXlza2Zqd2Vya2FzbGpoZWQ0MTI=}
+  duration:
+    access: ${TOKEN_DURATION_ACCESS:60}
+    update: ${TOKEN_DURATION_UPDATE:1440}
+
+crypto:
+  api-key:
+    secret: ${API_KEY_CRYPTO_SECRET:Cu7xiXD0bUK/j3NvEEo5/ZbxhwxTFeUEvTewAKv6LCo=}
+
+password:
+  length: ${PASSWORD_LENGTH:8}
