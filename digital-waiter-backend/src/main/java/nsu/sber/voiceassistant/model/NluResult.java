@@ -1,0 +1,28 @@
+package nsu.sber.voiceassistant.model;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
+import java.util.Map;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class NluResult {
+    private String text;
+    private String intent;
+    private double confidence;
+    private List<Map<String, String>> entities;
+    private String response;
+
+    public static NluResult error(String text) {
+        return NluResult.builder()
+                .text(text)
+                .response("Sorry, I didn't understand your request.")
+                .build();
+    }
+}
