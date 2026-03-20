@@ -23,9 +23,9 @@ spring:
 
 redis:
   cart:
-    ttl-hours: ${REDIS_CART_TTL:2}
+    ttl-hours: ${REDIS_CART_TTL:1}
   menu:
-    ttl-hours: ${REDIS_MENU_TTL:1}
+    ttl-minutes: ${REDIS_MENU_TTL:10}
 
 iiko:
   url: https://api-ru.iiko.services

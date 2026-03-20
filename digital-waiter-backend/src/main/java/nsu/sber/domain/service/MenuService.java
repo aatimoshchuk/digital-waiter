@@ -3,9 +3,10 @@ package nsu.sber.domain.service;
 import lombok.RequiredArgsConstructor;
 import nsu.sber.domain.model.entity.TerminalGroup;
 import nsu.sber.domain.model.menu.Menu;
-import nsu.sber.domain.model.menu.Menu.ItemCategory;
 import nsu.sber.domain.model.menu.MenuItem;
 import nsu.sber.domain.model.menu.MenuRequest;
+import nsu.sber.domain.model.menu.StopList;
+import nsu.sber.domain.model.menu.StopListRequest;
 import nsu.sber.domain.port.pos.PosMenuPort;
 import nsu.sber.domain.port.repository.redis.MenuRepositoryPort;
 import nsu.sber.exception.DigitalWaiterException;
@@ -13,8 +14,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
@@ -74,17 +78,34 @@ public class MenuService {
         String posExternalMenuId = terminalGroup.getPosExternalMenuId();
 
         Menu menu = posMenuPort.getMenu(buildMenuRequest(posOrganizationId, posExternalMenuId))
-                .orElseThrow(() -> new DigitalWaiterException.ExternalMenuNotFoundException(
-                        posExternalMenuId
-                ));
+                .orElseThrow(() -> new DigitalWaiterException.ExternalMenuNotFoundException(posExternalMenuId));
 
-        Menu filteredMenu =  new Menu(
-                filterCategoriesByVisibility(menu.getItemCategories(), posOrganizationId)
-        );
+        filterCategoriesByVisibility(menu, posOrganizationId);
+        removeStopListItems(menu, posOrganizationId, terminalGroup.getPosTerminalGroupId());
 
-        menuRepositoryPort.save(terminalGroup.getId(), filteredMenu);
+        menuRepositoryPort.save(terminalGroup.getId(), menu);
 
-        return filteredMenu;
+        return menu;
+    }
+
+    private void removeStopListItems(Menu menu, String organizationId, String terminalGroupId) {
+        StopList stopList = posMenuPort.getStopList(buildStopListRequest(organizationId, terminalGroupId));
+
+        try {
+            List<StopList.StopListItem> items =
+                    stopList.getTerminalGroupStopLists().getFirst().getItems().getFirst().getItems();
+
+            Set<String> stopListProductIds = items.stream()
+                    .filter(i -> i.getBalance() == 0)
+                    .map(StopList.StopListItem::getProductId)
+                    .collect(Collectors.toSet());
+
+            menu.getItemCategories().forEach(category ->
+                    category.setItems(category.getItems().stream()
+                            .filter(item -> !stopListProductIds.contains(item.getItemId()))
+                            .toList())
+            );
+        } catch (NoSuchElementException ignore) {}
     }
 
     private MenuRequest buildMenuRequest(String organizationId, String externalMenuId) {
@@ -95,17 +116,24 @@ public class MenuService {
                 .build();
     }
 
-    private List<ItemCategory> filterCategoriesByVisibility(List<ItemCategory> categories, String organizationId) {
-        return categories.stream()
-                .filter(c -> !c.isHidden())
-                .map(c -> Menu.ItemCategory.builder()
-                        .id(c.getId())
-                        .name(c.getName())
-                        .items(filterItemsByVisibility(c.getItems(), organizationId))
-                        .build()
-                )
-                .filter(c -> !c.getItems().isEmpty())
-                .toList();
+    private StopListRequest buildStopListRequest(String organizationId, String terminalGroupId) {
+        return StopListRequest
+                .builder()
+                .organizationIds(Collections.singletonList(organizationId))
+                .terminalGroupIds(Collections.singletonList(terminalGroupId))
+                .build();
+    }
+
+    private void filterCategoriesByVisibility(Menu menu, String organizationId) {
+        menu.getItemCategories().removeIf(c -> {
+            if (c.isHidden()) {
+                return true;
+            }
+
+            c.setItems(filterItemsByVisibility(c.getItems(), organizationId));
+
+            return c.getItems().isEmpty();
+        });
     }
 
     private List<MenuItem> filterItemsByVisibility(List<MenuItem> items, String organizationId) {

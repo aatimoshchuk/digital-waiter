@@ -17,12 +17,12 @@ public class RedisMenuRepository implements MenuRepositoryPort {
 
     private final RedisTemplate<String, Menu> menuRedisTemplate;
 
-    @Value("${redis.menu.ttl-hours:2}")
-    private int ttlHours;
+    @Value("${redis.menu.ttl-minutes}")
+    private int ttlMinutes;
 
     @Override
     public void save(int terminalGroupId, Menu menu) {
-        menuRedisTemplate.opsForValue().set(getKey(terminalGroupId), menu, ttlHours, TimeUnit.HOURS);
+        menuRedisTemplate.opsForValue().set(getKey(terminalGroupId), menu, ttlMinutes, TimeUnit.MINUTES);
     }
 
     @Override

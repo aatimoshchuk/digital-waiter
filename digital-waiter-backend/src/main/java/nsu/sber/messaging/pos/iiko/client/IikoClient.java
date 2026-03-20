@@ -9,6 +9,8 @@ import nsu.sber.messaging.pos.iiko.dto.MenuRequestDto;
 import nsu.sber.messaging.pos.iiko.dto.MenuResponseDto;
 import nsu.sber.messaging.pos.iiko.dto.OperationStatusRequestDto;
 import nsu.sber.messaging.pos.iiko.dto.OperationStatusResponseDto;
+import nsu.sber.messaging.pos.iiko.dto.StopListRequestDto;
+import nsu.sber.messaging.pos.iiko.dto.StopListResponseDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,6 +28,12 @@ public interface IikoClient {
     MenuResponseDto getMenu(
             @RequestHeader("Authorization") String token,
             @RequestBody MenuRequestDto menuRequestDto
+    );
+
+    @PostMapping("/api/1/stop_lists")
+    StopListResponseDto getStopList(
+            @RequestHeader("Authorization") String token,
+            @RequestBody StopListRequestDto stopListRequestDto
     );
 
     @PostMapping("/api/1/order/create")
