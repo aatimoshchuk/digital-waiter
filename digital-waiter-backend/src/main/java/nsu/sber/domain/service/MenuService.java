@@ -93,7 +93,7 @@ public class MenuService {
 
         try {
             List<StopList.StopListItem> items =
-                    stopList.getTerminalGroupStopLists().getFirst().getItems().getFirst().getItems();
+                    stopList.getTerminalGroupStopLists().get(0).getItems().get(0).getItems();
 
             Set<String> stopListProductIds = items.stream()
                     .filter(i -> i.getBalance() == 0)
@@ -105,7 +105,7 @@ public class MenuService {
                             .filter(item -> !stopListProductIds.contains(item.getItemId()))
                             .toList())
             );
-        } catch (NoSuchElementException ignore) {}
+        } catch (IndexOutOfBoundsException ignore) {}
     }
 
     private MenuRequest buildMenuRequest(String organizationId, String externalMenuId) {
