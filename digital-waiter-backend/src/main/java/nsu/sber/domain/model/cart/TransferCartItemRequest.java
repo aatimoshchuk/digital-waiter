@@ -5,4 +5,8 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class ModifyCartItemRequest extends CartItemRequest { }
+public class TransferCartItemRequest extends CartItemRequest {
+
+    private Integer finalGuestNumber;
+
+}

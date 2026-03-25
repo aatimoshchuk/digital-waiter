@@ -184,4 +184,11 @@ public sealed class DigitalWaiterException extends RuntimeException {
             super("Cannot delete terminal group due to existing dependencies");
         }
     }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public static final class GuestNotFoundException extends DigitalWaiterException {
+        public GuestNotFoundException() {
+            super("Guest was not found. Current guest count is lower than required number");
+        }
+    }
 }

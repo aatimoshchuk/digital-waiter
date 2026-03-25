@@ -1,7 +1,6 @@
 package nsu.sber.validation;
 
 import jakarta.validation.Constraint;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
@@ -15,7 +14,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = {})
 @Documented
-@NotBlank
 @Size(min = 4, max = 50, message = "Login must be 4-50 characters long")
 @Pattern(
         regexp = "^[A-Za-z0-9_]+$",

@@ -10,6 +10,7 @@ import java.util.List;
 @Builder
 public class CartResponse {
 
+    private Integer guestCount;
     private List<CartItemResponse> cartItemResponseList = new ArrayList<>();
 
     @Data
@@ -29,7 +30,9 @@ public class CartResponse {
 
         private String buttonImageUrl;
 
-        private int quantity;
+        private double quantity;
+
+        private int guestNumber;
     }
 
 }

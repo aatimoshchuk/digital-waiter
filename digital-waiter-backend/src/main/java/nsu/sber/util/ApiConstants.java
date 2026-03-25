@@ -41,7 +41,7 @@ public final class ApiConstants {
     public static final String MEASURE_UNIT_EXAMPLE = "GRAM";
     public static final String PRICE_EXAMPLE = "480.0";
     public static final String IMAGE_URL_EXAMPLE = "https://clck.ru/3QJ339";
-    public static final String QUANTITY_EXAMPLE = "1";
+    public static final String QUANTITY_EXAMPLE = "1.0";
     public static final String SIZE_NAME_EXAMPLE = "Standard";
 
     public static final String ADMIN_ACCESS_RESTRICTION =
@@ -78,5 +78,10 @@ public final class ApiConstants {
     public static final String REFRESH_TOKEN_DESCRIPTION = "JWT refresh token used to obtain a new access token";
 
     public static final String ORDER_ID_DESCRIPTION = "Unique identifier of the order";
+
+    public static final String GUEST_NUMBER_EXAMPLE = "1";
+    public static final String GUEST_NUMBER_DESCRIPTION = "Guest number in the user interface";
+    public static final String GUEST_NUMBERS_DESCRIPTION = "Numbers of guests between whom the dish is to be divided";
+    public static final String GUEST_NUMBERS_EXAMPLE = "[\"1\", \"2\", \"3\"";
 
 }

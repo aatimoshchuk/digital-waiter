@@ -9,4 +9,5 @@ public class OrderItemDto {
     private String type;
     private double amount;
     private String productSizeId;
+    private String comment;
 }

@@ -8,7 +8,7 @@ import nsu.sber.util.ApiConstants;
 @Data
 public class UpdateOrganizationRequestDto {
 
-    @Size(min = 4, max = 50, message = "Name must be between 4 and 50 characters")
+    @Size(min = 4, max = 50, message = "The value of the 'name' field must be between 4 and 50 characters")
     @Schema(
             description = ApiConstants.ORGANIZATION_NAME_DESCRIPTION,
             example = ApiConstants.ORGANIZATION_NAME_EXAMPLE

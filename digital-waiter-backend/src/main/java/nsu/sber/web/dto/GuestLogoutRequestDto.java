@@ -8,7 +8,7 @@ import nsu.sber.util.ApiConstants;
 @Data
 public class GuestLogoutRequestDto {
 
-    @NotBlank
+    @NotBlank(message = "Field 'password' cannot be empty")
     @Schema(
             description = "Guest user password for confirmation of logout",
             example = ApiConstants.PASSWORD_EXAMPLE

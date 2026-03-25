@@ -15,6 +15,8 @@ public class CartItem implements Serializable {
 
     private String sizeId;
 
-    private int quantity;
+    private double quantity;
+
+    private int guestNumber;
 
 }

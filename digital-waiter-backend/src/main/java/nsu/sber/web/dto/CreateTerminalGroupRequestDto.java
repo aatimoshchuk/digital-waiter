@@ -11,30 +11,30 @@ import nsu.sber.util.ApiConstants;
 @Data
 public class CreateTerminalGroupRequestDto {
 
-    @NotBlank
-    @Size(min = 5, max = 100, message = "Name must be between 4 and 50 characters")
+    @NotBlank(message = "Field 'name' cannot be empty")
+    @Size(min = 5, max = 100, message = "The value of the 'name' field must be between 4 and 50 characters")
     @Schema(
             description = ApiConstants.TERMINAL_GROUP_NAME_DESCRIPTION,
             example = ApiConstants.TERMINAL_GROUP_NAME_EXAMPLE
     )
     private String name;
 
-    @Min(1)
-    @NotNull
+    @Min(value = 1, message = "The value of the 'organizationId' field must be greater than or equal to 1")
+    @NotNull(message = "Field 'organizationId' cannot be null")
     @Schema(
             description = ApiConstants.ORGANIZATION_ID_DESCRIPTION,
             example = ApiConstants.ORGANIZATION_ID_EXAMPLE
     )
     private Integer organizationId;
 
-    @NotBlank
+    @NotBlank(message = "Field 'posTerminalGroupId' cannot be empty")
     @Schema(
             description = ApiConstants.POS_TERMINAL_GROUP_ID_DESCRIPTION,
             example = ApiConstants.POS_ID_EXAMPLE
     )
     private String posTerminalGroupId;
 
-    @NotBlank
+    @NotBlank(message = "Field 'posExternalMenuId' cannot be empty")
     @Schema(
             description = ApiConstants.POS_EXTERNAL_MENU_ID_DESCRIPTION,
             example = ApiConstants.POS_ID_EXAMPLE

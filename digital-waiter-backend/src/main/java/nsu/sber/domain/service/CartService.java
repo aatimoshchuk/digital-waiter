@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import nsu.sber.domain.model.cart.Cart;
 import nsu.sber.domain.model.cart.CartItem;
 import nsu.sber.domain.model.cart.CartResponse;
+import nsu.sber.domain.model.cart.DivideCartItemRequest;
 import nsu.sber.domain.model.cart.ModifyCartItemRequest;
+import nsu.sber.domain.model.cart.TransferCartItemRequest;
 import nsu.sber.domain.model.entity.RestaurantTable;
 import nsu.sber.domain.model.menu.Menu;
 import nsu.sber.domain.model.menu.MenuItem;
@@ -24,6 +26,15 @@ public class CartService {
     private final MenuService menuService;
     private final RestaurantTableService restaurantTableService;
 
+    public void addGuest() {
+        RestaurantTable restaurantTable = restaurantTableService.getCurrentRestaurantTable();
+
+        Cart cart = getCart(restaurantTable.getPosTableId());
+        cart.addGuest();
+
+        cartRepository.save(restaurantTable.getPosTableId(), cart);
+    }
+
     public void addItem(ModifyCartItemRequest modifyCartItemRequest) {
         if (!menuService.existsItemById(modifyCartItemRequest.getItemId())) {
             throw new DigitalWaiterException.DishNotFoundException(modifyCartItemRequest.getItemId());
@@ -40,7 +51,12 @@ public class CartService {
         RestaurantTable restaurantTable = restaurantTableService.getCurrentRestaurantTable();
 
         Cart cart = getCart(restaurantTable.getPosTableId());
-        cart.addItem(modifyCartItemRequest);
+
+        if (!cart.isGuestExists(modifyCartItemRequest)) {
+            throw new DigitalWaiterException.GuestNotFoundException();
+        }
+
+        cart.addItem(modifyCartItemRequest, 1);
 
         cartRepository.save(restaurantTable.getPosTableId(), cart);
     }
@@ -49,8 +65,38 @@ public class CartService {
         RestaurantTable restaurantTable = restaurantTableService.getCurrentRestaurantTable();
 
         Cart cart = getCart(restaurantTable.getPosTableId());
-        cart.removeItem(modifyCartItemRequest);
 
+        if (!cart.isGuestExists(modifyCartItemRequest)) {
+            throw new DigitalWaiterException.GuestNotFoundException();
+        }
+
+        cart.removeItem(modifyCartItemRequest);
+        cartRepository.save(restaurantTable.getPosTableId(), cart);
+    }
+
+    public void transferItem(TransferCartItemRequest transferCartItemRequest) {
+        RestaurantTable restaurantTable = restaurantTableService.getCurrentRestaurantTable();
+
+        Cart cart = getCart(restaurantTable.getPosTableId());
+
+        if (!cart.isGuestExists(transferCartItemRequest)) {
+            throw new DigitalWaiterException.GuestNotFoundException();
+        }
+
+        cart.transferItem(transferCartItemRequest);
+        cartRepository.save(restaurantTable.getPosTableId(), cart);
+    }
+
+    public void divideItem(DivideCartItemRequest divideCartItemRequest) {
+        RestaurantTable restaurantTable = restaurantTableService.getCurrentRestaurantTable();
+
+        Cart cart = getCart(restaurantTable.getPosTableId());
+
+        if (!cart.isGuestExists(divideCartItemRequest)) {
+            throw new DigitalWaiterException.GuestNotFoundException();
+        }
+
+        cart.divideItem(divideCartItemRequest);
         cartRepository.save(restaurantTable.getPosTableId(), cart);
     }
 
@@ -90,6 +136,7 @@ public class CartService {
                 .toList();
 
         return CartResponse.builder()
+                .guestCount(cart.getGuestCount())
                 .cartItemResponseList(items)
                 .build();
     }
@@ -115,6 +162,7 @@ public class CartService {
                 .portionWeightGrams(itemSize.getPortionWeightGrams())
                 .measureUnitType(itemSize.getMeasureUnitType())
                 .buttonImageUrl(itemSize.getButtonImageUrl())
+                .guestNumber(cartItem.getGuestNumber())
                 .build();
     }
 

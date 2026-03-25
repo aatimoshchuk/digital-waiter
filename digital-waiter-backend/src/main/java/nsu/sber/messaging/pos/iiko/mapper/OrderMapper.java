@@ -33,6 +33,7 @@ public interface OrderMapper {
     @Mapping(target = "amount", source = "quantity")
     @Mapping(target = "productSizeId", source = "sizeId")
     @Mapping(target = "type", constant = "Product")
+    @Mapping(target = "comment", expression = "java(\"Гость \" + item.getGuestNumber())")
     OrderItemDto cartItemToOrderItem(CartResponse.CartItemResponse item);
 
 }

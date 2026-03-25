@@ -45,11 +45,6 @@ public class ExceptionHandlingController {
                 .findFirst()
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .orElse("Incorrect value for one of the fields");
-//        String messages = e.getBindingResult()
-//                .getFieldErrors()
-//                .stream()
-//                .map(error -> formatPatternMessage(error.getField(), error.getDefaultMessage()))
-//                .collect(Collectors.joining("; "));
 
         return buildErrorResponse(HttpStatus.BAD_REQUEST, message, e);
     }

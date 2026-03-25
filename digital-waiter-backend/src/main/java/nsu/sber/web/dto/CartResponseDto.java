@@ -11,6 +11,9 @@ import java.util.List;
 @Data
 public class CartResponseDto {
 
+    @Schema(description = "Guest count")
+    private Integer guestCount;
+
     @Schema(description = "Items in the cart")
     private List<CartResponse.CartItemResponse> cartItemResponseList = new ArrayList<>();
 
@@ -39,6 +42,9 @@ public class CartResponseDto {
         private String buttonImageUrl;
 
         @Schema(description = ApiConstants.QUANTITY_DESCRIPTION, example = ApiConstants.QUANTITY_EXAMPLE)
-        private int quantity;
+        private double quantity;
+
+        @Schema(description = ApiConstants.GUEST_NUMBER_DESCRIPTION, example = ApiConstants.GUEST_NUMBER_EXAMPLE)
+        private int guestNumber;
     }
 }

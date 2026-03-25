@@ -9,22 +9,22 @@ import nsu.sber.util.ApiConstants;
 @Data
 public class CreateOrganizationRequestDto {
 
-    @NotBlank
-    @Size(min = 4, max = 50, message = "Name must be 4-50 characters long")
+    @NotBlank(message = "Field 'name' cannot be empty")
+    @Size(min = 4, max = 50, message = "The value of the 'name' field must be 4-50 characters long")
     @Schema(
             description = ApiConstants.ORGANIZATION_NAME_DESCRIPTION,
             example = ApiConstants.ORGANIZATION_NAME_EXAMPLE
     )
     private String name;
 
-    @NotBlank
+    @NotBlank(message = "Field 'posOrganizationId' cannot be empty")
     @Schema(
             description = ApiConstants.POS_ORGANIZATION_ID_DESCRIPTION,
             example = ApiConstants.POS_ID_EXAMPLE
     )
     private String posOrganizationId;
 
-    @NotBlank
+    @NotBlank(message = "Field 'apiKey' cannot be empty")
     @Schema(description = ApiConstants.API_KEY_DESCRIPTION)
     private String apiKey;
 

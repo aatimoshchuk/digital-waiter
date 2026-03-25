@@ -8,7 +8,7 @@ import nsu.sber.util.ApiConstants;
 @Data
 public class ExtendTokenRequestDto {
 
-    @NotBlank
+    @NotBlank(message = "Field 'refreshToken' cannot be empty")
     @Schema(
             description = ApiConstants.REFRESH_TOKEN_DESCRIPTION,
             example = ApiConstants.TOKEN_EXAMPLE
