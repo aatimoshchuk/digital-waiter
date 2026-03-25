@@ -29,7 +29,7 @@ public interface CartDtoMapper {
     TransferCartItemRequest dtoToTransferCartItemRequest(TransferCartItemRequestDto transferCartItemRequestDto);
 
     @AfterMapping
-    default void handleEmptyList(@MappingTarget DivideCartItemRequest divideCartItemRequest, DivideCartItemRequestDto divideCartItemRequestDto) {
+    default void handleEmptyList(@MappingTarget DivideCartItemRequest divideCartItemRequest) {
         if (divideCartItemRequest.getFinalGuestNumbers() == null) {
             divideCartItemRequest.setFinalGuestNumbers(new ArrayList<>());
         }

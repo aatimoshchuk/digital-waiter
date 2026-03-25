@@ -11,7 +11,7 @@ import java.util.List;
 public class CartResponse {
 
     private Integer guestCount;
-    private List<CartItemResponse> cartItemResponseList = new ArrayList<>();
+    private List<CartItemResponse> cartItemResponseList;
 
     @Data
     @Builder
