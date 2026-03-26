@@ -12,6 +12,9 @@ public class MenuCommandFactory implements IntentCommandFactory {
 
     @Override
     public Command<ProcessingResponse> create(NluResult nlu) {
-        return new MenuCommand();
+        MenuCommand command = new MenuCommand();
+        command.setText(nlu.getText());
+        command.setEntities(nlu.getEntities());
+        return command;
     }
 }

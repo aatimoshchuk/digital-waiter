@@ -11,15 +11,18 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class MenuHandler implements Command.Handler<MenuCommand, ProcessingResponse> {
-    private final MenuStringBuilder menuBuilder;
+
+    private final MenuStringBuilder menuStringBuilder;
 
     @Override
     public ProcessingResponse handle(MenuCommand command) {
-        var menu = menuBuilder.buildMenuItemsString();
+        String message = menuStringBuilder.formatRelevantMenu(command.getItems());
+
+        log.info("[MenuHandler] Сформирован ответ по меню");
+
         return ProcessingResponse.builder()
                 .success(true)
-                .message("Наше меню " + menu)
+                .message(message)
                 .build();
     }
-
 }
