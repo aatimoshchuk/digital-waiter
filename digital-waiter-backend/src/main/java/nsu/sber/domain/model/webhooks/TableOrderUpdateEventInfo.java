@@ -6,6 +6,6 @@ import lombok.Data;
 public class TableOrderUpdateEventInfo {
     private String id;
     private String organizationId;
-    private Integer timestamp;
+    private Long timestamp;
     private String creationStatus;
 }
