@@ -27,9 +27,7 @@ public class WebHookController {
             summary = "Handle a WebHook notification",
             description = "Handles a WebHook notification (only for iiko)"
     )
-    public void handleWebHook(
-            @RequestHeader(value = "Authorization", required = true) String token,
-            @RequestBody BaseWebHookEventDto eventDto) {
+    public void handleWebHook(@RequestBody BaseWebHookEventDto eventDto) {
         webHookService.processEvent(webHookDtoMapper.dtoToBaseWebHookEvent(eventDto));
     }
 }

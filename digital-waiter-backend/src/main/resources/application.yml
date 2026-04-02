@@ -34,7 +34,7 @@ iiko:
       max-attempts: ${IIKO_STATUS_CHECK_MAX_ATTEMPTS:5}
       delay-ms: ${IIKO_STATUS_CHECK_DELAY_MS:500}
   webhooks:
-    token: ${IIKO_WEBHOOKS_TOKEN}
+    token: ${IIKO_WEBHOOKS_TOKEN:}
 
 digital-waiter:
   url: https://digital-waiter.sberlab.nsu.ru
