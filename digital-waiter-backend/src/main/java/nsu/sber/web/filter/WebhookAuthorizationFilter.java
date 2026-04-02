@@ -42,6 +42,8 @@ public class WebhookAuthorizationFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
         logger.info("WEBHOOK: " + request.getRequestURI());
+        logger.info("WEBHOOK: " + request.getHeader("Authorization"));
+
         String token = request.getHeader(HEADER_NAME);
 
         if (token == null || !token.equals(webHookToken)) {
