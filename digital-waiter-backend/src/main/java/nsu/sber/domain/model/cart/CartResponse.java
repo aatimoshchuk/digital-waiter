@@ -3,7 +3,6 @@ package nsu.sber.domain.model.cart;
 import lombok.Builder;
 import lombok.Data;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Data

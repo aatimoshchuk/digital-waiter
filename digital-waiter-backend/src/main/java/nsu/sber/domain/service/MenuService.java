@@ -70,7 +70,7 @@ public class MenuService {
                 .anyMatch(s -> sizeId.equals(s.getSizeId()));
     }
 
-    private Menu loadMenu(TerminalGroup terminalGroup) {
+    public Menu loadMenu(TerminalGroup terminalGroup) {
         String posOrganizationId = organizationService
                 .getOrganization(terminalGroup.getOrganizationId())
                 .getPosOrganizationId();
