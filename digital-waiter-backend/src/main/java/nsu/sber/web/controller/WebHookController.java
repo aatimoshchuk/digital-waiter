@@ -9,7 +9,6 @@ import nsu.sber.web.dto.BaseWebHookEventDto;
 import nsu.sber.web.mapper.WebHookDtoMapper;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,6 +27,7 @@ public class WebHookController {
             description = "Handles a WebHook notification (only for iiko)"
     )
     public void handleWebHook(@RequestBody BaseWebHookEventDto eventDto) {
+        log.info("Webhook was received: {}", eventDto.getEventType());
         webHookService.processEvent(webHookDtoMapper.dtoToBaseWebHookEvent(eventDto));
     }
 }
