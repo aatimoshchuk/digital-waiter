@@ -35,6 +35,7 @@ iiko:
       delay-ms: ${IIKO_STATUS_CHECK_DELAY_MS:500}
   webhooks:
     token: ${IIKO_WEBHOOKS_TOKEN:}
+    login: ${IIKO_WEBHOOKS_LOGIN:iiko}
 
 digital-waiter:
   url: https://digital-waiter.sberlab.nsu.ru

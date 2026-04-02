@@ -13,6 +13,8 @@ public interface TerminalGroupRepository extends JpaRepository<TerminalGroupEnti
 
     Optional<TerminalGroupEntity> findById(int id);
 
+    Optional<TerminalGroupEntity> findByPosTerminalGroupId(String posTerminalGroupId);
+
     @Query("""
             SELECT tg FROM TerminalGroupEntity tg
                 JOIN RestaurantTableEntity rt ON rt.terminalGroupId = tg.id

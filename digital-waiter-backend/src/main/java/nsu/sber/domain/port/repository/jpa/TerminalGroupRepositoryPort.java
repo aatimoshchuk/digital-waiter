@@ -9,6 +9,8 @@ public interface TerminalGroupRepositoryPort {
 
     Optional<TerminalGroup> findById(int id);
 
+    Optional<TerminalGroup> findByPosTerminalGroupId(String posTerminalGroupId);
+
     boolean existsById(Integer id);
 
     Optional<TerminalGroup> findByRestaurantTableId(Integer restaurantTableId);

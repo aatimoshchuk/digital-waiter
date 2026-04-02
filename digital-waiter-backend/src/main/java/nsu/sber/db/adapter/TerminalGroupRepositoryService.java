@@ -25,6 +25,12 @@ public class TerminalGroupRepositoryService implements TerminalGroupRepositoryPo
     }
 
     @Override
+    public Optional<TerminalGroup> findByPosTerminalGroupId(String posTerminalGroupId) {
+        return terminalGroupRepository.findByPosTerminalGroupId(posTerminalGroupId)
+                .map(terminalGroupEntityMapper::entityToTerminalGroup);
+    }
+
+    @Override
     public boolean existsById(Integer id) {
         return terminalGroupRepository.existsById(id);
     }

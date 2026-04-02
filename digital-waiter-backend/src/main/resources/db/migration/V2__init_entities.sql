@@ -2,7 +2,8 @@ SET search_path TO dw;
 
 CREATE TYPE ROLE_TYPE AS ENUM (
     'ADMIN',
-    'GUEST'
+    'GUEST',
+    'IIKO'
 );
 
 CREATE TABLE organizations (

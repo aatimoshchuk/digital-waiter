@@ -9,6 +9,8 @@ public interface OrganizationRepositoryPort {
 
     Optional<Organization> findById(Integer id);
 
+    Optional<Organization> findByPosOrganizationId(String posOrganizationId);
+
     boolean existsById(Integer id);
 
     boolean existsByPosOrganizationId(String posOrganizationId);

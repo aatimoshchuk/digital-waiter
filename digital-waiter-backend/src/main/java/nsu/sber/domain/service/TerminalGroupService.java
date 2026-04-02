@@ -27,6 +27,11 @@ public class TerminalGroupService {
                 .orElseThrow(() -> new DigitalWaiterException.TerminalGroupWithThisIdNotFoundException(id));
     }
 
+    public TerminalGroup getTerminalGroupByPosId(String posId) {
+        return terminalGroupRepository.findByPosTerminalGroupId(posId)
+                .orElseThrow(() -> new DigitalWaiterException.TerminalGroupWithThisPosIdNotFoundException(posId));
+    }
+
     public List<TerminalGroup> getTerminalGroupsByOrganizationId(Integer organizationId) {
         if (!organizationService.isOrganizationExists(organizationId)) {
             throw new DigitalWaiterException.OrganizationWithThisIdNotFoundException(organizationId);

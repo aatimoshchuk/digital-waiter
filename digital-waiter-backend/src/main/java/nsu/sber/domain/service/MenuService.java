@@ -1,12 +1,15 @@
 package nsu.sber.domain.service;
 
 import lombok.RequiredArgsConstructor;
+import nsu.sber.domain.model.entity.Organization;
+import nsu.sber.domain.model.entity.RoleType;
 import nsu.sber.domain.model.entity.TerminalGroup;
 import nsu.sber.domain.model.menu.Menu;
 import nsu.sber.domain.model.menu.MenuItem;
 import nsu.sber.domain.model.menu.MenuRequest;
 import nsu.sber.domain.model.menu.StopList;
 import nsu.sber.domain.model.menu.StopListRequest;
+import nsu.sber.domain.port.CurrentUserProvider;
 import nsu.sber.domain.port.pos.PosMenuPort;
 import nsu.sber.domain.port.repository.redis.MenuRepositoryPort;
 import nsu.sber.exception.DigitalWaiterException;
@@ -28,6 +31,8 @@ public class MenuService {
 
     private final PosMenuPort posMenuPort;
     private final MenuRepositoryPort menuRepositoryPort;
+
+    private final CurrentUserProvider currentUserProvider;
 
     public Menu getMenu() {
         TerminalGroup terminalGroup = terminalGroupService.getCurrentTerminalGroup();
@@ -76,8 +81,19 @@ public class MenuService {
                 .getPosOrganizationId();
         String posExternalMenuId = terminalGroup.getPosExternalMenuId();
 
-        Menu menu = posMenuPort.getMenu(buildMenuRequest(posOrganizationId, posExternalMenuId))
-                .orElseThrow(() -> new DigitalWaiterException.ExternalMenuNotFoundException(posExternalMenuId));
+        MenuRequest request = buildMenuRequest(posOrganizationId, posExternalMenuId);
+        Organization organization = organizationService.getOrganization(terminalGroup.getOrganizationId());
+
+        Menu menu;
+
+        if (currentUserProvider.getCurrentUser().getRole() != RoleType.GUEST) {
+            menu = posMenuPort.getMenu(request, terminalGroup.getOrganizationId(), organization.getApiKeyEncrypted())
+                    .orElseThrow(() -> new DigitalWaiterException.ExternalMenuNotFoundException(posExternalMenuId));
+        } else {
+            menu = posMenuPort.getMenu(request)
+                    .orElseThrow(() -> new DigitalWaiterException.ExternalMenuNotFoundException(posExternalMenuId));
+
+        }
 
         filterCategoriesByVisibility(menu, posOrganizationId);
         removeStopListItems(menu, posOrganizationId, terminalGroup.getPosTerminalGroupId());
@@ -88,7 +104,16 @@ public class MenuService {
     }
 
     private void removeStopListItems(Menu menu, String organizationId, String terminalGroupId) {
-        StopList stopList = posMenuPort.getStopList(buildStopListRequest(organizationId, terminalGroupId));
+        StopListRequest request = buildStopListRequest(organizationId, terminalGroupId);
+        Organization organization = organizationService.getOrganizationByPosId(organizationId);
+
+        StopList stopList;
+
+        if (currentUserProvider.getCurrentUser().getRole() != RoleType.GUEST) {
+            stopList = posMenuPort.getStopList(request, organization.getId(), organization.getApiKeyEncrypted());
+        } else {
+            stopList = posMenuPort.getStopList(request);
+        }
 
         try {
             List<StopList.StopListItem> items =

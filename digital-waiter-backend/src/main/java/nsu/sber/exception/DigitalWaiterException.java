@@ -24,6 +24,13 @@ public sealed class DigitalWaiterException extends RuntimeException {
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
+    public static final class OrganizationWithThisPosIdNotFoundException extends DigitalWaiterException {
+        public OrganizationWithThisPosIdNotFoundException(String posId) {
+            super("Organization with posId %s was not found".formatted(posId));
+        }
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     public static final class NoOrganizationForRestaurantTableException extends DigitalWaiterException {
         public NoOrganizationForRestaurantTableException() {
             super("Organization associated with provided restaurant table was not found");
@@ -41,6 +48,13 @@ public sealed class DigitalWaiterException extends RuntimeException {
     public static final class TerminalGroupWithThisIdNotFoundException extends DigitalWaiterException {
         public TerminalGroupWithThisIdNotFoundException(int id) {
             super("Terminal group with id %s was not found".formatted(id));
+        }
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public static final class TerminalGroupWithThisPosIdNotFoundException extends DigitalWaiterException {
+        public TerminalGroupWithThisPosIdNotFoundException(String posId) {
+            super("Terminal group with posId %s was not found".formatted(posId));
         }
     }
 

@@ -33,19 +33,14 @@ public class WebHookService {
     }
 
     private void handleStopListUpdateEvent(StopListUpdateEventInfo eventInfo) {
-        TerminalGroup terminalGroup = terminalGroupService.getCurrentTerminalGroup();
-
         for (TerminalGroupsStopListsUpdate update : eventInfo.getTerminalGroupsStopListsUpdates()) {
-            if (update.getId().equals(terminalGroup.getPosTerminalGroupId())) {
-                menuService.loadMenu(terminalGroup);
+            TerminalGroup terminalGroup = terminalGroupService.getTerminalGroupByPosId(update.getId());
+            menuService.loadMenu(terminalGroup);
 
-                log.info(
-                        "Webhook StopListUpdate for terminal group {} was handled: the menu has been updated",
-                        terminalGroup.getPosTerminalGroupId()
-                );
-
-                break;
-            }
+            log.info(
+                    "Webhook StopListUpdate for terminal group {} was handled: the menu has been updated",
+                    terminalGroup.getPosTerminalGroupId()
+            );
         }
     }
 

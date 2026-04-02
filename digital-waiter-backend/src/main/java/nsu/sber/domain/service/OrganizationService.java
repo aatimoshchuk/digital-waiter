@@ -29,6 +29,11 @@ public class OrganizationService {
                 .orElseThrow(() -> new DigitalWaiterException.OrganizationWithThisIdNotFoundException(id));
     }
 
+    public Organization getOrganizationByPosId(String posId) {
+        return organizationRepository.findByPosOrganizationId(posId)
+                .orElseThrow(() -> new DigitalWaiterException.OrganizationWithThisPosIdNotFoundException(posId));
+    }
+
     public Organization getOrganizationByTerminalGroupId(Integer terminalGroupId) {
         return organizationRepository.findByTerminalGroupId(terminalGroupId)
                 .orElseThrow(DigitalWaiterException.NoOrganizationForTerminalGroupException::new);

@@ -12,6 +12,8 @@ public interface OrganizationRepository extends JpaRepository<OrganizationEntity
 
     Optional<OrganizationEntity> findById(int id);
 
+    Optional<OrganizationEntity> findByPosOrganizationId(String posOrganizationId);
+
     boolean existsByPosOrganizationId(String posOrganizationId);
 
     @Query("""

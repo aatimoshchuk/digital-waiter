@@ -25,6 +25,12 @@ public class OrganizationRepositoryService implements OrganizationRepositoryPort
     }
 
     @Override
+    public Optional<Organization> findByPosOrganizationId(String posOrganizationId) {
+        return organizationRepository.findByPosOrganizationId(posOrganizationId)
+                .map(organizationEntityMapper::entityToOrganization);
+    }
+
+    @Override
     public boolean existsById(Integer id) {
         return organizationRepository.existsById(id);
     }

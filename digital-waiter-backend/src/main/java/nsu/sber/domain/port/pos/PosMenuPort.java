@@ -11,6 +11,10 @@ public interface PosMenuPort {
 
     Optional<Menu> getMenu(MenuRequest menuRequest);
 
+    Optional<Menu> getMenu(MenuRequest menuRequest, Integer organizationId, String apiKeyEncrypted);
+
     StopList getStopList(StopListRequest stopListRequest);
+
+    StopList getStopList(StopListRequest stopListRequest, Integer organizationId, String apiKeyEncrypted);
 
 }
