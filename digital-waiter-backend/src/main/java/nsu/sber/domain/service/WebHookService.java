@@ -39,6 +39,11 @@ public class WebHookService {
             if (update.getId().equals(terminalGroup.getPosTerminalGroupId())) {
                 menuService.loadMenu(terminalGroup);
 
+                log.info(
+                        "Webhook StopListUpdate for terminal group {} was handled: the menu has been updated",
+                        terminalGroup.getPosTerminalGroupId()
+                );
+
                 break;
             }
         }

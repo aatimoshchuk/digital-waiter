@@ -13,12 +13,14 @@ import java.io.IOException;
 
 @Component
 public class WebhookAuthorizationFilter extends OncePerRequestFilter {
+    public static final String HEADER_NAME = "Authorization";
+
     @Value("${iiko.webhooks.token}")
     private String webHookToken;
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        return !request.getRequestURI().startsWith("/webhooks");
+        return !request.getRequestURI().startsWith("/api/webhooks");
     }
 
     @Override
@@ -27,13 +29,11 @@ public class WebhookAuthorizationFilter extends OncePerRequestFilter {
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
-        if (request.getRequestURI().startsWith("/webhooks")) {
-            String token = request.getHeader("Authorization");
+        String token = request.getHeader(HEADER_NAME);
 
-            if (token == null || !token.equals(webHookToken)) {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                return;
-            }
+        if (token == null || !token.equals(webHookToken)) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
         }
 
         filterChain.doFilter(request, response);

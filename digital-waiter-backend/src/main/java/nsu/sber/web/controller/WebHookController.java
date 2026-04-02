@@ -27,7 +27,12 @@ public class WebHookController {
             description = "Handles a WebHook notification (only for iiko)"
     )
     public void handleWebHook(@RequestBody BaseWebHookEventDto eventDto) {
-        log.info("Webhook was received: {}", eventDto.getEventType());
+        log.info(
+                "Webhook was received: [eventType: {}, organizationId: {}]",
+                eventDto.getEventType(),
+                eventDto.getOrganizationId()
+        );
+
         webHookService.processEvent(webHookDtoMapper.dtoToBaseWebHookEvent(eventDto));
     }
 }
