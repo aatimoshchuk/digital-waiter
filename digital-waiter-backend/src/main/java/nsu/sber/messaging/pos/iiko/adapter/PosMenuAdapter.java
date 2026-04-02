@@ -9,7 +9,6 @@ import nsu.sber.domain.port.pos.PosMenuPort;
 import nsu.sber.messaging.pos.iiko.client.IikoClient;
 import nsu.sber.messaging.pos.iiko.config.IikoAuthTokenProvider;
 import nsu.sber.messaging.pos.iiko.dto.MenuResponseDto;
-import nsu.sber.messaging.pos.iiko.dto.StopListRequestDto;
 import nsu.sber.messaging.pos.iiko.dto.StopListResponseDto;
 import nsu.sber.messaging.pos.iiko.mapper.MenuMapper;
 import org.springframework.stereotype.Service;

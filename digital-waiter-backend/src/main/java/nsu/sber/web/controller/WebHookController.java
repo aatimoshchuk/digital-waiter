@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import nsu.sber.domain.service.WebHookService;
 import nsu.sber.web.dto.BaseWebHookEventDto;
 import nsu.sber.web.mapper.WebHookDtoMapper;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,7 +18,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/webhooks")
+@RequestMapping("/api/webhook")
 @Tag(name = "WebHook Controller")
 public class WebHookController {
     private final WebHookDtoMapper webHookDtoMapper;
