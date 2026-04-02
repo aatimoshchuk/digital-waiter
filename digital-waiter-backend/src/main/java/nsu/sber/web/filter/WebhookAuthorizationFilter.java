@@ -22,6 +22,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class WebhookAuthorizationFilter extends OncePerRequestFilter {
     public static final String HEADER_NAME = "Authorization";
+    public static final String BEARER_PREFIX = "Bearer ";
 
     @Value("${iiko.webhooks.token}")
     private String webHookToken;
@@ -41,10 +42,7 @@ public class WebhookAuthorizationFilter extends OncePerRequestFilter {
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
-        logger.info("WEBHOOK: " + request.getRequestURI());
-        logger.info("WEBHOOK: " + request.getHeader("Authorization"));
-
-        String token = request.getHeader(HEADER_NAME);
+        String token = request.getHeader(HEADER_NAME).substring(BEARER_PREFIX.length());
 
         if (token == null || !token.equals(webHookToken)) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
