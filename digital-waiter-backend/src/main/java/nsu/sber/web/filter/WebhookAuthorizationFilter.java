@@ -32,7 +32,7 @@ public class WebhookAuthorizationFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        return !request.getRequestURI().startsWith("/api/webhooks");
+        return !request.getRequestURI().startsWith("/api/webhook");
     }
 
     @Override

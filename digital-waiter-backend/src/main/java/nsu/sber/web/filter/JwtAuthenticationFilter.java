@@ -35,7 +35,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        return request.getRequestURI().startsWith("/api/webhooks");
+        return request.getRequestURI().startsWith("/api/webhook");
     }
 
     @Override
@@ -45,6 +45,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
         logger.info("JWT: " + request.getRequestURI());
+        logger.info("JWT: " + request.getHeader("Authorization"));
+
         String authHeader = request.getHeader(HEADER_NAME);
 
         if (!StringUtils.hasText(authHeader) || !authHeader.startsWith(BEARER_PREFIX)) {
