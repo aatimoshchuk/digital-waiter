@@ -46,5 +46,7 @@ public class WebHookService {
 
     private void handleTableOrderUpdateEvent(TableOrderUpdateEventInfo eventInfo) {
         log.info("Order with id = {} was updated", eventInfo.getId());
+        log.info("Order status: {}", eventInfo.getOrder().getStatus());
+        log.info("{}", eventInfo);
     }
 }
