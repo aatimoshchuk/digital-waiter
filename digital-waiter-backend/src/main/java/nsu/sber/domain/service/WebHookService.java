@@ -7,7 +7,7 @@ import nsu.sber.domain.model.entity.TerminalGroup;
 import nsu.sber.domain.model.webhooks.BaseWebHookEvent;
 import nsu.sber.domain.model.webhooks.StopListUpdateEventInfo;
 import nsu.sber.domain.model.webhooks.StopListUpdateEventInfo.TerminalGroupsStopListsUpdate;
-import nsu.sber.domain.model.webhooks.TableOrderUpdateEventInfo;
+import nsu.sber.domain.model.webhooks.TableOrderEventInfo;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -26,9 +26,13 @@ public class WebHookService {
             ));
             case TABLE_ORDER_UPDATE -> handleTableOrderUpdateEvent(objectMapper.convertValue(
                     event.getEventInfo(),
-                    TableOrderUpdateEventInfo.class
+                    TableOrderEventInfo.class
             ));
-            case UNKNOWN -> log.warn("Unknown event type");
+            case TABLE_ORDER_ERROR -> handleTableOrderErrorEvent(objectMapper.convertValue(
+                    event.getEventInfo(),
+                    TableOrderEventInfo.class
+            ));
+            case UNKNOWN -> log.warn("Unprocessable webhook event type");
         }
     }
 
@@ -44,9 +48,20 @@ public class WebHookService {
         }
     }
 
-    private void handleTableOrderUpdateEvent(TableOrderUpdateEventInfo eventInfo) {
-        log.info("Order with id = {} was updated", eventInfo.getId());
-        log.info("Order status: {}", eventInfo.getOrder().getStatus());
-        log.info("{}", eventInfo);
+    private void handleTableOrderUpdateEvent(TableOrderEventInfo eventInfo) {
+        log.info(
+                "Order {} was updated: current order status is '{}'",
+                eventInfo.getId(),
+                eventInfo.getOrder().getStatus()
+        );
+    }
+
+    private void handleTableOrderErrorEvent(TableOrderEventInfo eventInfo) {
+        log.warn(
+                "An error '{}' occurs while saving order {} for organization {}",
+                eventInfo.getErrorInfo().getCode(),
+                eventInfo.getId(),
+                eventInfo.getOrganizationId()
+        );
     }
 }

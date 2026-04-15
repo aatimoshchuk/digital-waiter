@@ -3,6 +3,7 @@ package nsu.sber.domain.model.webhooks;
 public enum WebHookEventType {
     STOP_LIST_UPDATE("StopListUpdate"),
     TABLE_ORDER_UPDATE("TableOrderUpdate"),
+    TABLE_ORDER_ERROR("TableOrderError"),
     UNKNOWN("UNKNOWN");
 
     private final String value;

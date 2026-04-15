@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class TableOrderUpdateEventInfo {
+public class TableOrderEventInfo {
     private String id;
     private String organizationId;
     private Long timestamp;

@@ -34,7 +34,7 @@ iiko:
       max-attempts: ${IIKO_STATUS_CHECK_MAX_ATTEMPTS:5}
       delay-ms: ${IIKO_STATUS_CHECK_DELAY_MS:500}
   webhooks:
-    token: ${IIKO_WEBHOOKS_TOKEN:}
+    token: ${IIKO_WEBHOOKS_TOKEN:qMfTLibLGDEoKiNub34BLgoyt8OwYoHL}
     login: ${IIKO_WEBHOOKS_LOGIN:iiko}
 
 digital-waiter:
@@ -62,3 +62,11 @@ crypto:
 
 password:
   length: ${PASSWORD_LENGTH:8}
+
+notifications:
+  expiration:
+    expiration-minutes: 15
+    fixed-delay-ms: 300000
+  retry:
+    retry-seconds: 60
+    fixed-delay-ms: 60000
