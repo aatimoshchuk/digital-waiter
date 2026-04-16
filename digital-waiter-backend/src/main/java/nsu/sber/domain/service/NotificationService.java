@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import nsu.sber.domain.model.entity.Notification;
 import nsu.sber.domain.model.entity.NotificationStatus;
 import nsu.sber.domain.model.notifications.AckNotificationRequest;
+import nsu.sber.domain.model.payment.ChoosePaymentTypeRequest;
 import nsu.sber.domain.port.repository.jpa.NotificationRepositoryPort;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -35,6 +36,28 @@ public class NotificationService {
                 .builder()
                 .posTerminalGroupId(terminalGroupService.getCurrentTerminalGroup().getPosTerminalGroupId())
                 .text("Вызов официанта: " + restaurantTableService.getCurrentRestaurantTable().getName())
+                .status(NotificationStatus.NEW)
+                .createdAt(OffsetDateTime.now())
+                .build();
+
+        notificationRepository.save(notification);
+    }
+
+    public void sendReadyToPayNotification(ChoosePaymentTypeRequest request) {
+        StringBuilder stringBuilder = new StringBuilder(
+                restaurantTableService.getCurrentRestaurantTable().getName() + ": гости готовы оплатить заказ ("
+        );
+
+        if (request.getIsSplitBetweenGuests()) {
+            stringBuilder.append("раздельная оплата, ");
+        }
+
+        stringBuilder.append(request.getPaymentType().toString()).append(")");
+
+        Notification notification = Notification
+                .builder()
+                .posTerminalGroupId(terminalGroupService.getCurrentTerminalGroup().getPosTerminalGroupId())
+                .text(stringBuilder.toString())
                 .status(NotificationStatus.NEW)
                 .createdAt(OffsetDateTime.now())
                 .build();
