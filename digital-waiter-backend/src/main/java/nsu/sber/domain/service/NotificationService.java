@@ -43,7 +43,7 @@ public class NotificationService {
     }
 
     @Transactional(transactionManager = "transactionManager")
-    public List<Notification> getNotificationsByTerminalGroupId(String terminalGroupId) {
+    public List<Notification> pullNotificationsByTerminalGroupId(String terminalGroupId) {
         List<Notification> notifications = notificationRepository.findByPosTerminalGroupIdAndStatus(
                 terminalGroupId,
                 NotificationStatus.NEW

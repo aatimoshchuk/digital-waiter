@@ -1,4 +1,4 @@
-package nsu.sber.web.controller;
+package nsu.sber.web.dto;
 
 import lombok.Builder;
 import lombok.Data;
@@ -8,6 +8,6 @@ import java.util.List;
 
 @Data
 @Builder
-public class GetNotificationsResponseDto {
+public class PullNotificationsResponseDto {
     private List<NotificationDto> notifications;
 }

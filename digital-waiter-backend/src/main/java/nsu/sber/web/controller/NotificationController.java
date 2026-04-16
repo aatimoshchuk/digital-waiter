@@ -7,8 +7,9 @@ import lombok.RequiredArgsConstructor;
 import nsu.sber.domain.service.NotificationService;
 import nsu.sber.web.dto.AckNotificationRequestDto;
 import nsu.sber.web.dto.NotificationDto;
+import nsu.sber.web.dto.PullNotificationsRequestDto;
+import nsu.sber.web.dto.PullNotificationsResponseDto;
 import nsu.sber.web.mapper.NotificationDtoMapper;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,17 +35,20 @@ public class NotificationController {
         notificationService.sendCallWaiterNotification();
     }
 
-    @GetMapping("/plugin")
+    @PostMapping("/plugin/pull")
     @Operation(
-            summary = "Get notifications related to a specific terminal group",
-            description = "Returns notifications associated with terminalGroupId (only for use by the iikoFront plugin)"
+            summary = "Pull notifications related to a specific terminal group",
+            description = """
+                    Returns notifications associated with terminalGroupId (only for use by the iikoFront plugin)
+                    The operation must be finalized via the ACK method.
+                    """
     )
-    public GetNotificationsResponseDto getNotifications(@RequestBody @Valid GetNotificationsRequestDto dto) {
+    public PullNotificationsResponseDto pullNotifications(@RequestBody @Valid PullNotificationsRequestDto dto) {
         List<NotificationDto> notifications = notificationDtoMapper.notificationsToDtoList(
-                notificationService.getNotificationsByTerminalGroupId(dto.getTerminalGroupId())
+                notificationService.pullNotificationsByTerminalGroupId(dto.getTerminalGroupId())
         );
 
-        return GetNotificationsResponseDto
+        return PullNotificationsResponseDto
                 .builder()
                 .notifications(notifications)
                 .build();
