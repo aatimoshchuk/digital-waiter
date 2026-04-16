@@ -20,20 +20,24 @@ import java.io.IOException;
 
 @Component
 @RequiredArgsConstructor
-public class WebhookAuthorizationFilter extends OncePerRequestFilter {
+public class IikoAuthorizationFilter extends OncePerRequestFilter {
     public static final String HEADER_NAME = "Authorization";
     public static final String BEARER_PREFIX = "Bearer ";
 
     @Value("${iiko.webhooks.token}")
     private String webHookToken;
-    @Value("${iiko.webhooks.login}")
-    private String webHookLogin;
+    @Value("${iiko.db-login}")
+    private String dbLogin;
+
+    @Value("${iiko.notifications.token}")
+    private String notificationsToken;
 
     private final CustomUserDetailsService customUserDetailsService;
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        return !request.getRequestURI().startsWith("/api/webhook");
+        return !request.getRequestURI().startsWith("/api/webhook") &&
+                !request.getRequestURI().startsWith("/api/notifications/plugin");
     }
 
     @Override
@@ -44,12 +48,17 @@ public class WebhookAuthorizationFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
         String token = request.getHeader(HEADER_NAME).substring(BEARER_PREFIX.length());
 
-        if (token == null || !token.equals(webHookToken)) {
+        if (request.getRequestURI().startsWith("/api/webhook") && !token.equals(webHookToken)) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
 
-        UserDetails userDetails = customUserDetailsService.loadUserByUsername(webHookLogin);
+        if (request.getRequestURI().startsWith("/api/notifications/plugin") && !token.equals(notificationsToken)) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
+
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(dbLogin);
         SecurityContext context = SecurityContextHolder.createEmptyContext();
 
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(

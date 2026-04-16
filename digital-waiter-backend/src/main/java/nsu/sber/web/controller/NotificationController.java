@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -35,18 +34,23 @@ public class NotificationController {
         notificationService.sendCallWaiterNotification();
     }
 
-    @GetMapping
+    @GetMapping("/plugin")
     @Operation(
             summary = "Get notifications related to a specific terminal group",
             description = "Returns notifications associated with terminalGroupId (only for use by the iikoFront plugin)"
     )
-    public List<NotificationDto> getNotifications(@RequestParam String terminalGroupId) {
-        return notificationDtoMapper.notificationsToDtoList(
-                notificationService.getNotificationsByTerminalGroupId(terminalGroupId)
+    public GetNotificationsResponseDto getNotifications(@RequestBody @Valid GetNotificationsRequestDto dto) {
+        List<NotificationDto> notifications = notificationDtoMapper.notificationsToDtoList(
+                notificationService.getNotificationsByTerminalGroupId(dto.getTerminalGroupId())
         );
+
+        return GetNotificationsResponseDto
+                .builder()
+                .notifications(notifications)
+                .build();
     }
 
-    @PostMapping("/ack")
+    @PostMapping("/plugin/ack")
     @Operation(
             summary = "Acknowledge notifications by its ids and pullTokens",
             description = "Marks notifications as 'ACKED'"

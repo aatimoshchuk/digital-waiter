@@ -4,7 +4,7 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import nsu.sber.web.filter.JwtAuthenticationFilter;
-import nsu.sber.web.filter.WebhookAuthorizationFilter;
+import nsu.sber.web.filter.IikoAuthorizationFilter;
 import nsu.sber.web.security.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -46,13 +46,13 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http,
                                                    AuthenticationProvider authenticationProvider,
                                                    JwtAuthenticationFilter jwtAuthenticationFilter,
-                                                   WebhookAuthorizationFilter webhookAuthorizationFilter) throws Exception {
+                                                   IikoAuthorizationFilter iikoAuthorizationFilter) throws Exception {
         http.cors(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(webhookAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(iikoAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/sign-in").permitAll()
@@ -60,6 +60,7 @@ public class SecurityConfig {
                         .requestMatchers("/swagger-ui/**").permitAll()
                         .requestMatchers("/v3/api-docs/**").permitAll()
                         .requestMatchers("/api/webhooks/**").permitAll()
+                        .requestMatchers("/api/notifications/plugin/**").permitAll()
                         .requestMatchers("/api/cart/**").hasAuthority(GUEST_ROLE)
                         .requestMatchers("/api/menu/**").hasAuthority(GUEST_ROLE)
                         .requestMatchers("/api/order/**").hasAuthority(GUEST_ROLE)

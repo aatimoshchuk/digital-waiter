@@ -29,13 +29,15 @@ redis:
 
 iiko:
   url: https://api-ru.iiko.services
+  db-login: ${IIKO_DB_LOGIN:iiko}
   operation:
     status-check:
       max-attempts: ${IIKO_STATUS_CHECK_MAX_ATTEMPTS:5}
       delay-ms: ${IIKO_STATUS_CHECK_DELAY_MS:500}
   webhooks:
     token: ${IIKO_WEBHOOKS_TOKEN:qMfTLibLGDEoKiNub34BLgoyt8OwYoHL}
-    login: ${IIKO_WEBHOOKS_LOGIN:iiko}
+  notifications:
+    token: ${IIKO_NOTIFICATIONS_TOKEN:RnrQg6fnxLhObKbf2gi8XCE1B45RdH1A}
 
 digital-waiter:
   url: https://digital-waiter.sberlab.nsu.ru
