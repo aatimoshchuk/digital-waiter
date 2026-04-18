@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nsu.sber.domain.model.entity.Notification;
 import nsu.sber.domain.model.entity.NotificationStatus;
+import nsu.sber.domain.model.entity.RestaurantTable;
+import nsu.sber.domain.model.entity.TerminalGroup;
 import nsu.sber.domain.model.notifications.AckNotificationRequest;
 import nsu.sber.domain.model.payment.ChoosePaymentTypeRequest;
 import nsu.sber.domain.port.repository.jpa.NotificationRepositoryPort;
@@ -43,10 +45,12 @@ public class NotificationService {
         notificationRepository.save(notification);
     }
 
-    public void sendReadyToPayNotification(ChoosePaymentTypeRequest request) {
-        StringBuilder stringBuilder = new StringBuilder(
-                restaurantTableService.getCurrentRestaurantTable().getName() + ": гости готовы оплатить заказ ("
-        );
+    public void sendReadyToPayNotification(
+            ChoosePaymentTypeRequest request,
+            RestaurantTable restaurantTable,
+            TerminalGroup terminalGroup
+    ) {
+        StringBuilder stringBuilder = new StringBuilder(restaurantTable.getName() + ": гости готовы оплатить заказ (");
 
         if (request.getIsSplitBetweenGuests()) {
             stringBuilder.append("раздельная оплата, ");
@@ -56,7 +60,7 @@ public class NotificationService {
 
         Notification notification = Notification
                 .builder()
-                .posTerminalGroupId(terminalGroupService.getCurrentTerminalGroup().getPosTerminalGroupId())
+                .posTerminalGroupId(terminalGroup.getPosTerminalGroupId())
                 .text(stringBuilder.toString())
                 .status(NotificationStatus.NEW)
                 .createdAt(OffsetDateTime.now())

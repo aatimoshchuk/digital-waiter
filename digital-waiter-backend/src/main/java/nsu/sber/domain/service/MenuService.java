@@ -76,13 +76,10 @@ public class MenuService {
     }
 
     public Menu loadMenu(TerminalGroup terminalGroup) {
-        String posOrganizationId = organizationService
-                .getOrganization(terminalGroup.getOrganizationId())
-                .getPosOrganizationId();
+        Organization organization = organizationService.getOrganization(terminalGroup.getOrganizationId());
         String posExternalMenuId = terminalGroup.getPosExternalMenuId();
 
-        MenuRequest request = buildMenuRequest(posOrganizationId, posExternalMenuId);
-        Organization organization = organizationService.getOrganization(terminalGroup.getOrganizationId());
+        MenuRequest request = buildMenuRequest(organization.getPosOrganizationId(), posExternalMenuId);
 
         Menu menu;
 
@@ -95,17 +92,16 @@ public class MenuService {
 
         }
 
-        filterCategoriesByVisibility(menu, posOrganizationId);
-        removeStopListItems(menu, posOrganizationId, terminalGroup.getPosTerminalGroupId());
+        filterCategoriesByVisibility(menu, organization.getPosOrganizationId());
+        removeStopListItems(menu, organization, terminalGroup.getPosTerminalGroupId());
 
         menuRepositoryPort.save(terminalGroup.getId(), menu);
 
         return menu;
     }
 
-    private void removeStopListItems(Menu menu, String organizationId, String terminalGroupId) {
-        StopListRequest request = buildStopListRequest(organizationId, terminalGroupId);
-        Organization organization = organizationService.getOrganizationByPosId(organizationId);
+    private void removeStopListItems(Menu menu, Organization organization, String terminalGroupId) {
+        StopListRequest request = buildStopListRequest(organization.getPosOrganizationId(), terminalGroupId);
 
         StopList stopList;
 

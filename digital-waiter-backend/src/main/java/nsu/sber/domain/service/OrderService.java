@@ -36,11 +36,19 @@ public class OrderService {
             throw new DigitalWaiterException.EmptyCartException();
         }
 
-        if (hasOpenOrders()) {
+        RestaurantTable restaurantTable = restaurantTableService.getCurrentRestaurantTable();
+        TerminalGroup terminalGroup = terminalGroupService.getTerminalGroup(restaurantTable.getTerminalGroupId());
+        Organization organization = organizationService.getOrganization(terminalGroup.getOrganizationId());
+
+        if (hasOpenOrders(organization.getPosOrganizationId(), terminalGroup.getPosTerminalGroupId())) {
             throw new DigitalWaiterException.OpenOrderAlreadyExistException();
         }
 
-        CreateOrderResponse createOrderResponse = posOrderPort.createOrder(buildCreateOrderRequest());
+        CreateOrderResponse createOrderResponse = posOrderPort.createOrder(buildCreateOrderRequest(
+                restaurantTable.getPosTableId(),
+                terminalGroup.getPosTerminalGroupId(),
+                organization.getPosOrganizationId()
+        ));
         operationService.trackOrderStatusAsync(createOrderResponse.getCorrelationId());
 
         return createOrderResponse;
@@ -51,18 +59,24 @@ public class OrderService {
             throw new DigitalWaiterException.EmptyCartException();
         }
 
-        if (!isOrderExists(orderId)) {
+        String posOrganizationId = organizationService.getCurrentOrganization().getPosOrganizationId();
+
+        if (!isOrderExists(posOrganizationId, orderId)) {
             throw new DigitalWaiterException.OrderNotFoundException(orderId);
         }
 
-        AddOrderItemsResponse addOrderItemsResponse = posOrderPort.addOrderItems(buildAddOrderItemsRequest(orderId));
+        AddOrderItemsResponse addOrderItemsResponse = posOrderPort.addOrderItems(
+                buildAddOrderItemsRequest(posOrganizationId, orderId)
+        );
         operationService.trackOrderStatusAsync(addOrderItemsResponse.getCorrelationId());
 
         return addOrderItemsResponse;
     }
 
-    public boolean hasOpenOrders() {
+    public boolean hasOpenOrders(String posOrganizationId, String posTableId) {
         GetOrdersResponse response = getCurrentTableOrders(
+                posOrganizationId,
+                posTableId,
                 OrderStatus.NEW,
                 LocalDateTime.now().minusHours(24)
         );
@@ -76,8 +90,8 @@ public class OrderService {
         return false;
     }
 
-    public boolean isOrderExists(String orderId) {
-        GetOrdersResponse response = posOrderPort.getOrderById(buildGetOrderByIdRequest(orderId));
+    public boolean isOrderExists(String posOrganizationId, String orderId) {
+        GetOrdersResponse response = posOrderPort.getOrderById(buildGetOrderByIdRequest(posOrganizationId, orderId));
 
         for (GetOrdersResponse.Order order : response.getOrders()) {
             if (order.getCreationStatus().equals("Success") && order.getOrder().getStatus() == OrderStatus.NEW) {
@@ -88,54 +102,61 @@ public class OrderService {
         return false;
     }
 
-    public GetOrdersResponse getCurrentTableOrders(OrderStatus orderStatus, LocalDateTime dateFrom) {
-        return posOrderPort.getOrdersByTableId(buildGetOrdersByTableIdRequest(orderStatus, dateFrom));
+    public GetOrdersResponse getCurrentTableOrders(
+            String posOrganizationId,
+            String posTableId,
+            OrderStatus orderStatus,
+            LocalDateTime dateFrom
+    ) {
+        return posOrderPort.getOrdersByTableId(
+                buildGetOrdersByTableIdRequest(posOrganizationId, posTableId, orderStatus, dateFrom)
+        );
     }
 
-    private CreateOrderRequest buildCreateOrderRequest() {
-        RestaurantTable restaurantTable = restaurantTableService.getCurrentRestaurantTable();
-        TerminalGroup terminalGroup = terminalGroupService.getTerminalGroup(restaurantTable.getTerminalGroupId());
-        Organization organization = organizationService.getOrganization(terminalGroup.getOrganizationId());
-
+    private CreateOrderRequest buildCreateOrderRequest(String posTableId, String posTerminalGroupId,
+                                                       String posOrganizationId) {
         CreateOrderRequest.Order order = CreateOrderRequest.Order
                 .builder()
-                .tableIds(Collections.singletonList(restaurantTable.getPosTableId()))
+                .tableIds(Collections.singletonList(posTableId))
                 .cart(cartService.getCartResponse())
                 .build();
 
         return CreateOrderRequest
                 .builder()
-                .terminalGroupId(terminalGroup.getPosTerminalGroupId())
-                .organizationId(organization.getPosOrganizationId())
+                .terminalGroupId(posTerminalGroupId)
+                .organizationId(posOrganizationId)
                 .order(order)
                 .build();
     }
 
-    private GetOrdersByTableIdRequest buildGetOrdersByTableIdRequest(OrderStatus orderStatus, LocalDateTime dateFrom) {
+    private GetOrdersByTableIdRequest buildGetOrdersByTableIdRequest(
+            String posOrganizationId,
+            String posTableId,
+            OrderStatus orderStatus,
+            LocalDateTime dateFrom
+    ) {
         return GetOrdersByTableIdRequest
                 .builder()
-                .organizationIds(List.of(organizationService.getCurrentOrganization().getPosOrganizationId()))
-                .tableIds(List.of(restaurantTableService.getCurrentRestaurantTable().getPosTableId()))
+                .organizationIds(List.of(posOrganizationId))
+                .tableIds(List.of(posTableId))
                 .statuses(List.of(orderStatus))
                 .dateFrom(dateFrom)
                 .build();
     }
 
-    private GetOrderByIdRequest buildGetOrderByIdRequest(String orderId) {
+    private GetOrderByIdRequest buildGetOrderByIdRequest(String posOrganizationId, String orderId) {
         return GetOrderByIdRequest
                 .builder()
-                .organizationIds(List.of(organizationService.getCurrentOrganization().getPosOrganizationId()))
+                .organizationIds(List.of(posOrganizationId))
                 .orderIds(List.of(orderId))
                 .build();
     }
 
-    private AddOrderItemsRequest buildAddOrderItemsRequest(String orderId) {
-        Organization organization = organizationService.getCurrentOrganization();
-
+    private AddOrderItemsRequest buildAddOrderItemsRequest(String posOrganizationId, String orderId) {
         return AddOrderItemsRequest
                 .builder()
                 .orderId(orderId)
-                .organizationId(organization.getPosOrganizationId())
+                .organizationId(posOrganizationId)
                 .cart(cartService.getCartResponse())
                 .build();
     }
