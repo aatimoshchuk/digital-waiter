@@ -5,6 +5,9 @@ import nsu.sber.messaging.pos.iiko.dto.AddOrderItemsRequestDto;
 import nsu.sber.messaging.pos.iiko.dto.AddOrderItemsResponseDto;
 import nsu.sber.messaging.pos.iiko.dto.CreateOrderRequestDto;
 import nsu.sber.messaging.pos.iiko.dto.CreateOrderResponseDto;
+import nsu.sber.messaging.pos.iiko.dto.GetOrderByIdRequestDto;
+import nsu.sber.messaging.pos.iiko.dto.GetOrdersByTableIdRequestDto;
+import nsu.sber.messaging.pos.iiko.dto.GetOrdersResponseDto;
 import nsu.sber.messaging.pos.iiko.dto.MenuRequestDto;
 import nsu.sber.messaging.pos.iiko.dto.MenuResponseDto;
 import nsu.sber.messaging.pos.iiko.dto.OperationStatusRequestDto;
@@ -52,6 +55,18 @@ public interface IikoClient {
     AddOrderItemsResponseDto addOrderItems(
             @RequestHeader("Authorization") String token,
             @RequestBody AddOrderItemsRequestDto addOrderItemsRequestDto
+    );
+
+    @PostMapping("/api/1/order/by_table")
+    GetOrdersResponseDto getOrdersByTableId(
+            @RequestHeader("Authorization") String token,
+            @RequestBody GetOrdersByTableIdRequestDto getOrdersByTableIdRequestDto
+    );
+
+    @PostMapping("/api/1/order/by_id")
+    GetOrdersResponseDto getOrderById(
+            @RequestHeader("Authorization") String token,
+            @RequestBody GetOrderByIdRequestDto getOrderByIdRequestDto
     );
 
 }

@@ -199,6 +199,27 @@ public sealed class DigitalWaiterException extends RuntimeException {
         }
     }
 
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public static final class OpenOrderAlreadyExistException extends DigitalWaiterException {
+        public OpenOrderAlreadyExistException() {
+            super("An open order already exists for current restaurant table");
+        }
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public static final class OpenOrderNotFoundException extends DigitalWaiterException {
+        public OpenOrderNotFoundException() {
+            super("No open order found for current restaurant table");
+        }
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public static final class OrderNotFoundException extends DigitalWaiterException {
+        public OrderNotFoundException(String orderId) {
+            super("Order with id = %s was not found".formatted(orderId));
+        }
+    }
+
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public static final class GuestNotFoundException extends DigitalWaiterException {
         public GuestNotFoundException() {

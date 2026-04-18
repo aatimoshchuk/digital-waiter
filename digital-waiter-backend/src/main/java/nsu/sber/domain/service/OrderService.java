@@ -8,11 +8,17 @@ import nsu.sber.domain.model.order.AddOrderItemsRequest;
 import nsu.sber.domain.model.order.AddOrderItemsResponse;
 import nsu.sber.domain.model.order.CreateOrderRequest;
 import nsu.sber.domain.model.order.CreateOrderResponse;
+import nsu.sber.domain.model.order.GetOrderByIdRequest;
+import nsu.sber.domain.model.order.GetOrdersByTableIdRequest;
+import nsu.sber.domain.model.order.GetOrdersResponse;
+import nsu.sber.domain.model.order.OrderStatus;
 import nsu.sber.domain.port.pos.PosOrderPort;
 import nsu.sber.exception.DigitalWaiterException;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +36,10 @@ public class OrderService {
             throw new DigitalWaiterException.EmptyCartException();
         }
 
+        if (hasOpenOrders()) {
+            throw new DigitalWaiterException.OpenOrderAlreadyExistException();
+        }
+
         CreateOrderResponse createOrderResponse = posOrderPort.createOrder(buildCreateOrderRequest());
         operationService.trackOrderStatusAsync(createOrderResponse.getCorrelationId());
 
@@ -41,10 +51,45 @@ public class OrderService {
             throw new DigitalWaiterException.EmptyCartException();
         }
 
+        if (!isOrderExists(orderId)) {
+            throw new DigitalWaiterException.OrderNotFoundException(orderId);
+        }
+
         AddOrderItemsResponse addOrderItemsResponse = posOrderPort.addOrderItems(buildAddOrderItemsRequest(orderId));
         operationService.trackOrderStatusAsync(addOrderItemsResponse.getCorrelationId());
 
         return addOrderItemsResponse;
+    }
+
+    public boolean hasOpenOrders() {
+        GetOrdersResponse response = getCurrentTableOrders(
+                OrderStatus.NEW,
+                LocalDateTime.now().minusHours(24)
+        );
+
+        for (GetOrdersResponse.Order order : response.getOrders()) {
+            if (order.getCreationStatus().equals("Success")) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public boolean isOrderExists(String orderId) {
+        GetOrdersResponse response = posOrderPort.getOrderById(buildGetOrderByIdRequest(orderId));
+
+        for (GetOrdersResponse.Order order : response.getOrders()) {
+            if (order.getCreationStatus().equals("Success") && order.getOrder().getStatus() == OrderStatus.NEW) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public GetOrdersResponse getCurrentTableOrders(OrderStatus orderStatus, LocalDateTime dateFrom) {
+        return posOrderPort.getOrdersByTableId(buildGetOrdersByTableIdRequest(orderStatus, dateFrom));
     }
 
     private CreateOrderRequest buildCreateOrderRequest() {
@@ -63,6 +108,24 @@ public class OrderService {
                 .terminalGroupId(terminalGroup.getPosTerminalGroupId())
                 .organizationId(organization.getPosOrganizationId())
                 .order(order)
+                .build();
+    }
+
+    private GetOrdersByTableIdRequest buildGetOrdersByTableIdRequest(OrderStatus orderStatus, LocalDateTime dateFrom) {
+        return GetOrdersByTableIdRequest
+                .builder()
+                .organizationIds(List.of(organizationService.getCurrentOrganization().getPosOrganizationId()))
+                .tableIds(List.of(restaurantTableService.getCurrentRestaurantTable().getPosTableId()))
+                .statuses(List.of(orderStatus))
+                .dateFrom(dateFrom)
+                .build();
+    }
+
+    private GetOrderByIdRequest buildGetOrderByIdRequest(String orderId) {
+        return GetOrderByIdRequest
+                .builder()
+                .organizationIds(List.of(organizationService.getCurrentOrganization().getPosOrganizationId()))
+                .orderIds(List.of(orderId))
                 .build();
     }
 
