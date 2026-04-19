@@ -19,22 +19,15 @@ import java.util.stream.Collectors;
 @Slf4j
 @ControllerAdvice
 public class ExceptionHandlingController {
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponseDto> handleUnknownException(Exception e) {
+        return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
+    }
+
     @ExceptionHandler(DigitalWaiterException.class)
     public ResponseEntity<ErrorResponseDto> handleDigitalWaiterException(DigitalWaiterException e) {
         return buildErrorResponse(getHttpStatus(e), e.getMessage(), e);
-    }
-
-    private ResponseEntity<ErrorResponseDto> buildErrorResponse(HttpStatus status, String message, Exception e) {
-        UUID uuid = UUID.randomUUID();
-        log.error("Handled {} [{}] : {}", e.getClass().getSimpleName(), uuid, message, e);
-
-        return ResponseEntity.status(status)
-                .body(ErrorResponseDto.builder()
-                        .status(status.value())
-                        .message(message)
-                        .timestamp(LocalDateTime.now())
-                        .uuid(uuid)
-                        .build());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -60,6 +53,19 @@ public class ExceptionHandlingController {
                 .collect(Collectors.joining("; "));
 
         return buildErrorResponse(HttpStatus.BAD_REQUEST, messages, e);
+    }
+
+    private ResponseEntity<ErrorResponseDto> buildErrorResponse(HttpStatus status, String message, Exception e) {
+        UUID uuid = UUID.randomUUID();
+        log.error("Handled {} [{}] : {}", e.getClass().getSimpleName(), uuid, message, e);
+
+        return ResponseEntity.status(status)
+                .body(ErrorResponseDto.builder()
+                        .status(status.value())
+                        .message(message)
+                        .timestamp(LocalDateTime.now())
+                        .uuid(uuid)
+                        .build());
     }
 
     private String formatPatternMessage(String fieldName, String message) {
