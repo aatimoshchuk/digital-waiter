@@ -77,3 +77,7 @@ vosk:
   server:
     http:
       url: http://vosk-server:2701
+
+payment:
+  qr:
+    url: https://i.ibb.co/JWCrMDXQ/qr-code-3.png

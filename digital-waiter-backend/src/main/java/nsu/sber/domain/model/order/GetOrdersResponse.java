@@ -17,6 +17,7 @@ public class GetOrdersResponse {
         @Data
         public static class OrderInfo {
             private OrderStatus status;
+            private Double sum;
         }
     }
 }

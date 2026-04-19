@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class ChoosePaymentTypeRequest {
+    private String orderId;
     private PaymentType paymentType;
     private Boolean isSplitBetweenGuests;
 }

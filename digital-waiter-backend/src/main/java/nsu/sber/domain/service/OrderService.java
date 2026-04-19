@@ -102,6 +102,10 @@ public class OrderService {
         return false;
     }
 
+    public GetOrdersResponse getOrderById(String posOrganizationId, String orderId) {
+        return posOrderPort.getOrderById(buildGetOrderByIdRequest(posOrganizationId, orderId));
+    }
+
     public GetOrdersResponse getCurrentTableOrders(
             String posOrganizationId,
             String posTableId,

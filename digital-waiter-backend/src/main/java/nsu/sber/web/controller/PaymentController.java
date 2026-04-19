@@ -5,6 +5,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import nsu.sber.domain.service.PaymentService;
 import nsu.sber.web.dto.ChoosePaymentTypeRequestDto;
+import nsu.sber.web.dto.ChoosePaymentTypeResponseDto;
 import nsu.sber.web.mapper.PaymentDtoMapper;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,7 +21,9 @@ public class PaymentController {
     private final PaymentDtoMapper paymentDtoMapper;
 
     @PostMapping("/type")
-    public void choosePaymentType(@RequestBody @Valid ChoosePaymentTypeRequestDto choosePaymentTypeRequestDto) {
-        paymentService.choosePaymentType(paymentDtoMapper.dtoToChoosePaymentTypeRequest(choosePaymentTypeRequestDto));
+    public ChoosePaymentTypeResponseDto choosePaymentType(@RequestBody @Valid ChoosePaymentTypeRequestDto requestDto) {
+        return paymentDtoMapper.choosePaymentTypeResponseToDto(paymentService.choosePaymentType(
+                paymentDtoMapper.dtoToChoosePaymentTypeRequest(requestDto)
+        ));
     }
 }
