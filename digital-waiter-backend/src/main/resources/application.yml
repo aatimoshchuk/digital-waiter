@@ -72,3 +72,8 @@ notifications:
   retry:
     retry-seconds: 60
     fixed-delay-ms: 60000
+
+vosk:
+  server:
+    http:
+      url: http://vosk-server:2701
