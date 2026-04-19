@@ -4,8 +4,8 @@ server:
 spring:
   datasource:
     url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${POSTGRES_DB:digital_waiter_db}
-    username: ${POSTGRES_USER:admin}
-    password: ${POSTGRES_PASSWORD:admin_pass}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -29,15 +29,15 @@ redis:
 
 iiko:
   url: https://api-ru.iiko.services
-  db-login: ${IIKO_DB_LOGIN:iiko}
+  db-login: ${IIKO_DB_LOGIN}
   operation:
     status-check:
       max-attempts: ${IIKO_STATUS_CHECK_MAX_ATTEMPTS:5}
       delay-ms: ${IIKO_STATUS_CHECK_DELAY_MS:500}
   webhooks:
-    token: ${IIKO_WEBHOOKS_TOKEN:qMfTLibLGDEoKiNub34BLgoyt8OwYoHL}
+    token: ${IIKO_WEBHOOKS_TOKEN}
   notifications:
-    token: ${IIKO_NOTIFICATIONS_TOKEN:RnrQg6fnxLhObKbf2gi8XCE1B45RdH1A}
+    token: ${IIKO_NOTIFICATIONS_TOKEN}
 
 digital-waiter:
   url: https://digital-waiter.sberlab.nsu.ru
@@ -46,21 +46,21 @@ local:
   url: http://localhost:8081
 
 gigachat:
-  api-key: ${GIGACHAT_API_KEY:}
+  api-key: ${GIGACHAT_API_KEY}
   scope: ${GIGACHAT_SCOPE:GIGACHAT_API_PERS}
   model: ${GIGACHAT_MODEL:GigaChat}
   api-url: ${GIGACHAT_API_URL:https://gigachat.devices.sberbank.ru/api/v1}
 
 token:
   signing:
-    key: ${TOKEN_AUTH_KEY:mZ2V3aXJ0aGZ4c2xqZG5mbXlza2Zqd2Vya2FzbGpoZWQ0MTI=}
+    key: ${TOKEN_AUTH_KEY}
   duration:
     access: ${TOKEN_DURATION_ACCESS:60}
     update: ${TOKEN_DURATION_UPDATE:1440}
 
 crypto:
   api-key:
-    secret: ${API_KEY_CRYPTO_SECRET:Cu7xiXD0bUK/j3NvEEo5/ZbxhwxTFeUEvTewAKv6LCo=}
+    secret: ${API_KEY_CRYPTO_SECRET}
 
 password:
   length: ${PASSWORD_LENGTH:8}
