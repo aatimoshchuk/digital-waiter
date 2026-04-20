@@ -56,7 +56,7 @@ public class NotificationController {
 
     @PostMapping("/plugin/ack")
     @Operation(
-            summary = "Acknowledge notifications by its ids and pullTokens",
+            summary = "Acknowledge notifications by its ids and pullTokens (only for use by the iikoFront plugin)",
             description = "Marks notifications as 'ACKED'"
     )
     public void ackNotifications(@RequestBody @Valid AckNotificationRequestDto request) {

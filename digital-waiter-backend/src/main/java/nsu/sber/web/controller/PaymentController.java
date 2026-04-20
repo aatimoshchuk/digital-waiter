@@ -48,6 +48,7 @@ public class PaymentController {
     }
 
     @PostMapping("/qr/confirm")
+    @Operation(summary = "[FAKE] Confirm QR-code payment", description = "Add a fake QR-code payment for the order")
     public void confirmQRCodePayment(@RequestBody @Valid ConfirmQRCodePaymentRequestDto requestDto) {
         paymentService.confirmQRCodePayment(paymentDtoMapper.dtoToConfirmQRCodePaymentRequest(requestDto));
     }
