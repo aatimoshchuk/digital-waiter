@@ -8,6 +8,7 @@ import nsu.sber.domain.model.order.CreateOrderResponse;
 import nsu.sber.domain.model.order.GetOrderByIdRequest;
 import nsu.sber.domain.model.order.GetOrdersByTableIdRequest;
 import nsu.sber.domain.model.order.GetOrdersResponse;
+import nsu.sber.domain.model.order.Order;
 import nsu.sber.domain.model.order.OrderStatus;
 import nsu.sber.messaging.pos.iiko.dto.AddOrderItemsRequestDto;
 import nsu.sber.messaging.pos.iiko.dto.AddOrderItemsResponseDto;
@@ -56,6 +57,11 @@ public interface OrderMapper {
 
 
     GetOrdersResponse dtoToGetOrdersResponse(GetOrdersResponseDto responseDto);
+
+    @Mapping(target = "status", source = "order.status")
+    @Mapping(target = "sum", source = "order.sum")
+    @Mapping(target = "processedPaymentsSum", source = "order.processedPaymentsSum")
+    Order toOrder(GetOrdersResponseDto.Order dto);
 
     default List<String> mapStatuses(List<OrderStatus> statuses) {
         if (statuses == null) {

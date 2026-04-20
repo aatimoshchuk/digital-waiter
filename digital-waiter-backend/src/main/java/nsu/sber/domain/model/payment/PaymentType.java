@@ -1,18 +1,21 @@
 package nsu.sber.domain.model.payment;
 
-public enum PaymentType {
-    CASH("наличные"),
-    CARD("карта"),
-    QR("qr-код");
+import lombok.Builder;
+import lombok.Data;
 
-    private final String value;
+import java.util.List;
 
-    PaymentType(String value) {
-        this.value = value;
-    }
+@Data
+@Builder
+public class PaymentType {
+    private String id;
+    private String code;
+    private String name;
+    private String paymentTypeKind;
+    private List<TerminalGroup> terminalGroups;
 
-    @Override
-    public String toString() {
-        return value;
+    @Data
+    public static class TerminalGroup {
+        private String id;
     }
 }

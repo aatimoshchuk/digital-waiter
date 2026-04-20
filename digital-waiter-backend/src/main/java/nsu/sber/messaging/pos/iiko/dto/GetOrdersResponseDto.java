@@ -17,7 +17,8 @@ public class GetOrdersResponseDto {
         @Data
         public static class OrderInfo {
             private String status;
-            private Double sum;
+            private double sum;
+            private double processedPaymentsSum;
         }
     }
 }

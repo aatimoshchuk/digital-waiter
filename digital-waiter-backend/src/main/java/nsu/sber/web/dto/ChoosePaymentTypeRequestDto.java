@@ -13,18 +13,22 @@ public class ChoosePaymentTypeRequestDto {
     @Schema(example = ApiConstants.POS_ID_EXAMPLE, description = ApiConstants.ORDER_ID_DESCRIPTION)
     private String orderId;
 
-    @NotNull(message = "Field 'paymentType' cannot be null")
-    @Schema(example = "CASH", description = "Payment type (can be CASH, QR or CARD)")
-    private PaymentType paymentType;
+    @NotBlank(message = "Field 'paymentTypeCode' cannot be null")
+    @Schema(
+            example = ApiConstants.PAYMENT_TYPE_CODE_EXAMPLE,
+            description = ApiConstants.PAYMENT_TYPE_CODE_DESCRIPTION + " (can be obtained from GET /payment/type)"
+    )
+    private String paymentTypeCode;
+
+    @NotBlank(message = "Field 'paymentTypeName' cannot be null")
+    @Schema(
+            example = ApiConstants.PAYMENT_TYPE_NAME_EXAMPLE,
+            description = ApiConstants.PAYMENT_TYPE_NAME_DESCRIPTION
+    )
+    private String paymentTypeName;
 
     @NotNull(message = "Field 'isSplitBetweenGuests' cannot be null")
     @Schema(example = "true", description = "Means whether the check should be split between guests.")
     private Boolean isSplitBetweenGuests;
-
-    public enum PaymentType {
-        CASH,
-        CARD,
-        QR
-    }
 
 }

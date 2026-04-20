@@ -50,13 +50,13 @@ public class NotificationService {
             RestaurantTable restaurantTable,
             TerminalGroup terminalGroup
     ) {
-        StringBuilder stringBuilder = new StringBuilder(restaurantTable.getName() + ": гости готовы оплатить заказ (");
+        StringBuilder stringBuilder = new StringBuilder(restaurantTable.getName() + ": гости готовы оплатить заказ: ");
 
         if (request.getIsSplitBetweenGuests()) {
-            stringBuilder.append("раздельная оплата, ");
+            stringBuilder.append("Раздельная оплата, ");
         }
 
-        stringBuilder.append(request.getPaymentType().toString()).append(")");
+        stringBuilder.append(request.getPaymentTypeName());
 
         Notification notification = Notification
                 .builder()

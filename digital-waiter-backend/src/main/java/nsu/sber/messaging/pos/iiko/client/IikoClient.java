@@ -3,6 +3,8 @@ package nsu.sber.messaging.pos.iiko.client;
 import nsu.sber.messaging.pos.iiko.config.IikoFeignConfig;
 import nsu.sber.messaging.pos.iiko.dto.AddOrderItemsRequestDto;
 import nsu.sber.messaging.pos.iiko.dto.AddOrderItemsResponseDto;
+import nsu.sber.messaging.pos.iiko.dto.AddOrderPaymentsRequestDto;
+import nsu.sber.messaging.pos.iiko.dto.AddOrderPaymentsResponseDto;
 import nsu.sber.messaging.pos.iiko.dto.CreateOrderRequestDto;
 import nsu.sber.messaging.pos.iiko.dto.CreateOrderResponseDto;
 import nsu.sber.messaging.pos.iiko.dto.GetOrderByIdRequestDto;
@@ -12,6 +14,8 @@ import nsu.sber.messaging.pos.iiko.dto.MenuRequestDto;
 import nsu.sber.messaging.pos.iiko.dto.MenuResponseDto;
 import nsu.sber.messaging.pos.iiko.dto.OperationStatusRequestDto;
 import nsu.sber.messaging.pos.iiko.dto.OperationStatusResponseDto;
+import nsu.sber.messaging.pos.iiko.dto.PaymentTypesRequestDto;
+import nsu.sber.messaging.pos.iiko.dto.PaymentTypesResponseDto;
 import nsu.sber.messaging.pos.iiko.dto.StopListRequestDto;
 import nsu.sber.messaging.pos.iiko.dto.StopListResponseDto;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -67,6 +71,18 @@ public interface IikoClient {
     GetOrdersResponseDto getOrderById(
             @RequestHeader("Authorization") String token,
             @RequestBody GetOrderByIdRequestDto getOrderByIdRequestDto
+    );
+
+    @PostMapping("/api/1/payment_types")
+    PaymentTypesResponseDto getPaymentTypes(
+            @RequestHeader("Authorization") String token,
+            @RequestBody PaymentTypesRequestDto paymentTypesRequestDto
+    );
+
+    @PostMapping("/api/1/order/add_payments")
+    AddOrderPaymentsResponseDto addOrderPayments(
+            @RequestHeader("Authorization") String token,
+            @RequestBody AddOrderPaymentsRequestDto addOrderPaymentsRequestDto
     );
 
 }

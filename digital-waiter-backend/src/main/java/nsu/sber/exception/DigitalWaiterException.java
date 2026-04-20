@@ -207,16 +207,16 @@ public sealed class DigitalWaiterException extends RuntimeException {
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public static final class OpenOrderNotFoundException extends DigitalWaiterException {
-        public OpenOrderNotFoundException() {
-            super("No open order found for current restaurant table");
-        }
-    }
-
-    @ResponseStatus(HttpStatus.NOT_FOUND)
     public static final class OrderNotFoundException extends DigitalWaiterException {
         public OrderNotFoundException(String orderId) {
             super("Order with id = %s was not found".formatted(orderId));
+        }
+    }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public static final class PaymentAlreadyProcessedException extends DigitalWaiterException {
+        public PaymentAlreadyProcessedException() {
+            super("The operation cannot be completed: the order already has payments");
         }
     }
 
@@ -224,6 +224,13 @@ public sealed class DigitalWaiterException extends RuntimeException {
     public static final class GuestNotFoundException extends DigitalWaiterException {
         public GuestNotFoundException() {
             super("Guest was not found. Current guest count is lower than required number");
+        }
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public static final class PaymentTypeNotFoundException extends DigitalWaiterException {
+        public PaymentTypeNotFoundException(String code) {
+            super("Payment type with code '%s' was not found".formatted(code));
         }
     }
 }

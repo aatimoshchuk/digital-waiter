@@ -84,4 +84,9 @@ public final class ApiConstants {
     public static final String GUEST_NUMBERS_DESCRIPTION = "Numbers of guests between whom the dish is to be divided";
     public static final String GUEST_NUMBERS_EXAMPLE = "[\"1\", \"2\", \"3\"";
 
+    public static final String PAYMENT_TYPE_CODE_EXAMPLE = "CASH";
+    public static final String PAYMENT_TYPE_CODE_DESCRIPTION = "Code of the payment type";
+    public static final String PAYMENT_TYPE_NAME_EXAMPLE = "Наличные";
+    public static final String PAYMENT_TYPE_NAME_DESCRIPTION = "Human-readable name of the payment type";
+
 }

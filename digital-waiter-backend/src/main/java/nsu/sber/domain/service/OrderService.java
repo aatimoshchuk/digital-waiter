@@ -11,6 +11,7 @@ import nsu.sber.domain.model.order.CreateOrderResponse;
 import nsu.sber.domain.model.order.GetOrderByIdRequest;
 import nsu.sber.domain.model.order.GetOrdersByTableIdRequest;
 import nsu.sber.domain.model.order.GetOrdersResponse;
+import nsu.sber.domain.model.order.Order;
 import nsu.sber.domain.model.order.OrderStatus;
 import nsu.sber.domain.port.pos.PosOrderPort;
 import nsu.sber.exception.DigitalWaiterException;
@@ -81,7 +82,7 @@ public class OrderService {
                 LocalDateTime.now().minusHours(24)
         );
 
-        for (GetOrdersResponse.Order order : response.getOrders()) {
+        for (Order order : response.getOrders()) {
             if (order.getCreationStatus().equals("Success")) {
                 return true;
             }
@@ -93,8 +94,8 @@ public class OrderService {
     public boolean isOrderExists(String posOrganizationId, String orderId) {
         GetOrdersResponse response = posOrderPort.getOrderById(buildGetOrderByIdRequest(posOrganizationId, orderId));
 
-        for (GetOrdersResponse.Order order : response.getOrders()) {
-            if (order.getCreationStatus().equals("Success") && order.getOrder().getStatus() == OrderStatus.NEW) {
+        for (Order order : response.getOrders()) {
+            if (order.getCreationStatus().equals("Success") && order.getStatus() == OrderStatus.NEW) {
                 return true;
             }
         }
@@ -102,8 +103,16 @@ public class OrderService {
         return false;
     }
 
-    public GetOrdersResponse getOrderById(String posOrganizationId, String orderId) {
-        return posOrderPort.getOrderById(buildGetOrderByIdRequest(posOrganizationId, orderId));
+    public Order getOrderById(String posOrganizationId, String orderId) {
+        GetOrdersResponse response = posOrderPort.getOrderById(buildGetOrderByIdRequest(posOrganizationId, orderId));
+
+        for (Order order : response.getOrders()) {
+            if (order.getCreationStatus().equals("Success") && order.getStatus() == OrderStatus.NEW) {
+                return order;
+            }
+        }
+
+        throw new DigitalWaiterException.OrderNotFoundException(orderId);
     }
 
     public GetOrdersResponse getCurrentTableOrders(
