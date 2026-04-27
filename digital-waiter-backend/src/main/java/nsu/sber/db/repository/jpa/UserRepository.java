@@ -32,6 +32,17 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
         FROM UserEntity u
         JOIN RestaurantTableEntity rt ON rt.id = u.restaurantTableId
         JOIN TerminalGroupEntity tg ON tg.id = rt.terminalGroupId
+        JOIN OrganizationEntity o ON o.id = tg.organizationId
+        WHERE o.posOrganizationId = :posOrganizationId
+
+    """)
+    List<String> findLoginsByPosOrganizationId(@Param("posOrganizationId") String posOrganizationId);
+
+    @Query("""
+        SELECT DISTINCT u.login
+        FROM UserEntity u
+        JOIN RestaurantTableEntity rt ON rt.id = u.restaurantTableId
+        JOIN TerminalGroupEntity tg ON tg.id = rt.terminalGroupId
         WHERE tg.posTerminalGroupId = :posTerminalGroupId AND rt.posTableId = :posTableId
 
     """)

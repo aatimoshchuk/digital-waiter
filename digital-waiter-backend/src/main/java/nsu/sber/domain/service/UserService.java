@@ -84,6 +84,10 @@ public class UserService {
         return userRepository.findLoginsByPosTerminalGroupIds(posTerminalGroupIds);
     }
 
+    public List<String> findLoginsByPosOrganizationId(String posOrganizationId) {
+        return userRepository.findLoginsByPosOrganizationId(posOrganizationId);
+    }
+
     public String findLoginByPosTerminalGroupIdAndPosRestaurantTableId(
             String posTerminalGroupId,
             String posTableId

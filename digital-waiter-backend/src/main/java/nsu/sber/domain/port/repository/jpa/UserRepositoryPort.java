@@ -17,6 +17,8 @@ public interface UserRepositoryPort {
 
     List<String> findLoginsByPosTerminalGroupIds(List<String> posTerminalGroupIds);
 
+    List<String> findLoginsByPosOrganizationId(String posOrganizationId);
+
     Optional<String> findLoginByPosTerminalGroupIdAndPosRestaurantTableId(String posTerminalGroupId, String posTableId);
 
 }

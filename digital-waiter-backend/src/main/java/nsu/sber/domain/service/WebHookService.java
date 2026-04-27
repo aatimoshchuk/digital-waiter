@@ -9,7 +9,6 @@ import nsu.sber.domain.model.webhooks.StopListUpdateEventInfo;
 import nsu.sber.domain.model.webhooks.StopListUpdateEventInfo.TerminalGroupsStopListsUpdate;
 import nsu.sber.domain.model.webhooks.TableOrderEventInfo;
 import nsu.sber.domain.port.websocket.NotifierPort;
-import nsu.sber.exception.DigitalWaiterException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -86,11 +85,10 @@ public class WebHookService {
                 eventInfo.getOrganizationId()
         );
 
-        String login = userService.findLoginByPosTerminalGroupIdAndPosRestaurantTableId(
-                eventInfo.getOrder().getTerminalGroupId(),
-                eventInfo.getOrder().getTableIds().get(0)
+        notifierPort.notifyError(
+                userService.findLoginsByPosOrganizationId(eventInfo.getOrganizationId()),
+                eventInfo.getErrorInfo().getMessage(),
+                eventInfo.getErrorInfo().getErrorReason()
         );
-
-        notifierPort.notifyError(login, eventInfo.getErrorInfo().getMessage(), eventInfo.getErrorInfo().getErrorReason());
     }
 }

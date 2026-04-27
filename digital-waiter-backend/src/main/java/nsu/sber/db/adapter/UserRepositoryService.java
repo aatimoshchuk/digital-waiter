@@ -45,6 +45,11 @@ public class UserRepositoryService implements UserRepositoryPort {
     }
 
     @Override
+    public List<String> findLoginsByPosOrganizationId(String posOrganizationId) {
+        return userRepository.findLoginsByPosOrganizationId(posOrganizationId);
+    }
+
+    @Override
     public Optional<String> findLoginByPosTerminalGroupIdAndPosRestaurantTableId(
             String posTerminalGroupId,
             String posTableId
