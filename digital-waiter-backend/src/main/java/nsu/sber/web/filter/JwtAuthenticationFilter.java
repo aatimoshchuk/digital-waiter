@@ -1,6 +1,7 @@
 package nsu.sber.web.filter;
 
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -57,12 +58,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         try {
             login = jwtProvider.extractLogin(token);
-        } catch (ExpiredJwtException e) {
+        } catch (ExpiredJwtException | DigitalWaiterException.InvalidTokenException e) {
             handlerExceptionResolver.resolveException(
                     request,
                     response,
                     null,
                     new DigitalWaiterException.InvalidTokenException()
+            );
+            return;
+        } catch (MalformedJwtException e) {
+            handlerExceptionResolver.resolveException(
+                    request,
+                    response,
+                    null,
+                    new DigitalWaiterException.InvalidTokenFormatException()
             );
             return;
         }

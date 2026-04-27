@@ -233,4 +233,11 @@ public sealed class DigitalWaiterException extends RuntimeException {
             super("Payment type with code '%s' was not found".formatted(code));
         }
     }
+
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public static final class InvalidTokenFormatException extends DigitalWaiterException {
+        public InvalidTokenFormatException() {
+            super("Token is in an invalid format");
+        }
+    }
 }
