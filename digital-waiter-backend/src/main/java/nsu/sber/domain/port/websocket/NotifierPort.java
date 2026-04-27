@@ -7,5 +7,5 @@ public interface NotifierPort {
 
     void notifyOrderStatus(String userLogin, String orderId, String status);
 
-    void notifyError(List<String> userLogins, String message, String reason);
+    void notifyError(List<String> userLogins, String message);
 }

@@ -40,11 +40,10 @@ public class WebSocketNotifierAdapter implements NotifierPort {
     }
 
     @Override
-    public void notifyError(List<String> userLogins, String message, String reason) {
+    public void notifyError(List<String> userLogins, String message) {
         Map<String, String> payload = Map.of(
                 "type", "ERROR",
-                "message", message,
-                "reason", reason
+                "message", message
         );
 
         userLogins.forEach(userLogin ->

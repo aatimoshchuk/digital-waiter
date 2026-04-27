@@ -87,8 +87,7 @@ public class WebHookService {
 
         notifierPort.notifyError(
                 userService.findLoginsByPosOrganizationId(eventInfo.getOrganizationId()),
-                eventInfo.getErrorInfo().getMessage(),
-                eventInfo.getErrorInfo().getErrorReason()
+                eventInfo.getErrorInfo().getMessage()
         );
     }
 }
