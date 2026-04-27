@@ -31,7 +31,6 @@ public final class ApiConstants {
     public static final String CATEGORY_ID_DESCRIPTION = "Unique identifier of the menu category";
     public static final String CATEGORY_NAME_DESCRIPTION = "Name of the menu category";
     public static final String ITEMS_DESCRIPTION = "List of menu items (dishes) belonging to this category";
-    public static final String CORRELATION_ID_DESCRIPTION = "Identifier for tracking the status of the operation";
 
     public static final String CATEGORY_ID_EXAMPLE = "a1b2c3d4-e5f6-7890-g1h2-i3j4k5l6m7n8";
     public static final String CATEGORY_NAME_EXAMPLE = "Салаты";
@@ -82,7 +81,7 @@ public final class ApiConstants {
     public static final String GUEST_NUMBER_EXAMPLE = "1";
     public static final String GUEST_NUMBER_DESCRIPTION = "Guest number in the user interface";
     public static final String GUEST_NUMBERS_DESCRIPTION = "Numbers of guests between whom the dish is to be divided";
-    public static final String GUEST_NUMBERS_EXAMPLE = "[\"1\", \"2\", \"3\"";
+    public static final String GUEST_NUMBERS_EXAMPLE = "[1, 2, 3]";
 
     public static final String PAYMENT_TYPE_CODE_EXAMPLE = "CASH";
     public static final String PAYMENT_TYPE_CODE_DESCRIPTION = "Code of the payment type";

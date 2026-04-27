@@ -2,7 +2,6 @@ package nsu.sber.messaging.pos.iiko.mapper;
 
 import nsu.sber.domain.model.cart.CartResponse;
 import nsu.sber.domain.model.order.AddOrderItemsRequest;
-import nsu.sber.domain.model.order.AddOrderItemsResponse;
 import nsu.sber.domain.model.order.CreateOrderRequest;
 import nsu.sber.domain.model.order.CreateOrderResponse;
 import nsu.sber.domain.model.order.GetOrderByIdRequest;
@@ -11,7 +10,6 @@ import nsu.sber.domain.model.order.GetOrdersResponse;
 import nsu.sber.domain.model.order.Order;
 import nsu.sber.domain.model.order.OrderStatus;
 import nsu.sber.messaging.pos.iiko.dto.AddOrderItemsRequestDto;
-import nsu.sber.messaging.pos.iiko.dto.AddOrderItemsResponseDto;
 import nsu.sber.messaging.pos.iiko.dto.CreateOrderRequestDto;
 import nsu.sber.messaging.pos.iiko.dto.CreateOrderResponseDto;
 import nsu.sber.messaging.pos.iiko.dto.GetOrderByIdRequestDto;
@@ -34,8 +32,6 @@ public interface OrderMapper {
 
     @Mapping(target = "orderId", source = "orderInfo.id")
     CreateOrderResponse dtoToCreateOrderResponse(CreateOrderResponseDto createOrderResponseDto);
-
-    AddOrderItemsResponse dtoToAddOrderItemsResponse(AddOrderItemsResponseDto addOrderItemsResponseDto);
 
     @Mapping(target = "items", source = "cart.cartItemResponseList")
     CreateOrderRequestDto.Order cartResponseToOrder(CreateOrderRequest.Order order);

@@ -6,9 +6,5 @@ import lombok.Data;
 @Data
 @Builder
 public class CreateOrderResponse {
-
-    private String correlationId;
-
     private String orderId;
-
 }

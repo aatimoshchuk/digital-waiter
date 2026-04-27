@@ -8,6 +8,7 @@ import nsu.sber.domain.model.entity.User;
 import nsu.sber.domain.port.repository.jpa.UserRepositoryPort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 @Service
 @RequiredArgsConstructor
@@ -36,5 +37,18 @@ public class UserRepositoryService implements UserRepositoryPort {
     public User save(User user) {
         UserEntity userToSave = userEntityMapper.userToEntity(user);
         return userEntityMapper.entityToUser(userRepository.save(userToSave));
+    }
+
+    @Override
+    public List<String> findLoginsByPosTerminalGroupIds(List<String> posTerminalGroupIds) {
+        return userRepository.findLoginsByPosTerminalGroupIds(posTerminalGroupIds);
+    }
+
+    @Override
+    public Optional<String> findLoginByPosTerminalGroupIdAndPosRestaurantTableId(
+            String posTerminalGroupId,
+            String posTableId
+    ) {
+        return userRepository.findLoginByPosTerminalGroupIdAndPosRestaurantTableId(posTerminalGroupId, posTableId);
     }
 }

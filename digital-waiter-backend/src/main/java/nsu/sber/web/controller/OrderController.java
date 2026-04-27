@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import nsu.sber.domain.service.OrderService;
-import nsu.sber.web.dto.AddOrderItemsResponseDto;
 import nsu.sber.web.dto.CreateOrderResponseDto;
 import nsu.sber.web.mapper.OrderDtoMapper;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,8 +36,8 @@ public class OrderController {
                     associated with the current table in the iiko system
                     """
     )
-    public AddOrderItemsResponseDto addOrderItems(@RequestParam(name = "id") String orderId) {
-        return orderDtoMapper.addOrderItemsResponseToDto(orderService.addOrderItemsAsync(orderId));
+    public void addOrderItems(@RequestParam(name = "id") String orderId) {
+        orderService.addOrderItemsAsync(orderId);
     }
 
 }

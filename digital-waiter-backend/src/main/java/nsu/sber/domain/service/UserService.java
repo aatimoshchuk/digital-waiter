@@ -14,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -77,6 +78,21 @@ public class UserService {
                 .password(password)
                 .tableName(restaurantTable.getName())
                 .build();
+    }
+
+    public List<String> findLoginsByPosTerminalGroupIds(List<String> posTerminalGroupIds) {
+        return userRepository.findLoginsByPosTerminalGroupIds(posTerminalGroupIds);
+    }
+
+    public String findLoginByPosTerminalGroupIdAndPosRestaurantTableId(
+            String posTerminalGroupId,
+            String posTableId
+    ) {
+        return userRepository.findLoginByPosTerminalGroupIdAndPosRestaurantTableId(posTerminalGroupId, posTableId)
+                .orElseThrow(() -> new DigitalWaiterException.UserWithThisPosTableIdAndPosTerminalGroupIdNotFoundException(
+                        posTableId,
+                        posTerminalGroupId
+                ));
     }
 
     private String generateLogin(String organizationName, Integer terminalGroupId, Integer tableId) {

@@ -142,6 +142,15 @@ public sealed class DigitalWaiterException extends RuntimeException {
         }
     }
 
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public static final class UserWithThisPosTableIdAndPosTerminalGroupIdNotFoundException extends DigitalWaiterException {
+        public UserWithThisPosTableIdAndPosTerminalGroupIdNotFoundException(String posTableId,
+                                                                            String posTerminalGroupId) {
+            super("User associated with restaurant table ID = %s and terminal group ID = %s was not found"
+                    .formatted(posTableId, posTerminalGroupId));
+        }
+    }
+
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public static final class ApiKeyEncryptionException extends DigitalWaiterException {
         public ApiKeyEncryptionException() {
@@ -238,6 +247,13 @@ public sealed class DigitalWaiterException extends RuntimeException {
     public static final class InvalidTokenFormatException extends DigitalWaiterException {
         public InvalidTokenFormatException() {
             super("Token is in an invalid format");
+        }
+    }
+
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public static final class MissingWebSocketAuthorizationHeaderException extends DigitalWaiterException {
+        public MissingWebSocketAuthorizationHeaderException() {
+            super("Missing WebSocket Authorization header");
         }
     }
 }

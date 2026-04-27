@@ -1,7 +1,6 @@
 package nsu.sber.domain.port.pos;
 
 import nsu.sber.domain.model.order.AddOrderItemsRequest;
-import nsu.sber.domain.model.order.AddOrderItemsResponse;
 import nsu.sber.domain.model.order.CreateOrderRequest;
 import nsu.sber.domain.model.order.CreateOrderResponse;
 import nsu.sber.domain.model.order.GetOrderByIdRequest;
@@ -12,7 +11,7 @@ public interface PosOrderPort {
 
     CreateOrderResponse createOrder(CreateOrderRequest createOrderRequest);
 
-    AddOrderItemsResponse addOrderItems(AddOrderItemsRequest addOrderItemsRequest);
+    void addOrderItems(AddOrderItemsRequest addOrderItemsRequest);
 
     GetOrdersResponse getOrdersByTableId(GetOrdersByTableIdRequest getOrdersByTableIdRequest);
 

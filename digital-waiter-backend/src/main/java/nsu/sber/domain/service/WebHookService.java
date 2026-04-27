@@ -8,15 +8,23 @@ import nsu.sber.domain.model.webhooks.BaseWebHookEvent;
 import nsu.sber.domain.model.webhooks.StopListUpdateEventInfo;
 import nsu.sber.domain.model.webhooks.StopListUpdateEventInfo.TerminalGroupsStopListsUpdate;
 import nsu.sber.domain.model.webhooks.TableOrderEventInfo;
+import nsu.sber.domain.port.websocket.NotifierPort;
+import nsu.sber.exception.DigitalWaiterException;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class WebHookService {
     private final ObjectMapper objectMapper;
+
+    private final NotifierPort notifierPort;
+
     private final TerminalGroupService terminalGroupService;
     private final MenuService menuService;
+    private final UserService userService;
 
     public void processEvent(BaseWebHookEvent event) {
         switch (event.getEventType()) {
@@ -46,6 +54,13 @@ public class WebHookService {
                     terminalGroup.getPosTerminalGroupId()
             );
         }
+
+        List<String> posTerminalGroupIds = eventInfo.getTerminalGroupsStopListsUpdates()
+                .stream()
+                .map(TerminalGroupsStopListsUpdate::getId)
+                .toList();
+
+        notifierPort.notifyStopListUpdated(userService.findLoginsByPosTerminalGroupIds(posTerminalGroupIds));
     }
 
     private void handleTableOrderUpdateEvent(TableOrderEventInfo eventInfo) {
@@ -54,14 +69,28 @@ public class WebHookService {
                 eventInfo.getId(),
                 eventInfo.getOrder().getStatus()
         );
+
+        String login = userService.findLoginByPosTerminalGroupIdAndPosRestaurantTableId(
+                eventInfo.getOrder().getTerminalGroupId(),
+                eventInfo.getOrder().getTableIds().get(0)
+        );
+
+        notifierPort.notifyOrderStatus(login, eventInfo.getId(), eventInfo.getOrder().getStatus());
     }
 
     private void handleTableOrderErrorEvent(TableOrderEventInfo eventInfo) {
         log.warn(
                 "An error '{}' occurs while saving order {} for organization {}",
-                eventInfo.getErrorInfo().getCode(),
+                eventInfo.getErrorInfo().getMessage(),
                 eventInfo.getId(),
                 eventInfo.getOrganizationId()
         );
+
+        String login = userService.findLoginByPosTerminalGroupIdAndPosRestaurantTableId(
+                eventInfo.getOrder().getTerminalGroupId(),
+                eventInfo.getOrder().getTableIds().get(0)
+        );
+
+        notifierPort.notifyError(login, eventInfo.getErrorInfo().getMessage(), eventInfo.getErrorInfo().getErrorReason());
     }
 }

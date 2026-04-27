@@ -5,7 +5,6 @@ import nsu.sber.domain.model.entity.Organization;
 import nsu.sber.domain.model.entity.RestaurantTable;
 import nsu.sber.domain.model.entity.TerminalGroup;
 import nsu.sber.domain.model.order.AddOrderItemsRequest;
-import nsu.sber.domain.model.order.AddOrderItemsResponse;
 import nsu.sber.domain.model.order.CreateOrderRequest;
 import nsu.sber.domain.model.order.CreateOrderResponse;
 import nsu.sber.domain.model.order.GetOrderByIdRequest;
@@ -30,7 +29,6 @@ public class OrderService {
     private final RestaurantTableService restaurantTableService;
     private final TerminalGroupService terminalGroupService;
     private final OrganizationService organizationService;
-    private final OperationService operationService;
 
     public CreateOrderResponse createOrderAsync() {
         if (cartService.isCartEmpty()) {
@@ -45,17 +43,14 @@ public class OrderService {
             throw new DigitalWaiterException.OpenOrderAlreadyExistException();
         }
 
-        CreateOrderResponse createOrderResponse = posOrderPort.createOrder(buildCreateOrderRequest(
+        return posOrderPort.createOrder(buildCreateOrderRequest(
                 restaurantTable.getPosTableId(),
                 terminalGroup.getPosTerminalGroupId(),
                 organization.getPosOrganizationId()
         ));
-        operationService.trackOrderStatusAsync(createOrderResponse.getCorrelationId());
-
-        return createOrderResponse;
     }
 
-    public AddOrderItemsResponse addOrderItemsAsync(String orderId) {
+    public void addOrderItemsAsync(String orderId) {
         if (cartService.isCartEmpty()) {
             throw new DigitalWaiterException.EmptyCartException();
         }
@@ -66,12 +61,7 @@ public class OrderService {
             throw new DigitalWaiterException.OrderNotFoundException(orderId);
         }
 
-        AddOrderItemsResponse addOrderItemsResponse = posOrderPort.addOrderItems(
-                buildAddOrderItemsRequest(posOrganizationId, orderId)
-        );
-        operationService.trackOrderStatusAsync(addOrderItemsResponse.getCorrelationId());
-
-        return addOrderItemsResponse;
+        posOrderPort.addOrderItems(buildAddOrderItemsRequest(posOrganizationId, orderId));
     }
 
     public boolean hasOpenOrders(String posOrganizationId, String posTableId) {

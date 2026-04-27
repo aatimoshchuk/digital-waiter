@@ -2,7 +2,6 @@ package nsu.sber.messaging.pos.iiko.client;
 
 import nsu.sber.messaging.pos.iiko.config.IikoFeignConfig;
 import nsu.sber.messaging.pos.iiko.dto.AddOrderItemsRequestDto;
-import nsu.sber.messaging.pos.iiko.dto.AddOrderItemsResponseDto;
 import nsu.sber.messaging.pos.iiko.dto.AddOrderPaymentsRequestDto;
 import nsu.sber.messaging.pos.iiko.dto.AddOrderPaymentsResponseDto;
 import nsu.sber.messaging.pos.iiko.dto.CreateOrderRequestDto;
@@ -12,8 +11,6 @@ import nsu.sber.messaging.pos.iiko.dto.GetOrdersByTableIdRequestDto;
 import nsu.sber.messaging.pos.iiko.dto.GetOrdersResponseDto;
 import nsu.sber.messaging.pos.iiko.dto.MenuRequestDto;
 import nsu.sber.messaging.pos.iiko.dto.MenuResponseDto;
-import nsu.sber.messaging.pos.iiko.dto.OperationStatusRequestDto;
-import nsu.sber.messaging.pos.iiko.dto.OperationStatusResponseDto;
 import nsu.sber.messaging.pos.iiko.dto.PaymentTypesRequestDto;
 import nsu.sber.messaging.pos.iiko.dto.PaymentTypesResponseDto;
 import nsu.sber.messaging.pos.iiko.dto.StopListRequestDto;
@@ -49,14 +46,8 @@ public interface IikoClient {
             @RequestBody CreateOrderRequestDto createOrderRequestDto
     );
 
-    @PostMapping("/api/1/commands/status")
-    OperationStatusResponseDto getOperationStatus(
-            @RequestHeader("Authorization") String token,
-            @RequestBody OperationStatusRequestDto operationStatusRequestDto
-    );
-
     @PostMapping("/api/1/order/add_items")
-    AddOrderItemsResponseDto addOrderItems(
+    void addOrderItems(
             @RequestHeader("Authorization") String token,
             @RequestBody AddOrderItemsRequestDto addOrderItemsRequestDto
     );
