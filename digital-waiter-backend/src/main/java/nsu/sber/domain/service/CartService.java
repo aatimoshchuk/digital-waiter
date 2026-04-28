@@ -35,6 +35,11 @@ public class CartService {
         cartRepository.save(restaurantTable.getPosTableId(), cart);
     }
 
+    public int getGuestCount() {
+        Cart cart = getCart(restaurantTableService.getCurrentRestaurantTable().getPosTableId());
+        return cart.getGuestCount();
+    }
+
     public void addItem(ModifyCartItemRequest modifyCartItemRequest) {
         if (!menuService.existsItemById(modifyCartItemRequest.getItemId())) {
             throw new DigitalWaiterException.DishNotFoundException(modifyCartItemRequest.getItemId());

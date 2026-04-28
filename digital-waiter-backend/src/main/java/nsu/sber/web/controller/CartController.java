@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import nsu.sber.domain.service.CartService;
 import nsu.sber.web.dto.CartResponseDto;
 import nsu.sber.web.dto.DivideCartItemRequestDto;
+import nsu.sber.web.dto.GetGuestCountResponseDto;
 import nsu.sber.web.dto.ModifyCartItemRequestDto;
 import nsu.sber.web.dto.TransferCartItemRequestDto;
 import nsu.sber.web.mapper.CartDtoMapper;
@@ -33,6 +34,18 @@ public class CartController {
     )
     public void addGuest() {
         cartService.addGuest();
+    }
+
+    @GetMapping("/guests")
+    @Operation(
+            summary = "Get guest count",
+            description = "Returns the number of guests at the current table"
+    )
+    public GetGuestCountResponseDto getGuestCount() {
+        return GetGuestCountResponseDto
+                .builder()
+                .guestCount(cartService.getGuestCount())
+                .build();
     }
 
     @PostMapping("/items/add")
