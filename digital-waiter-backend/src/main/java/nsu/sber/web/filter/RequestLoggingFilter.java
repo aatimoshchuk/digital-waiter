@@ -14,13 +14,27 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 @Component
 @Slf4j
 public class RequestLoggingFilter extends OncePerRequestFilter {
     private static final int MAX_BODY_LENGTH = 5000;
+
+    private static final List<String> EXCLUDED_PATHS = List.of(
+            "/api/webhook",
+            "/api/notifications/plugin/pull",
+            "/api/notifications/plugin/ack"
+    );
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getRequestURI();
+
+        return EXCLUDED_PATHS.stream()
+                .anyMatch(path::startsWith);
+    }
 
     @Override
     protected void doFilterInternal(
@@ -28,10 +42,6 @@ public class RequestLoggingFilter extends OncePerRequestFilter {
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
-        if (Objects.equals(request.getRequestURI(), "/api/webhook") || request.getRequestURI().contains("plugin")) {
-            filterChain.doFilter(request, response);
-        }
-
         ContentCachingRequestWrapper wrappedRequest = new ContentCachingRequestWrapper(request);
 
         long startedAt = System.currentTimeMillis();
