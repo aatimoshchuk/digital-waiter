@@ -101,20 +101,6 @@ public sealed class DigitalWaiterException extends RuntimeException {
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public static final class OrderCreationException extends DigitalWaiterException {
-        public OrderCreationException(String message) {
-            super("Order creation failed: %s".formatted(message));
-        }
-    }
-
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public static final class OrderItemsAddingException extends DigitalWaiterException {
-        public OrderItemsAddingException(String message) {
-            super("Order items adding failed: %s".formatted(message));
-        }
-    }
-
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public static final class EmptyCartException extends DigitalWaiterException {
         public EmptyCartException() {
             super("Unable to create order: cart is empty");

@@ -1,6 +1,5 @@
 package nsu.sber.messaging.pos.iiko.adapter;
 
-import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import nsu.sber.domain.model.order.AddOrderItemsRequest;
 import nsu.sber.domain.model.order.CreateOrderRequest;
@@ -9,7 +8,6 @@ import nsu.sber.domain.model.order.GetOrderByIdRequest;
 import nsu.sber.domain.model.order.GetOrdersByTableIdRequest;
 import nsu.sber.domain.model.order.GetOrdersResponse;
 import nsu.sber.domain.port.pos.PosOrderPort;
-import nsu.sber.exception.DigitalWaiterException;
 import nsu.sber.messaging.pos.iiko.client.IikoClient;
 import nsu.sber.messaging.pos.iiko.dto.CreateOrderResponseDto;
 import nsu.sber.messaging.pos.iiko.dto.GetOrdersResponseDto;
@@ -25,28 +23,20 @@ public class PosOrderAdapter implements PosOrderPort {
 
     @Override
     public CreateOrderResponse createOrder(CreateOrderRequest createOrderRequest) {
-        try {
-            CreateOrderResponseDto createOrderResponseDto = iikoClient.createOrder(
-                    null,
-                    orderMapper.createOrderRequestToDto(createOrderRequest)
-            );
+        CreateOrderResponseDto createOrderResponseDto = iikoClient.createOrder(
+                null,
+                orderMapper.createOrderRequestToDto(createOrderRequest)
+        );
 
-            return orderMapper.dtoToCreateOrderResponse(createOrderResponseDto);
-        } catch (FeignException e) {
-            throw new DigitalWaiterException.OrderCreationException(e.getMessage());
-        }
+        return orderMapper.dtoToCreateOrderResponse(createOrderResponseDto);
     }
 
     @Override
     public void addOrderItems(AddOrderItemsRequest addOrderItemsRequest) {
-        try {
-            iikoClient.addOrderItems(
-                    null,
-                    orderMapper.addOrderItemsRequestToDto(addOrderItemsRequest)
-            );
-        } catch (FeignException e) {
-            throw new DigitalWaiterException.OrderItemsAddingException(e.getMessage());
-        }
+        iikoClient.addOrderItems(
+                null,
+                orderMapper.addOrderItemsRequestToDto(addOrderItemsRequest)
+        );
     }
 
     @Override
