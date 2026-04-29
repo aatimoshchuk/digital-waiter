@@ -69,7 +69,7 @@ public class OrderService {
                 posOrganizationId,
                 posTableId,
                 OrderStatus.NEW,
-                LocalDateTime.now().minusHours(24)
+                null
         );
 
         for (Order order : response.getOrders()) {

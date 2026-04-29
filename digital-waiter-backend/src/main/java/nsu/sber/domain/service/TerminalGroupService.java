@@ -27,6 +27,10 @@ public class TerminalGroupService {
                 .orElseThrow(() -> new DigitalWaiterException.TerminalGroupWithThisIdNotFoundException(id));
     }
 
+    public List<TerminalGroup> findAllByPosTerminalGroupIds(List<String> posTerminalGroupIds) {
+        return terminalGroupRepository.findAllByPosTerminalGroupIds(posTerminalGroupIds);
+    }
+
     public TerminalGroup getTerminalGroupByPosId(String posId) {
         return terminalGroupRepository.findByPosTerminalGroupId(posId)
                 .orElseThrow(() -> new DigitalWaiterException.TerminalGroupWithThisPosIdNotFoundException(posId));

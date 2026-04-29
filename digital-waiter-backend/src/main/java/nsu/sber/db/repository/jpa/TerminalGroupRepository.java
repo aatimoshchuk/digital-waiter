@@ -13,6 +13,9 @@ public interface TerminalGroupRepository extends JpaRepository<TerminalGroupEnti
 
     Optional<TerminalGroupEntity> findById(int id);
 
+    @Query("SELECT tg FROM TerminalGroupEntity tg WHERE tg.posTerminalGroupId in :posTerminalGroupIds")
+    List<TerminalGroupEntity> findAllByPosTerminalGroupIds(List<String> posTerminalGroupIds);
+
     Optional<TerminalGroupEntity> findByPosTerminalGroupId(String posTerminalGroupId);
 
     @Query("""

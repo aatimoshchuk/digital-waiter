@@ -31,12 +31,6 @@ public class WebHookController {
     )
     public ResponseEntity<Void> handleWebHook(@RequestBody List<BaseWebHookEventDto> eventDtoList) {
         for (BaseWebHookEventDto eventDto : eventDtoList) {
-            log.info(
-                    "Webhook was received: [eventType: {}, organizationId: {}]",
-                    eventDto.getEventType(),
-                    eventDto.getOrganizationId()
-            );
-
             webHookService.processEvent(webHookDtoMapper.dtoToBaseWebHookEvent(eventDto));
         }
 

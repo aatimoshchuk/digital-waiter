@@ -25,6 +25,13 @@ public class TerminalGroupRepositoryService implements TerminalGroupRepositoryPo
     }
 
     @Override
+    public List<TerminalGroup> findAllByPosTerminalGroupIds(List<String> posTerminalGroupIds) {
+        return terminalGroupEntityMapper.entitiesToTerminalGroups(
+                terminalGroupRepository.findAllByPosTerminalGroupIds(posTerminalGroupIds)
+        );
+    }
+
+    @Override
     public Optional<TerminalGroup> findByPosTerminalGroupId(String posTerminalGroupId) {
         return terminalGroupRepository.findByPosTerminalGroupId(posTerminalGroupId)
                 .map(terminalGroupEntityMapper::entityToTerminalGroup);
