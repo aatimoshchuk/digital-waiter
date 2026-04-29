@@ -39,7 +39,7 @@ public class OrderService {
         TerminalGroup terminalGroup = terminalGroupService.getTerminalGroup(restaurantTable.getTerminalGroupId());
         Organization organization = organizationService.getOrganization(terminalGroup.getOrganizationId());
 
-        if (hasOpenOrders(organization.getPosOrganizationId(), terminalGroup.getPosTerminalGroupId())) {
+        if (hasOpenOrders(organization.getPosOrganizationId(), restaurantTable.getPosTableId())) {
             throw new DigitalWaiterException.OpenOrderAlreadyExistException();
         }
 
@@ -69,7 +69,7 @@ public class OrderService {
                 posOrganizationId,
                 posTableId,
                 OrderStatus.NEW,
-                null
+                LocalDateTime.now().minusHours(24)
         );
 
         for (Order order : response.getOrders()) {
